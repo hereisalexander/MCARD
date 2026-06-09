@@ -114,6 +114,7 @@ export default function Home() {
             portfolio={portfolio}
             onRemoveCard={handleRemoveCard}
             portfolioValue={portfolioValue}
+            mode="showcase"
           />
         )}
 
@@ -122,6 +123,7 @@ export default function Home() {
             portfolio={portfolio}
             onRemoveCard={handleRemoveCard}
             portfolioValue={portfolioValue}
+            mode="portfolio"
           />
         )}
       </main>
