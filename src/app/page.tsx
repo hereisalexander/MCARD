@@ -5,25 +5,46 @@ import { Navbar } from '@/components/Navbar';
 import { StoryStream } from '@/components/StoryStream';
 import { CardGrid } from '@/components/CardGrid';
 import { SetsView } from '@/components/SetsView';
-import { PortfolioDashboard, UserPortfolioItem } from '@/components/PortfolioDashboard';
+import { PortfolioDashboard, UserPortfolioItem, CardCondition } from '@/components/PortfolioDashboard';
+import { CardDetailView } from '@/components/CardDetailView';
+import { ApiPokemonCard } from '@/services/pokemonApi';
 
 interface ToastState {
   show: boolean;
   message: string;
 }
 
+import { FooterModals, FooterModalType } from '@/components/FooterModals';
+
 export default function Home() {
   const [activeTab, setActiveTab] = useState<string>('stream');
   const [portfolio, setPortfolio] = useState<UserPortfolioItem[]>([]);
   const [selectedSetFilter, setSelectedSetFilter] = useState<string>('ALL');
   const [toast, setToast] = useState<ToastState>({ show: false, message: '' });
+  const [footerModal, setFooterModal] = useState<FooterModalType>(null);
+  
+  // State for Full-Page Card Detail View
+  const [selectedDetailCard, setSelectedDetailCard] = useState<ApiPokemonCard | null>(null);
 
-  // Load portfolio from localStorage on mount
+  // Load portfolio from localStorage on mount & perform safe migration for old items
   useEffect(() => {
     const saved = localStorage.getItem('pokemon_portfolio');
     if (saved) {
       try {
-        setPortfolio(JSON.parse(saved));
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          const migrated: UserPortfolioItem[] = parsed.map((item: Partial<UserPortfolioItem>) => ({
+            id: item.id || `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+            name: item.name || 'Unknown Card',
+            price: item.price || 0,
+            buyPrice: item.buyPrice ?? item.price ?? 0,
+            quantity: item.quantity && item.quantity > 0 ? item.quantity : 1,
+            condition: item.condition || 'Ungraded',
+            imageUrl: item.imageUrl || 'https://images.pokemontcg.io/sv3pt5/199_hires.png',
+            addedAt: item.addedAt || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+          }));
+          setPortfolio(migrated);
+        }
       } catch (e) {
         console.error('Failed to parse portfolio from localStorage', e);
       }
@@ -36,20 +57,45 @@ export default function Home() {
     localStorage.setItem('pokemon_portfolio', JSON.stringify(updated));
   };
 
-  const handleAddCard = (cardName: string, price: number, imageUrl: string) => {
-    const newItem: UserPortfolioItem = {
-      id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      name: cardName,
-      price,
-      imageUrl,
-      addedAt: new Date().toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-      }),
-    };
-    const updated = [newItem, ...portfolio];
-    savePortfolio(updated);
+  const handleAddCard = (
+    cardName: string,
+    price: number,
+    imageUrl: string,
+    condition: CardCondition = 'Ungraded',
+    buyPrice?: number
+  ) => {
+    const cost = buyPrice !== undefined ? buyPrice : price;
+    
+    // Check if exact same card & condition already exists in portfolio
+    const existingIndex = portfolio.findIndex(
+      (item) => item.name === cardName && (item.condition || 'Ungraded') === condition
+    );
+
+    if (existingIndex >= 0) {
+      const updated = [...portfolio];
+      updated[existingIndex] = {
+        ...updated[existingIndex],
+        quantity: (updated[existingIndex].quantity || 1) + 1,
+      };
+      savePortfolio(updated);
+    } else {
+      const newItem: UserPortfolioItem = {
+        id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        name: cardName,
+        price,
+        buyPrice: cost,
+        quantity: 1,
+        condition,
+        imageUrl,
+        addedAt: new Date().toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+        }),
+      };
+      const updated = [newItem, ...portfolio];
+      savePortfolio(updated);
+    }
     
     // Show Verge style toast
     setToast({
@@ -63,9 +109,41 @@ export default function Home() {
     savePortfolio(updated);
   };
 
+  const handleUpdateCard = (updatedItem: UserPortfolioItem) => {
+    const updated = portfolio.map((item) => (item.id === updatedItem.id ? updatedItem : item));
+    savePortfolio(updated);
+  };
+
+  const handleImportPortfolio = (importedItems: UserPortfolioItem[]) => {
+    const sanitized: UserPortfolioItem[] = importedItems.map((item) => ({
+      id: item.id || `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      name: item.name || 'Imported Card',
+      price: item.price || 0,
+      buyPrice: item.buyPrice ?? item.price ?? 0,
+      quantity: item.quantity && item.quantity > 0 ? item.quantity : 1,
+      condition: item.condition || 'Ungraded',
+      imageUrl: item.imageUrl || '',
+      addedAt: item.addedAt || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+    }));
+    savePortfolio(sanitized);
+    setToast({
+      show: true,
+      message: `RESTORED ${sanitized.length} CARDS TO PORTFOLIO`,
+    });
+  };
+
   const handleSelectSetFromSets = (setName: string) => {
     setSelectedSetFilter(setName);
+    setSelectedDetailCard(null);
     setActiveTab('explore');
+  };
+
+  const handleSelectCardDetail = (card: ApiPokemonCard) => {
+    setSelectedDetailCard(card);
+  };
+
+  const handleBackFromDetail = () => {
+    setSelectedDetailCard(null);
   };
 
   // Hide toast after timeout
@@ -78,53 +156,73 @@ export default function Home() {
     }
   }, [toast.show]);
 
-  // Calculate portfolio stats
-  const portfolioValue = portfolio.reduce((acc, curr) => acc + curr.price, 0);
+  // Total Portfolio Market Value considering card quantities
+  const portfolioValue = portfolio.reduce((acc, curr) => acc + (curr.price * (curr.quantity || 1)), 0);
+  const portfolioItemCount = portfolio.reduce((acc, curr) => acc + (curr.quantity || 1), 0);
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground transition-colors duration-200">
       <Navbar
-        activeTab={activeTab}
+        activeTab={selectedDetailCard ? 'explore' : activeTab}
         onTabChange={(tab) => {
+          setSelectedDetailCard(null);
           setActiveTab(tab);
-          // Reset set filter when going back to explore directly
           if (tab === 'explore') {
             setSelectedSetFilter('ALL');
           }
         }}
-        portfolioCount={portfolio.length}
+        portfolioCount={portfolioItemCount}
         portfolioValue={portfolioValue}
       />
 
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-8 py-8">
-        {activeTab === 'stream' && (
-          <StoryStream onAddCard={handleAddCard} />
-        )}
-        
-        {activeTab === 'explore' && (
-          <CardGrid onAddCard={handleAddCard} initialSetFilter={selectedSetFilter} />
-        )}
-
-        {activeTab === 'sets' && (
-          <SetsView portfolio={portfolio} onSelectSet={handleSelectSetFromSets} />
-        )}
-
-        {activeTab === 'showcase' && (
-          <PortfolioDashboard
-            portfolio={portfolio}
-            onRemoveCard={handleRemoveCard}
-            portfolioValue={portfolioValue}
-            mode="showcase"
+        {/* Full Page Card Detail View when card is selected */}
+        {selectedDetailCard ? (
+          <CardDetailView
+            card={selectedDetailCard}
+            onBack={handleBackFromDetail}
+            onAddCard={handleAddCard}
           />
-        )}
+        ) : (
+          <>
+            {activeTab === 'stream' && (
+              <StoryStream onAddCard={handleAddCard} />
+            )}
+            
+            {activeTab === 'explore' && (
+              <CardGrid
+                onAddCard={handleAddCard}
+                onSelectCardDetail={handleSelectCardDetail}
+                initialSetFilter={selectedSetFilter}
+              />
+            )}
 
-        {activeTab === 'portfolio' && (
-          <PortfolioDashboard
-            portfolio={portfolio}
-            onRemoveCard={handleRemoveCard}
-            portfolioValue={portfolioValue}
-            mode="portfolio"
-          />
+            {activeTab === 'sets' && (
+              <SetsView portfolio={portfolio} onSelectSet={handleSelectSetFromSets} />
+            )}
+
+            {activeTab === 'showcase' && (
+              <PortfolioDashboard
+                portfolio={portfolio}
+                onRemoveCard={handleRemoveCard}
+                onUpdateCard={handleUpdateCard}
+                onImportPortfolio={handleImportPortfolio}
+                portfolioValue={portfolioValue}
+                mode="showcase"
+              />
+            )}
+
+            {activeTab === 'portfolio' && (
+              <PortfolioDashboard
+                portfolio={portfolio}
+                onRemoveCard={handleRemoveCard}
+                onUpdateCard={handleUpdateCard}
+                onImportPortfolio={handleImportPortfolio}
+                portfolioValue={portfolioValue}
+                mode="portfolio"
+              />
+            )}
+          </>
         )}
       </main>
 
@@ -145,15 +243,25 @@ export default function Home() {
             © 2026 THE POKÉMON STREAM. INSPIRED BY THE VERGE. ALL RIGHTS RESERVED.
           </span>
           <div className="flex gap-4 font-mono text-[10px] tracking-[1.5px] text-text-muted">
-            <a href="#" className="hover:text-deep-link-blue transition-colors duration-150">TERMS</a>
+            <button
+              onClick={() => setFooterModal('terms')}
+              className="hover:text-deep-link-blue transition-colors duration-150 uppercase cursor-pointer"
+            >
+              TERMS
+            </button>
             <span>/</span>
-            <a href="#" className="hover:text-deep-link-blue transition-colors duration-150">PRIVACY</a>
-            <span>/</span>
-            <a href="#" className="hover:text-deep-link-blue transition-colors duration-150">API</a>
+            <button
+              onClick={() => setFooterModal('privacy')}
+              className="hover:text-deep-link-blue transition-colors duration-150 uppercase cursor-pointer"
+            >
+              PRIVACY
+            </button>
           </div>
         </div>
       </footer>
+
+      {/* Footer Interactive Modals */}
+      <FooterModals activeModal={footerModal} onClose={() => setFooterModal(null)} />
     </div>
   );
 }
-

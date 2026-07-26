@@ -67,4 +67,12 @@ body {
     border-style: solid;
     border-color: var(--border-color);
   }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
