@@ -11,7 +11,7 @@ interface FooterModalsProps {
 }
 
 export const FooterModals: React.FC<FooterModalsProps> = ({ activeModal, onClose }) => {
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
 
   if (!activeModal) return null;
 

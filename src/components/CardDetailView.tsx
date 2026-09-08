@@ -51,11 +51,6 @@ export const CardDetailView: React.FC<CardDetailViewProps> = ({
     if (selectedCondition === 'BGS 10') seed += 200;
     if (selectedCondition === 'BGS Black Label') seed += 500;
 
-    const pseudoRandom = (step: number) => {
-      const x = Math.sin(seed * 17.1 + step * 31.7) * 10000;
-      return x - Math.floor(x);
-    };
-
     let conditionMultiplier = 1.0;
     if (selectedCondition === 'PSA 10') conditionMultiplier = 2.8;
     if (selectedCondition === 'PSA 9') conditionMultiplier = 1.4;

@@ -42,7 +42,10 @@ export const CardGrid: React.FC<CardGridProps> = ({
   // Sync initial set filter from props
   useEffect(() => {
     if (initialSetFilter) {
-      setSelectedSet(initialSetFilter);
+      const timer = setTimeout(() => {
+        setSelectedSet(initialSetFilter);
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [initialSetFilter]);
 
@@ -95,7 +98,16 @@ export const CardGrid: React.FC<CardGridProps> = ({
 
   // Trigger search on filter/search change
   useEffect(() => {
-    loadCards(true, 1);
+    let active = true;
+    const timer = setTimeout(() => {
+      if (active) {
+        loadCards(true, 1);
+      }
+    }, 0);
+    return () => {
+      active = false;
+      clearTimeout(timer);
+    };
   }, [loadCards]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {

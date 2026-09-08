@@ -28,27 +28,30 @@ export default function Home() {
 
   // Load portfolio from localStorage on mount & perform safe migration for old items
   useEffect(() => {
-    const saved = localStorage.getItem('pokemon_portfolio');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) {
-          const migrated: UserPortfolioItem[] = parsed.map((item: Partial<UserPortfolioItem>) => ({
-            id: item.id || `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-            name: item.name || 'Unknown Card',
-            price: item.price || 0,
-            buyPrice: item.buyPrice ?? item.price ?? 0,
-            quantity: item.quantity && item.quantity > 0 ? item.quantity : 1,
-            condition: item.condition || 'Ungraded',
-            imageUrl: item.imageUrl || 'https://images.pokemontcg.io/sv3pt5/199_hires.png',
-            addedAt: item.addedAt || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-          }));
-          setPortfolio(migrated);
+    const timer = setTimeout(() => {
+      const saved = localStorage.getItem('pokemon_portfolio');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed)) {
+            const migrated: UserPortfolioItem[] = parsed.map((item: Partial<UserPortfolioItem>) => ({
+              id: item.id || `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+              name: item.name || 'Unknown Card',
+              price: item.price || 0,
+              buyPrice: item.buyPrice ?? item.price ?? 0,
+              quantity: item.quantity && item.quantity > 0 ? item.quantity : 1,
+              condition: item.condition || 'Ungraded',
+              imageUrl: item.imageUrl || 'https://images.pokemontcg.io/sv3pt5/199_hires.png',
+              addedAt: item.addedAt || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+            }));
+            setPortfolio(migrated);
+          }
+        } catch (e) {
+          console.error('Failed to parse portfolio from localStorage', e);
         }
-      } catch (e) {
-        console.error('Failed to parse portfolio from localStorage', e);
       }
-    }
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   // Save portfolio to localStorage when changed

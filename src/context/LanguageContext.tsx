@@ -18,10 +18,13 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   // Load language preference from localStorage on mount
   useEffect(() => {
-    const savedLang = localStorage.getItem(LANGUAGE_STORAGE_KEY) as Language;
-    if (savedLang && (savedLang === 'en' || savedLang === 'zh-TW' || savedLang === 'zh-CN')) {
-      setLanguageState(savedLang);
-    }
+    const timer = setTimeout(() => {
+      const savedLang = localStorage.getItem(LANGUAGE_STORAGE_KEY) as Language;
+      if (savedLang && (savedLang === 'en' || savedLang === 'zh-TW' || savedLang === 'zh-CN')) {
+        setLanguageState(savedLang);
+      }
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   const setLanguage = (lang: Language) => {

@@ -56,7 +56,7 @@ export const CardDetailModal: React.FC<CardDetailModalProps> = ({
     };
 
     let currentVal = basePrice * 0.88;
-    for (let day = 30; day >= 1; day--) {
+    for (let day = pointsCount; day >= 1; day--) {
       const date = new Date();
       date.setDate(date.getDate() - day);
       

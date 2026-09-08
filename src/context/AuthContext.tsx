@@ -32,14 +32,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Load active user session on mount
   useEffect(() => {
-    try {
-      const savedSession = localStorage.getItem(AUTH_STORAGE_KEY);
-      if (savedSession) {
-        setUser(JSON.parse(savedSession));
+    const timer = setTimeout(() => {
+      try {
+        const savedSession = localStorage.getItem(AUTH_STORAGE_KEY);
+        if (savedSession) {
+          setUser(JSON.parse(savedSession));
+        }
+      } catch (err) {
+        console.error('Failed to load user session:', err);
       }
-    } catch (err) {
-      console.error('Failed to load user session:', err);
-    }
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   const openAuthModal = () => setIsAuthModalOpen(true);
