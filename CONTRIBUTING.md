@@ -17,7 +17,7 @@
 本專案採用 **[GNU Affero General Public License v3.0 (AGPL-3.0)](./LICENSE)** 授權開源。
 - 任何提交給本專案的代碼均視為同意以 **AGPL-3.0** 授權。
 - 若你基於本專案建立分支或發布衍生服務，**必須維持 AGPL-3.0 協議並公開完整原始碼**。
-- 請注意：寶可夢相關商標與卡牌圖像版權屬於原官方（Nintendo / Creatures Inc. / GAME FREAK inc.），請勿在任何商業或侵害第三方權利的情境下使用。
+- 請注意：寶可夢相關商標與卡牌圖像版權屬於原官方（Nintendo / Creatures Inc. / GAME FREAK inc.），本專案與官方無附屬關係，提交代碼請勿包含任何侵害第三方智慧財產權之未授權資產。
 
 ---
 
