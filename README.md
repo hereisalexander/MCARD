@@ -11,7 +11,7 @@
 
 專為寶可夢 TCG 玩家、卡牌藏家與投資愛好者打造的現代化資產管理與圖鑑瀏覽平台。具備極致平滑的 3D 全像光影卡牌傾斜效果、即時市場行情走勢追蹤，以及完整的收藏投資組合損益（P&L）分析。
 
-[快速開始](#-快速開始-getting-started) • [核心功能](#-核心功能-key-features) • [技術架構](#-技術架構-tech-stack) • [貢獻指引](#-開源貢獻-contributing) • [開源授權與免責聲明](#-授權協議--版權免責-license--disclaimer)
+[快速開始](#-快速開始-getting-started) • [核心功能](#-核心功能-key-features) • [技術架構](#-技術架構-tech-stack) • [貢獻指引](#-開源貢獻-contributing) • [安全政策](./SECURITY.md) • [開源授權與免責聲明](#-授權協議--版權免責-license--disclaimer)
 
 </div>
 
@@ -97,7 +97,7 @@ npm run dev
 
 ## 🤝 開源貢獻 (Contributing)
 
-歡迎社群提交 Issue 或 Pull Request！在貢獻代碼前，請先閱讀 [CONTRIBUTING.md](./CONTRIBUTING.md) 以了解分支命名、代碼標準與 PR 審查流程，並請共同遵守我們的 [行為準則 (CODE_OF_CONDUCT.md)](./CODE_OF_CONDUCT.md)。
+歡迎社群提交 Issue 或 Pull Request！在貢獻代碼前，請先閱讀 [CONTRIBUTING.md](./CONTRIBUTING.md) 以了解分支命名、代碼標準與 PR 審查流程，並請共同遵守我們的 [行為準則 (CODE_OF_CONDUCT.md)](./CODE_OF_CONDUCT.md) 與 [安全政策 (SECURITY.md)](./SECURITY.md)。
 
 ---
 
