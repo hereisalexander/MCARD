@@ -44,10 +44,11 @@
 
 ## 違規通報與執行 (Enforcement)
 
-若發現濫用、騷擾或其他不可接受的行為，可透過電子郵件向專案維護團隊舉報：
-📧 **hereisalexanderw@gmail.com**
+若發現濫用、騷擾或其他不可接受的行為，請直接透過 GitHub 平台向專案維護團隊舉報：
+* **GitHub Issues**：前往 [GitHub Issues](https://github.com/hereisalexander/Pokemon_Collector/issues) 建立通報 Issue（可使用專用通報模板，或標題註明 `[Conduct Report]`）。
+* **私密通報 (Private Reporting)**：若通報內容牽涉敏感資訊或個人隱私，亦可透過 GitHub 儲存庫之 [Security Advisories](https://github.com/hereisalexander/Pokemon_Collector/security/advisories/new) 提交僅維護團隊可見的私密通報。
 
-所有投訴都將迅速且公正地進行調查與審查。維護團隊有義務對舉報者的個人隱私予以嚴格保密。
+所有通報都將迅速且公正地進行調查與審查處理。維護團隊將秉持客觀公正立場維護健康包容的社群環境。
 
 未能秉持誠信遵守或執行本行為準則的維護者，可能會面臨社群領導層暫時或永久的除名處分。
 
