@@ -2,7 +2,13 @@
 
 感謝你對 **Pokémon Collector** 的關注與支持！我們歡迎任何形式的貢獻，包括但不限於：問題回報（Bug Reports）、新功能建議（Feature Requests）、文件改進以及代碼提交（Pull Requests）。
 
-在開始貢獻前，請花一點時間閱讀以下指引。
+在開始貢獻前，請花一點時間閱讀以下指引，並請遵守我們的 [行為準則 (Code of Conduct)](./CODE_OF_CONDUCT.md)。
+
+---
+
+## 🕊️ 行為準則 (Code of Conduct)
+
+為了保障所有社群成員的權益與良好交流氛圍，參與本專案請遵守我們的 [行為準則 (Contributor Covenant v2.1)](./CODE_OF_CONDUCT.md)。任何騷擾、歧視或不當行為均不被允許。
 
 ---
 

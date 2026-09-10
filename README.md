@@ -7,6 +7,7 @@
 [![React](https://img.shields.io/badge/React-19.2-61DAFB?style=flat&logo=react)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=flat&logo=typescript)](https://www.typescriptlang.org/)
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-v4-38B2AC?style=flat&logo=tailwind-css)](https://tailwindcss.com/)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](./CODE_OF_CONDUCT.md)
 
 專為寶可夢 TCG 玩家、卡牌藏家與投資愛好者打造的現代化資產管理與圖鑑瀏覽平台。具備極致平滑的 3D 全像光影卡牌傾斜效果、即時市場行情走勢追蹤，以及完整的收藏投資組合損益（P&L）分析。
 
@@ -96,7 +97,7 @@ npm run dev
 
 ## 🤝 開源貢獻 (Contributing)
 
-歡迎社群提交 Issue 或 Pull Request！在貢獻代碼前，請先閱讀 [CONTRIBUTING.md](./CONTRIBUTING.md) 以了解分支命名、代碼標準與 PR 審查流程。
+歡迎社群提交 Issue 或 Pull Request！在貢獻代碼前，請先閱讀 [CONTRIBUTING.md](./CONTRIBUTING.md) 以了解分支命名、代碼標準與 PR 審查流程，並請共同遵守我們的 [行為準則 (CODE_OF_CONDUCT.md)](./CODE_OF_CONDUCT.md)。
 
 ---
 
