@@ -13,13 +13,15 @@ interface FooterModalsProps {
 export const FooterModals: React.FC<FooterModalsProps> = ({ activeModal, onClose }) => {
   const { language } = useLanguage();
   const [currentTab, setCurrentTab] = useState<'terms' | 'privacy'>('terms');
+  const [prevModal, setPrevModal] = useState<FooterModalType>(activeModal);
 
-  // Sync internal tab state with activeModal prop
-  useEffect(() => {
+  // Sync internal tab state with activeModal prop when it changes
+  if (activeModal !== prevModal) {
+    setPrevModal(activeModal);
     if (activeModal) {
       setCurrentTab(activeModal);
     }
-  }, [activeModal]);
+  }
 
   // Keyboard accessibility: Close on ESC key
   useEffect(() => {

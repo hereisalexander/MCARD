@@ -14,6 +14,17 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 const THEME_STORAGE_KEY = 'pokemon_collector_theme';
 
+const applyThemeClass = (targetTheme: ThemeMode) => {
+  const root = document.documentElement;
+  if (targetTheme === 'dark') {
+    root.classList.add('dark');
+    root.classList.remove('light');
+  } else {
+    root.classList.add('light');
+    root.classList.remove('dark');
+  }
+};
+
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [theme, setThemeState] = useState<ThemeMode>('dark');
 
@@ -30,17 +41,6 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }, 0);
     return () => clearTimeout(timer);
   }, []);
-
-  const applyThemeClass = (targetTheme: ThemeMode) => {
-    const root = document.documentElement;
-    if (targetTheme === 'dark') {
-      root.classList.add('dark');
-      root.classList.remove('light');
-    } else {
-      root.classList.add('light');
-      root.classList.remove('dark');
-    }
-  };
 
   const setTheme = (newTheme: ThemeMode) => {
     setThemeState(newTheme);

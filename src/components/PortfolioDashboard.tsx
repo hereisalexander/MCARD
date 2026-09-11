@@ -161,21 +161,6 @@ export const PortfolioDashboard: React.FC<PortfolioDashboardProps> = ({
     },
   ];
 
-  const getConditionBadgeStyle = (condition: CardCondition) => {
-    switch (condition) {
-      case 'PSA 10':
-        return 'bg-amber-400/20 text-amber-500 border-amber-500/40 dark:bg-amber-400/15 dark:text-amber-300';
-      case 'BGS Black Label':
-        return 'bg-purple-600/20 text-purple-400 border-purple-500/40 dark:bg-purple-500/20 dark:text-purple-300';
-      case 'BGS 10':
-        return 'bg-cyan-500/20 text-cyan-400 border-cyan-500/40 dark:bg-cyan-500/20 dark:text-cyan-300';
-      case 'PSA 9':
-        return 'bg-blue-500/20 text-blue-400 border-blue-500/40 dark:bg-blue-500/20 dark:text-blue-300';
-      case 'Ungraded':
-      default:
-        return 'bg-primary/10 text-text-muted border-primary/30';
-    }
-  };
 
   if (mode === 'showcase') {
     return (
