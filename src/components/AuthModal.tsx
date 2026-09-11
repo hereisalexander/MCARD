@@ -22,13 +22,13 @@ export const AuthModal: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/65 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
-      <div className="bg-surface border-hairline border-primary rounded-[28px] p-6 md:p-8 max-w-md w-full shadow-2xl relative flex flex-col gap-6">
+    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+      <div className="bg-surface border border-hairline/80 rounded-2xl p-6 md:p-8 max-w-md w-full shadow-2xl relative flex flex-col gap-6">
         
         {/* Modal Close Button */}
         <button
           onClick={closeAuthModal}
-          className="absolute right-6 top-6 w-8 h-8 rounded-full bg-background border border-primary flex items-center justify-center font-mono text-xs font-bold text-text-muted hover:text-foreground transition-colors"
+          className="absolute right-6 top-6 w-8 h-8 rounded-full bg-surface-hover border border-hairline flex items-center justify-center font-mono text-xs font-bold text-text-muted hover:text-ferrari-red transition-colors cursor-pointer"
           aria-label={t('auth_close')}
         >
           ✕
@@ -36,21 +36,21 @@ export const AuthModal: React.FC = () => {
 
         {/* Modal Header */}
         <div className="flex flex-col gap-1 pr-8">
-          <span className="font-mono text-[10px] font-bold text-verge-ultraviolet dark:text-jelly-mint tracking-[2px] uppercase">
-            MEMBER AUTHENTICATION
+          <span className="text-[10px] font-semibold text-ferrari-red tracking-wider uppercase">
+            Scuderia Access
           </span>
-          <h3 className="font-display font-bold text-2xl md:text-3xl uppercase text-foreground leading-tight">
+          <h3 className="font-sans font-medium text-2xl tracking-tight text-foreground leading-tight">
             {t('auth_modal_title')}
           </h3>
-          <p className="font-body text-xs text-text-muted mt-1">
+          <p className="font-sans text-xs text-text-muted mt-1 leading-relaxed">
             {t('auth_modal_subtitle')}
           </p>
         </div>
 
         {/* Cloud Sync Notification Banner */}
-        <div className="p-3.5 bg-verge-ultraviolet/10 dark:bg-jelly-mint/10 border border-verge-ultraviolet/30 dark:border-jelly-mint/30 rounded-xl flex items-start gap-2.5">
-          <span className="text-sm shrink-0">☁️</span>
-          <span className="font-mono text-[10px] text-foreground leading-relaxed">
+        <div className="p-3.5 bg-surface-hover rounded-xl border border-hairline/60 flex items-start gap-2.5">
+          <span className="w-2 h-2 rounded-full bg-ferrari-red mt-1.5 shrink-0" />
+          <span className="font-sans text-xs text-text-muted leading-relaxed">
             {t('auth_cloud_sync_desc')}
           </span>
         </div>
@@ -59,7 +59,7 @@ export const AuthModal: React.FC = () => {
         <div className="flex flex-col gap-3">
           <button
             onClick={loginWithGoogle}
-            className="w-full py-3.5 px-4 rounded-xl bg-background border-hairline border-primary font-mono text-xs font-bold tracking-[1px] text-foreground hover:border-verge-ultraviolet dark:hover:border-jelly-mint transition-all duration-150 flex items-center justify-center gap-3 cursor-pointer shadow-sm"
+            className="w-full h-11 rounded-xl bg-surface-hover border border-hairline font-sans text-xs font-semibold tracking-wide text-foreground hover:border-text-muted transition-all duration-150 flex items-center justify-center gap-3 cursor-pointer shadow-sm"
           >
             {/* Google Icon SVG */}
             <svg className="w-4 h-4" viewBox="0 0 24 24">
@@ -86,32 +86,32 @@ export const AuthModal: React.FC = () => {
 
         {/* Divider */}
         <div className="flex items-center gap-3 my-1">
-          <div className="h-[1px] bg-border-primary flex-1" />
-          <span className="font-mono text-[9px] text-text-muted font-bold tracking-[1.5px] uppercase">
+          <div className="h-[1px] bg-hairline/60 flex-1" />
+          <span className="text-[9px] text-text-muted font-bold tracking-wider uppercase">
             {t('auth_or_divider')}
           </span>
-          <div className="h-[1px] bg-border-primary flex-1" />
+          <div className="h-[1px] bg-hairline/60 flex-1" />
         </div>
 
         {/* Email & Password Form */}
         <form onSubmit={handleEmailSubmit} className="flex flex-col gap-3">
           {isSignUp && (
             <div className="flex flex-col gap-1">
-              <label className="font-mono text-[9px] font-bold text-text-muted uppercase">
+              <label className="text-[10px] font-semibold text-text-muted tracking-wide">
                 {t('auth_name_label')}
               </label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="ASH KETCHUM"
-                className="bg-background border border-primary rounded-xl px-4 py-2.5 font-mono text-xs text-foreground focus:outline-none focus:border-verge-ultraviolet dark:focus:border-jelly-mint"
+                placeholder="Ash Ketchum"
+                className="h-11 bg-surface-hover border border-hairline rounded-xl px-4 text-xs text-foreground focus:outline-none focus:border-ferrari-red focus:ring-2 focus:ring-ferrari-red/10"
               />
             </div>
           )}
 
           <div className="flex flex-col gap-1">
-            <label className="font-mono text-[9px] font-bold text-text-muted uppercase">
+            <label className="text-[10px] font-semibold text-text-muted tracking-wide">
               {t('auth_email_label')}
             </label>
             <input
@@ -119,13 +119,13 @@ export const AuthModal: React.FC = () => {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="COLLECTOR@POKEMON.COM"
-              className="bg-background border border-primary rounded-xl px-4 py-2.5 font-mono text-xs text-foreground focus:outline-none focus:border-verge-ultraviolet dark:focus:border-jelly-mint"
+              placeholder="collector@pokemon.com"
+              className="h-11 bg-surface-hover border border-hairline rounded-xl px-4 text-xs text-foreground focus:outline-none focus:border-ferrari-red focus:ring-2 focus:ring-ferrari-red/10"
             />
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="font-mono text-[9px] font-bold text-text-muted uppercase">
+            <label className="text-[10px] font-semibold text-text-muted tracking-wide">
               {t('auth_password_label')}
             </label>
             <input
@@ -134,25 +134,25 @@ export const AuthModal: React.FC = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="bg-background border border-primary rounded-xl px-4 py-2.5 font-mono text-xs text-foreground focus:outline-none focus:border-verge-ultraviolet dark:focus:border-jelly-mint"
+              className="h-11 bg-surface-hover border border-hairline rounded-xl px-4 text-xs text-foreground focus:outline-none focus:border-ferrari-red focus:ring-2 focus:ring-ferrari-red/10"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full mt-2 py-3.5 rounded-xl bg-verge-ultraviolet text-white dark:bg-jelly-mint dark:text-absolute-black font-mono text-xs font-bold tracking-[1.5px] hover:opacity-85 active:opacity-60 transition-all duration-150 cursor-pointer uppercase shadow-md"
+            className="w-full mt-2 h-11 rounded-xl bg-ferrari-red text-white hover:bg-ferrari-red-hover active:bg-ferrari-red-active font-sans text-xs font-semibold tracking-wide transition-colors cursor-pointer shadow-sm"
           >
             {isSignUp ? t('auth_sign_up_email') : t('auth_sign_in_email')}
           </button>
         </form>
 
         {/* Toggle Sign in / Sign up */}
-        <div className="text-center pt-2 border-t border-primary/30">
+        <div className="text-center pt-2 border-t border-hairline/60">
           <button
             onClick={() => setIsSignUp(!isSignUp)}
-            className="font-mono text-[10px] text-text-muted hover:text-foreground font-bold tracking-[1px] underline uppercase cursor-pointer"
+            className="text-[11px] text-text-muted hover:text-foreground font-semibold tracking-wide underline cursor-pointer"
           >
-            {isSignUp ? 'ALREADY HAVE AN ACCOUNT? SIGN IN' : 'DONT HAVE AN ACCOUNT? CREATE ONE'}
+            {isSignUp ? 'Already have an account? Sign In' : "Don't have an account? Create one"}
           </button>
         </div>
 

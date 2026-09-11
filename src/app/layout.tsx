@@ -1,20 +1,16 @@
 import type { Metadata } from "next";
-import { Inter, Oswald, Space_Mono } from "next/font/google";
+import { Inter, Space_Mono } from "next/font/google";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { AuthProvider } from "@/context/AuthContext";
+import { ThemeProvider } from "@/context/ThemeContext";
 import { AuthModal } from "@/components/AuthModal";
 import "./globals.css";
 
 const interFont = Inter({
   variable: "--font-sans",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
-});
-
-const displayFont = Oswald({
-  variable: "--font-display",
-  subsets: ["latin"],
-  weight: ["400", "700"],
 });
 
 const monoFont = Space_Mono({
@@ -24,8 +20,8 @@ const monoFont = Space_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "The Collectr Stream - Pokémon TCG Portfolio Tracker",
-  description: "A modern, high-performance portfolio tracker and explorer for Pokémon TCG cards.",
+  title: "MCARD | Pokémon TCG Market Telemetry & Vault",
+  description: "Real-time market telemetry, luxury card archive, and high-performance portfolio tracking for Pokémon TCG cards.",
 };
 
 export default function RootLayout({
@@ -36,15 +32,17 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${interFont.variable} ${displayFont.variable} ${monoFont.variable} h-full antialiased`}
+      className={`${interFont.variable} ${monoFont.variable} h-full antialiased dark`}
     >
-      <body className="min-h-full flex flex-col font-sans bg-background text-foreground transition-colors duration-200">
-        <LanguageProvider>
-          <AuthProvider>
-            {children}
-            <AuthModal />
-          </AuthProvider>
-        </LanguageProvider>
+      <body className="min-h-full flex flex-col font-sans bg-background text-foreground selection:bg-ferrari-red selection:text-white transition-colors duration-200">
+        <ThemeProvider>
+          <LanguageProvider>
+            <AuthProvider>
+              {children}
+              <AuthModal />
+            </AuthProvider>
+          </LanguageProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

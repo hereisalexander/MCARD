@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Navbar } from '@/components/Navbar';
-import { StoryStream } from '@/components/StoryStream';
+import { PaddockTelemetry } from '@/components/PaddockTelemetry';
 import { CardGrid } from '@/components/CardGrid';
 import { SetsView } from '@/components/SetsView';
 import { PortfolioDashboard, UserPortfolioItem, CardCondition } from '@/components/PortfolioDashboard';
@@ -100,7 +100,7 @@ export default function Home() {
       savePortfolio(updated);
     }
     
-    // Show Verge style toast
+    // Show Ferrari telemetry toast
     setToast({
       show: true,
       message: `ADDED: ${cardName.toUpperCase()} TO PORTFOLIO`,
@@ -178,7 +178,7 @@ export default function Home() {
         portfolioValue={portfolioValue}
       />
 
-      <main className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-8 py-8">
+      <main className="flex-1 w-full max-w-[1600px] mx-auto px-4 md:px-10 py-8">
         {/* Full Page Card Detail View when card is selected */}
         {selectedDetailCard ? (
           <CardDetailView
@@ -189,7 +189,11 @@ export default function Home() {
         ) : (
           <>
             {activeTab === 'stream' && (
-              <StoryStream onAddCard={handleAddCard} />
+              <PaddockTelemetry
+                onAddCard={handleAddCard}
+                onExploreClick={() => setActiveTab('explore')}
+                onPortfolioClick={() => setActiveTab('portfolio')}
+              />
             )}
             
             {activeTab === 'explore' && (
@@ -229,35 +233,38 @@ export default function Home() {
         )}
       </main>
 
-      {/* Verge Styled Toast Notification */}
+      {/* Telemetry Toast Notification */}
       {toast.show && (
-        <div className="fixed bottom-6 right-6 z-50 bg-foreground text-background border-hairline border-primary px-5 py-3 rounded-xl shadow-[0_0_20px_rgba(0,0,0,0.15)] flex items-center gap-3 animate-slide-in">
-          <span className="w-2 h-2 rounded-full bg-jelly-mint dark:bg-verge-ultraviolet animate-ping" />
-          <span className="font-mono text-xs font-bold tracking-[1.5px] uppercase">
+        <div className="fixed bottom-6 right-6 z-50 bg-surface text-foreground border border-hairline/80 px-5 py-3.5 rounded-2xl shadow-xl flex items-center gap-3 animate-slide-in">
+          <span className="w-2 h-2 rounded-full bg-ferrari-red animate-ping" />
+          <span className="font-sans text-xs font-semibold tracking-wide text-foreground">
             {toast.message}
           </span>
         </div>
       )}
 
-      {/* Footer */}
-      <footer className="w-full border-t border-primary py-8 px-4 md:px-8 mt-12 bg-surface text-center">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <span className="font-mono text-[10px] tracking-[1.5px] text-text-muted uppercase">
-            © 2026 THE POKÉMON STREAM. INSPIRED BY THE VERGE. ALL RIGHTS RESERVED.
-          </span>
-          <div className="flex gap-4 font-mono text-[10px] tracking-[1.5px] text-text-muted">
+      {/* Modern footer */}
+      <footer className="w-full border-t border-hairline/60 py-10 px-4 md:px-10 mt-16 bg-surface text-center transition-colors duration-200">
+        <div className="max-w-[1600px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2.5">
+            <div className="w-1 h-3.5 bg-ferrari-red" />
+            <span className="font-sans text-[11px] tracking-[0.5px] text-text-muted">
+              © 2026 MCARD. Archive & Telemetry Edition. All rights reserved.
+            </span>
+          </div>
+          <div className="flex gap-4 font-sans text-[11px] tracking-[0.5px] text-text-muted">
             <button
               onClick={() => setFooterModal('terms')}
-              className="hover:text-deep-link-blue transition-colors duration-150 uppercase cursor-pointer"
+              className="hover:text-foreground transition-colors duration-150 cursor-pointer"
             >
-              TERMS
+              Terms
             </button>
             <span>/</span>
             <button
               onClick={() => setFooterModal('privacy')}
-              className="hover:text-deep-link-blue transition-colors duration-150 uppercase cursor-pointer"
+              className="hover:text-foreground transition-colors duration-150 cursor-pointer"
             >
-              PRIVACY
+              Privacy
             </button>
           </div>
         </div>

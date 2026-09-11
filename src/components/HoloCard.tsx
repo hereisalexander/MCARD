@@ -52,15 +52,15 @@ export const HoloCard: React.FC<HoloCardProps> = ({
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className={`relative w-full aspect-[3/4] rounded-xl cursor-pointer select-none overflow-hidden transition-transform duration-200 ease-out preserve-3d ${className}`}
+      className={`relative w-full aspect-[2.5/3.5] rounded-xl cursor-pointer select-none overflow-hidden transition-transform duration-200 ease-out preserve-3d bg-transparent ${className}`}
       style={{
         transform: isHovered
-          ? `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale3d(1.03, 1.03, 1.03)`
+          ? `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale3d(1.025, 1.025, 1.025)`
           : 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)',
         transformStyle: 'preserve-3d',
         boxShadow: isHovered
-          ? `${-rotateY * 0.6}px ${rotateX * 0.6}px 20px rgba(0, 0, 0, 0.35)`
-          : '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+          ? `${-rotateY * 0.5}px ${rotateX * 0.5}px 18px rgba(0, 0, 0, 0.45)`
+          : 'none',
       }}
     >
       {/* Base Pokémon Card Image */}
@@ -68,19 +68,19 @@ export const HoloCard: React.FC<HoloCardProps> = ({
       <img
         src={src}
         alt={alt}
-        className="w-full h-full object-contain rounded-xl select-none pointer-events-none"
+        className="w-full h-full object-contain select-none pointer-events-none"
         loading="lazy"
       />
 
-      {/* Subtle Specular Sheen (No Rainbow) */}
+      {/* Ferrari Cinematic Sheen */}
       {isHovered && (
         <div
-          className="absolute inset-0 rounded-xl pointer-events-none mix-blend-soft-light transition-opacity duration-200"
+          className="absolute inset-0 pointer-events-none mix-blend-soft-light transition-opacity duration-200"
           style={{
             background: `linear-gradient(
               ${135 + rotateX * 2}deg,
-              rgba(255, 255, 255, 0.25) 0%,
-              transparent 70%
+              rgba(255, 255, 255, 0.3) 0%,
+              transparent 60%
             )`,
           }}
         />

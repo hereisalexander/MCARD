@@ -1,339 +1,531 @@
-# Design System Inspired by The Verge
+---
+version: alpha
+name: Ferrari-design-analysis
+description: A luxury-automotive brand whose marketing surfaces read as cinematic editorial. The base canvas is **near-black** (`#181818`) holding pure white display type; white-canvas bands appear only inside specific editorial contexts (preowned listings, pricing tables). The single brand voltage is **Rosso Corsa** (`#da291c`) — the iconic Ferrari racing red — used scarcely on primary CTAs, the Cavallino mark, and Formula 1 race-position highlights. Type runs **FerrariSans** at modest weights (display 500, body 400) — never bombastic. Spacing follows an explicit 8px token ladder (`xxxs` 4px through `super` 128px); generous editorial pacing throughout. The brand's strongest visual signature is the **full-bleed cinematic hero photograph** that fills the viewport top with car photography, model details, or trackside livery — followed by a tighter editorial body layout below.
 
-## 1. Visual Theme & Atmosphere
+colors:
+  primary: "#da291c"
+  primary-active: "#b01e0a"
+  primary-hover: "#9d2211"
+  ink: "#ffffff"
+  body: "#969696"
+  body-strong: "#ffffff"
+  body-on-light: "#181818"
+  muted: "#666666"
+  muted-soft: "#8f8f8f"
+  hairline: "#303030"
+  hairline-on-light: "#d2d2d2"
+  hairline-soft: "#ebebeb"
+  canvas: "#181818"
+  canvas-elevated: "#303030"
+  canvas-light: "#ffffff"
+  surface-card: "#303030"
+  surface-soft-light: "#f7f7f7"
+  surface-strong-light: "#ebebeb"
+  on-primary: "#ffffff"
+  on-dark: "#ffffff"
+  on-light: "#181818"
+  accent-yellow-hypersail: "#fff200"
+  accent-yellow: "#f6e500"
+  semantic-info: "#4c98b9"
+  semantic-success: "#03904a"
+  semantic-warning: "#f13a2c"
 
-The Verge's 2024 redesign feels like somebody wired a Condé Nast magazine to a chiptune soundboard. The canvas is almost-black (`#131313`), the headlines are built from a brutally heavy display face (Manuka) that runs up to 107px, and the whole page is peppered with acid-mint `#3cffd0` and ultraviolet `#5200ff` that behave less like brand colors and more like hazard tape. Story tiles are not quiet gray cards — they're saturated, full-bleed color blocks (yellow, pink, orange, blue, purple) that feel like pasted-up rave flyers arranged into a timeline. The mood is "developer console meets club night meets tech tabloid": serious enough to cover a congressional hearing, loud enough to review a synthesizer.
+typography:
+  display-mega:
+    fontFamily: "'FerrariSans', -apple-system, system-ui, sans-serif"
+    fontSize: 80px
+    fontWeight: 500
+    lineHeight: 1.05
+    letterSpacing: -1.6px
+  display-xl:
+    fontFamily: "'FerrariSans', sans-serif"
+    fontSize: 56px
+    fontWeight: 500
+    lineHeight: 1.1
+    letterSpacing: -1.12px
+  display-lg:
+    fontFamily: "'FerrariSans', sans-serif"
+    fontSize: 36px
+    fontWeight: 500
+    lineHeight: 1.2
+    letterSpacing: -0.36px
+  display-md:
+    fontFamily: "'FerrariSans', sans-serif"
+    fontSize: 26px
+    fontWeight: 500
+    lineHeight: 1.5
+    letterSpacing: 0.195px
+  title-md:
+    fontFamily: "'FerrariSans', sans-serif"
+    fontSize: 18px
+    fontWeight: 700
+    lineHeight: 1.2
+    letterSpacing: 0
+  title-sm:
+    fontFamily: "'FerrariSans', sans-serif"
+    fontSize: 16px
+    fontWeight: 500
+    lineHeight: 1.4
+    letterSpacing: 0.08px
+  body-md:
+    fontFamily: "'FerrariSans', sans-serif"
+    fontSize: 14px
+    fontWeight: 400
+    lineHeight: 1.5
+    letterSpacing: 0
+  body-sm:
+    fontFamily: "'FerrariSans', sans-serif"
+    fontSize: 13px
+    fontWeight: 400
+    lineHeight: 1.5
+    letterSpacing: 0
+  caption:
+    fontFamily: "'FerrariSans', sans-serif"
+    fontSize: 12px
+    fontWeight: 400
+    lineHeight: 1.4
+    letterSpacing: 0
+  caption-uppercase:
+    fontFamily: "'FerrariSans', sans-serif"
+    fontSize: 11px
+    fontWeight: 600
+    lineHeight: 1.4
+    letterSpacing: 1.1px
+    textTransform: uppercase
+  button:
+    fontFamily: "'FerrariSans', sans-serif"
+    fontSize: 14px
+    fontWeight: 700
+    lineHeight: 1.0
+    letterSpacing: 1.4px
+    textTransform: uppercase
+  nav-link:
+    fontFamily: "'FerrariSans', sans-serif"
+    fontSize: 13px
+    fontWeight: 600
+    lineHeight: 1.4
+    letterSpacing: 0.65px
+    textTransform: uppercase
+  number-display:
+    fontFamily: "'FerrariSans', sans-serif"
+    fontSize: 80px
+    fontWeight: 700
+    lineHeight: 1.0
+    letterSpacing: -1.6px
 
-What makes this system unmistakable is the **StoryStream** timeline: a vertical feed where every post is a rounded rectangle — often 20–40px radius — filled edge-to-edge with color, framed by a thin border, and marked by a mono-uppercase timestamp on its left rail. Stories don't float on a grid; they stack on a dashed vertical rule like commits in a git log. Above that, a massive **"The Verge" wordmark** dominates the masthead in Manuka at hero scale, letting the reader know before any headline loads that this is editorial territory, not a template.
+rounded:
+  none: 0px
+  xs: 2px
+  sm: 4px
+  md: 6px
+  lg: 8px
+  xl: 12px
+  full: 9999px
 
-There is no "light mode" on the homepage — the dark canvas is the product, and the only time the palette inverts is when a single story tile takes a mint or yellow fill. The depth is almost entirely flat: **hairline 1px borders** (`#ffffff`, `#3cffd0`, or `#5200ff`) do the work that shadows would do on a Material-flavored site. Every container is either `#131313` with a 1px outline, a fully saturated accent block, or a slate-gray `#2d2d2d` secondary surface.
+spacing:
+  xxxs: 4px
+  xxs: 8px
+  xs: 16px
+  sm: 24px
+  md: 32px
+  lg: 48px
+  xl: 64px
+  xxl: 96px
+  super: 128px
+
+components:
+  top-nav-on-dark:
+    backgroundColor: "{colors.canvas}"
+    textColor: "{colors.ink}"
+    typography: "{typography.nav-link}"
+    height: 64px
+  top-nav-on-light:
+    backgroundColor: "{colors.canvas-light}"
+    textColor: "{colors.body-on-light}"
+    typography: "{typography.nav-link}"
+    height: 64px
+  button-primary:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.on-primary}"
+    typography: "{typography.button}"
+    rounded: "{rounded.none}"
+    padding: 14px 32px
+    height: 48px
+  button-primary-active:
+    backgroundColor: "{colors.primary-active}"
+    textColor: "{colors.on-primary}"
+    rounded: "{rounded.none}"
+  button-outline-on-dark:
+    backgroundColor: transparent
+    textColor: "{colors.ink}"
+    typography: "{typography.button}"
+    rounded: "{rounded.none}"
+    padding: 13px 31px
+    height: 48px
+  button-outline-on-light:
+    backgroundColor: transparent
+    textColor: "{colors.body-on-light}"
+    typography: "{typography.button}"
+    rounded: "{rounded.none}"
+    padding: 13px 31px
+    height: 48px
+  button-tertiary-text:
+    backgroundColor: transparent
+    textColor: "{colors.ink}"
+    typography: "{typography.button}"
+  hero-band-cinema:
+    backgroundColor: "{colors.canvas}"
+    textColor: "{colors.ink}"
+    typography: "{typography.display-mega}"
+    padding: 0
+  hero-band-light:
+    backgroundColor: "{colors.canvas-light}"
+    textColor: "{colors.body-on-light}"
+    typography: "{typography.display-xl}"
+    padding: 96px
+  feature-card-photo:
+    backgroundColor: "{colors.canvas}"
+    textColor: "{colors.ink}"
+    typography: "{typography.title-md}"
+    rounded: "{rounded.none}"
+    padding: 0
+  feature-card-light:
+    backgroundColor: "{colors.canvas-light}"
+    textColor: "{colors.body-on-light}"
+    typography: "{typography.title-md}"
+    rounded: "{rounded.none}"
+    padding: 32px
+  livery-band:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.ink}"
+    typography: "{typography.display-lg}"
+    padding: 96px
+  preowned-listing-card:
+    backgroundColor: "{colors.canvas-light}"
+    textColor: "{colors.body-on-light}"
+    typography: "{typography.body-md}"
+    rounded: "{rounded.none}"
+    padding: 24px
+  spec-cell:
+    backgroundColor: transparent
+    textColor: "{colors.ink}"
+    typography: "{typography.number-display}"
+    padding: 24px 0
+  race-position-cell:
+    backgroundColor: transparent
+    textColor: "{colors.primary}"
+    typography: "{typography.number-display}"
+  race-calendar-row:
+    backgroundColor: transparent
+    textColor: "{colors.ink}"
+    typography: "{typography.body-md}"
+    padding: 16px 0
+  driver-card:
+    backgroundColor: "{colors.canvas-elevated}"
+    textColor: "{colors.ink}"
+    typography: "{typography.title-md}"
+    rounded: "{rounded.none}"
+    padding: 24px
+  text-input-on-dark:
+    backgroundColor: "{colors.canvas}"
+    textColor: "{colors.ink}"
+    typography: "{typography.body-md}"
+    rounded: "{rounded.sm}"
+    padding: 14px 16px
+    height: 48px
+  text-input-on-light:
+    backgroundColor: "{colors.canvas-light}"
+    textColor: "{colors.body-on-light}"
+    typography: "{typography.body-md}"
+    rounded: "{rounded.sm}"
+    padding: 14px 16px
+    height: 48px
+  badge-pill:
+    backgroundColor: "{colors.canvas-elevated}"
+    textColor: "{colors.ink}"
+    typography: "{typography.caption-uppercase}"
+    rounded: "{rounded.full}"
+    padding: 4px 12px
+  cta-band-dark:
+    backgroundColor: "{colors.canvas}"
+    textColor: "{colors.ink}"
+    typography: "{typography.display-lg}"
+    padding: 96px
+  newsletter-input-band:
+    backgroundColor: "{colors.canvas-elevated}"
+    textColor: "{colors.ink}"
+    typography: "{typography.body-md}"
+    rounded: "{rounded.sm}"
+    padding: 32px
+  footer-dark:
+    backgroundColor: "{colors.canvas}"
+    textColor: "{colors.body}"
+    typography: "{typography.body-sm}"
+    padding: 64px 48px
+  footer-link:
+    backgroundColor: transparent
+    textColor: "{colors.body}"
+    typography: "{typography.body-sm}"
+---
+
+## Overview
+
+Ferrari's marketing site reads as cinematic editorial — closer to a luxury-magazine spread than a typical car-OEM site. The base canvas is **near-black** (`{colors.canvas}` — #181818) holding pure white display type; white-canvas bands appear only inside specific editorial contexts (preowned listings, pricing tables, dealer surfaces). The single brand voltage is **Rosso Corsa** (`{colors.primary}` — #da291c), the iconic Ferrari racing red, used scarcely on primary CTAs, the Cavallino mark, and Formula 1 race-position highlights.
+
+Type runs **FerrariSans** as the single sans family at modest weights — display 500, body 400. CTA labels render in uppercase with generous tracking (1.1-1.4px). The brand never uses bold display copy.
+
+The brand's strongest visual signature is the **full-bleed cinematic hero photograph** — top-of-page imagery shows car photography, model details, or trackside livery without any chrome competing with it. Headlines float over the bottom of the photo or sit in a tight band beneath. Spacing follows the explicit 8px token ladder: `xxxs` 4 / `xxs` 8 / `xs` 16 / `sm` 24 / `md` 32 / `lg` 48 / `xl` 64 / `xxl` 96 / `super` 128.
 
 **Key Characteristics:**
-- Near-black editorial canvas (`#131313`) as the default surface — no light mode on the homepage
-- Acid-mint `#3cffd0` + ultraviolet `#5200ff` as hazard-tape accents, never quiet background wash
-- Massive Manuka display headlines up to 107px — the single loudest type move in mainstream tech media
-- Rounded pill-card everything: 20/24/30/40px corner radii, never square
-- Fully saturated color-block story tiles (mint, purple, yellow, pink, orange, electric blue) on a dark page
-- Timeline "StoryStream" feed with mono uppercase timestamps rather than a traditional magazine grid
-- Flat depth — 1px borders in white, mint, purple do the work that shadows would do elsewhere
+- Single accent: `{colors.primary}` (Rosso Corsa #da291c) for primary CTAs, the Cavallino, F1 race-position highlights. Used scarcely.
+- Near-black canvas (#181818) — never pure black. White-canvas bands only inside editorial contexts.
+- Single sans family: FerrariSans across every text role.
+- Display weight stays at 500 — never bold.
+- CTA labels render uppercase with 1.4px tracking.
+- Sharp `{rounded.none}` (0px) corners on every CTA, card, and band — luxury-automotive precision.
+- Full-bleed cinematic hero photography is the page chrome.
+- Explicit 8px spacing token ladder with named scale (xxxs through super).
+- Hairlines + photographic depth — no drop shadow tiers.
 
-## 2. Color Palette & Roles
+## Colors
 
-### Primary (Brand Hazards)
-- **Jelly Mint** (`#3cffd0`): The Verge's signature acid-mint accent. Used as CTA button fill, link underlines, active tab borders, and high-attention story-tile backgrounds. Treat it as the visual equivalent of neon safety paint — applied sparingly to the most important element on screen.
-- **Verge Ultraviolet** (`#5200ff`): The complementary brand hazard. Used for secondary color-block tiles, promotional spans, and the occasional outlined button. Often applied at 0.9 alpha to soften its cathode intensity.
+### Brand & Accent
+- **Rosso Corsa** (`{colors.primary}` — #da291c): The iconic Ferrari racing red. Primary CTA fill, Cavallino mark, F1 driver-position highlights. Used scarcely.
+- **Rosso Corsa Active** (`{colors.primary-active}` — #b01e0a): Press state.
+- **Rosso Corsa Hover-darker** (`{colors.primary-hover}` — #9d2211): Documented for completeness; per the no-hover policy this is not used in preview HTML.
+- **Hypersail Yellow** (`{colors.accent-yellow-hypersail}` — #fff200) + **Yellow** (`{colors.accent-yellow}` — #f6e500): Sub-brand accents reserved for the Hypersail sailing program and the global focus-ring color. Not part of the main automotive palette.
 
-### Secondary & Accent
-- **Console Mint Border** (`#309875`): A darker variant of the jelly mint used on card outlines and button borders where pure mint would over-saturate.
-- **Deep Link Blue** (`#3860be`): The link *hover* color — the one moment blue appears on the site. It replaces mint/white/black on hover across every link style.
-- **Focus Cyan** (`#1eaedb`): Reserved for button focus rings. Never shown outside a keyboard-focus state.
-- **Purple Rule** (`#3d00bf`): A darker ultraviolet variant used as the vertical border on StoryStream `<li>` items.
+### Surface
+- **Canvas** (`{colors.canvas}` — #181818): Near-black page floor — never pure black, slight warmth.
+- **Canvas Elevated** (`{colors.canvas-elevated}` — #303030): Cards and panels on dark canvas.
+- **Canvas Light** (`{colors.canvas-light}` — #ffffff): White editorial bands (preowned listings, pricing).
+- **Surface Card** (`{colors.surface-card}` — #303030): Same as canvas-elevated — driver cards, livery photo plates.
+- **Surface Soft Light** (`{colors.surface-soft-light}` — #f7f7f7): Light editorial alternating band.
+- **Surface Strong Light** (`{colors.surface-strong-light}` — #ebebeb): Light-canvas dividers, badges.
 
-### Surface & Background
-- **Canvas Black** (`#131313`): The default dark surface for the entire homepage. Almost-but-not-quite pure black — has just enough warmth to feel like a printed newsprint negative rather than an OLED void.
-- **Surface Slate** (`#2d2d2d`): Secondary card background, used when a story tile doesn't need to be a saturated color block.
-- **Image Frame** (`#313131`): The 1px border that wraps inline imagery.
-- **Hazard White** (`#ffffff`): Used as story-tile fill, button border, and primary text. When white appears as a large block, it's an editorial decision — a "spotlight" on that tile.
-- **Absolute Black** (`#000000`): Reserved for text on the mint/yellow/white tiles — the only place it appears.
+### Hairlines
+- **Hairline** (`{colors.hairline}` — #303030): 1px divider on dark — same hex as `{colors.canvas-elevated}`.
+- **Hairline On Light** (`{colors.hairline-on-light}` — #d2d2d2): 1px divider on light bands.
+- **Hairline Soft** (`{colors.hairline-soft}` — #ebebeb): Lighter divider.
 
-### Neutrals & Text
-- **Primary Text** (`#ffffff`): Headlines and display text on the canvas.
-- **Secondary Text** (`#949494`): Bylines, timestamps, photo credits. The mid-gray that anchors the metadata layer.
-- **Muted Text** (`#e9e9e9`): Button text on dark slate buttons. Slightly off-white to reduce screen glare.
-- **Inverted Text** (`#131313`): Used only on accent tiles (mint, yellow, white) to keep contrast legible.
+### Text
+- **Ink** (`{colors.ink}` — #ffffff): Display, body emphasis on dark.
+- **Body** (`{colors.body}` — #969696): Default running-text on dark.
+- **Body Strong** (`{colors.body-strong}` — #ffffff): Same as ink.
+- **Body On Light** (`{colors.body-on-light}` — #181818): Default text on light bands.
+- **Muted** (`{colors.muted}` — #666666): Sub-titles, captions on dark.
+- **Muted Soft** (`{colors.muted-soft}` — #8f8f8f): Disabled link text.
+- **On Primary** (`{colors.on-primary}` — #ffffff): White text on Rosso Corsa.
 
-### Semantic & Accent
-- **Focus Ring** (`#1eaedb`): Keyboard focus only.
-- **Overlay Black** (`rgba(0, 0, 0, 0.33)`): Subtle 1px ring used as the quiet shadow alternative on stacked cards.
-- **Dim Gray** (`#8c8c8c`): Active/pressed button background — the "pressed down" state.
+### Semantic
+- **Info** (`{colors.semantic-info}` — #4c98b9): Info badges, callout backgrounds.
+- **Success** (`{colors.semantic-success}` — #03904a): Confirmation.
+- **Warning** (`{colors.semantic-warning}` — #f13a2c): Validation warnings.
 
-### Gradient System
-The Verge uses **zero decorative gradients**. The only gradient-like treatment is the transition from a saturated accent story tile (mint/purple/yellow) back to the `#131313` canvas between rows. Color is applied in solid blocks, not as washes. This is a deliberate choice — the site's hazard-tape visual identity would dissolve if anything faded.
-
-## 3. Typography Rules
+## Typography
 
 ### Font Family
-- **Manuka** (Klim Type Foundry) — fallback: Impact, Helvetica. The signature display face for The Verge wordmark and feature headlines. A heavy-weight (900) industrial sans-serif with a condensed, almost-athletic stance. Runs at 60–107px on the homepage, never smaller.
-- **PolySans** (PanGram Pangram / Nikolas Wrobel) — fallback: Helvetica, Arial. The UI and secondary headline workhorse. Covers weights 300 / 500 / 700 across the system — everything from kicker captions to body decks.
-- **PolySans Mono** — fallback: Courier New, Courier. The monospaced sibling, used exclusively for ALL-CAPS labels: kickers, timestamps, category tags, button labels. This mono-uppercase usage is the second-most-identifiable Verge detail after Manuka.
-- **FK Roman Standard** (Florian Karsten) — fallback: Georgia. A serif used sparingly for specific body/caption treatments (article excerpts, certain review pulls). Adds a "print-magazine" counterpoint to the PolySans stack.
-- **Roboto** — fallback: `-apple-system`, `system-ui`. Utility UI font for widgets and legacy modules.
+**FerrariSans** is the licensed single sans family across every text role. Fallback: `-apple-system, system-ui, sans-serif`. No display/body family split.
 
 ### Hierarchy
 
-| Role | Font | Size | Weight | Line Height | Letter Spacing | Notes |
-|---|---|---|---|---|---|---|
-| Hero Wordmark / Display | Manuka | 107px / 6.69rem | 900 | 0.80 | 1.07px | The top-of-page "The Verge" logo and feature headlines |
-| Secondary Display | Manuka | 90px / 5.63rem | 900 | 0.80 | — | Section-level feature headlines |
-| Tertiary Display | Manuka | 60px / 3.75rem | 900 | 0.80 | — | Inline feature callouts |
-| Large Headline | PolySans | 34px / 2.13rem | 700 | 1.00 | — | Section and module headlines |
-| Heading Wide | PolySans | 32px / 2.00rem | 400 | 1.10 | 0.32px | Sub-heroes, promotional units |
-| Heading Medium | PolySans | 24px / 1.50rem | 700 | 1.00 | — | Story tile headlines in the main feed |
-| Heading Small | PolySans | 20px / 1.25rem | 700 | 1.00 | — | Compact tile headlines |
-| Light Capitalized Label | PolySans | 19px / 1.19rem | 300 | 1.20 | 1.9px | Thin-weight capitalized eyebrows — a distinctive Verge move |
-| All-Caps Label XL | PolySans | 18px / 1.13rem | 400 | 1.10 | 1.8px | UPPERCASE section kickers |
-| Bold Body | PolySans | 16px / 1.00rem | 700 | 1.00 | — | Emphasis within decks |
-| Body Relaxed | PolySans | 16px / 1.00rem | 500 | 1.60 | — | Long-form reading body |
-| Inline Label | PolySans | 15px / 0.94rem | 400 | 1.20 | 0.15px | UI labels and secondary headlines |
-| Body Compact | PolySans | 13px / 0.81rem | 400 | 1.60 | — | Secondary captions and decks |
-| Eyebrow All-Caps | PolySans | 12px / 0.75rem | 400 | 1.30 | 1.8px | UPPERCASE kicker above tile headlines |
-| Tag Label | PolySans | 12px / 0.75rem | 400 | 1.20 | 0.72px | UPPERCASE category tag |
-| Caption Micro | PolySans | 11px / 0.69rem | 400 | 1.20 | 1.1px | UPPERCASE bylines |
-| Meta Nano | PolySans | 10px / 0.63rem | 500 | 1.40 | 1.5px | UPPERCASE timestamp microtext |
-| Mono Button Label | PolySans Mono | 12px / 0.75rem | 600 | 2.00 | 1.5px | UPPERCASE button text, very open leading |
-| Mono Timestamp | PolySans Mono | 11px / 0.69rem | 500/600 | 1.20 | 1.1–1.8px | UPPERCASE StoryStream timestamps |
-| Serif Body | FK Roman Standard | 16px / 1.00rem | 400 | 1.30 | -0.16px | Review decks, print-voice excerpts |
-| Serif Caption | FK Roman Standard | 20px / 1.25rem | 400 | 1.20 | — | Magazine-style pull quotes |
+| Token | Size | Weight | Line Height | Letter Spacing | Use |
+|---|---|---|---|---|---|
+| `{typography.display-mega}` | 80px | 500 | 1.05 | -1.6px | Homepage hero h1 |
+| `{typography.display-xl}` | 56px | 500 | 1.1 | -1.12px | Subsidiary heroes |
+| `{typography.display-lg}` | 36px | 500 | 1.2 | -0.36px | Section heads, livery band |
+| `{typography.display-md}` | 26px | 500 | 1.5 | 0.195px | Sub-section heads |
+| `{typography.title-md}` | 18px | 700 | 1.2 | 0 | Component titles |
+| `{typography.title-sm}` | 16px | 500 | 1.4 | 0.08px | List labels |
+| `{typography.body-md}` | 14px | 400 | 1.5 | 0 | Default body |
+| `{typography.body-sm}` | 13px | 400 | 1.5 | 0 | Footer body |
+| `{typography.caption}` | 12px | 400 | 1.4 | 0 | Photo captions |
+| `{typography.caption-uppercase}` | 11px | 600 | 1.4 | 1.1px | Section labels, badges |
+| `{typography.button}` | 14px | 700 | 1.0 | 1.4px (uppercase) | CTA pill labels |
+| `{typography.nav-link}` | 13px | 600 | 1.4 | 0.65px (uppercase) | Top-nav menu items |
+| `{typography.number-display}` | 80px | 700 | 1.0 | -1.6px | Race position highlights, spec values |
 
 ### Principles
-- **Manuka is always the hero, never the UI.** If you see Manuka below 60px you're looking at a bug. It exists to *shout the brand*, not to label a button.
-- **PolySans is the workhorse, PolySans Mono is its uniformed sibling.** Mono is used exclusively for UPPERCASE labels, timestamps, tags, and certain buttons. Lowercase mono doesn't exist in this system.
-- **Thin-weight (300) capitalized headlines** are a signature Verge move. The 19–20px weight-300 with 1.9px tracking creates a "fashion magazine whisper" that contrasts with the 107px Manuka shout above it. This whisper-vs-shout contrast is the typographic fingerprint.
-- **Letter-spacing has two registers**: positive (0.72–1.9px) for ALL-CAPS mono and sans labels, negative (`-0.16px`) for the rare serif appearances, barely-positive (0.32px, 1.07px) for massive display. Plain 0 letter-spacing is rare.
-- **FK Roman Standard is the editorial exception**, not the rule. Reserve it for long-form print-voice moments — reviews, critic pulls, masthead essays. Never use it in UI.
-- **Line heights are tight** (0.80–1.30) for every display and label, relaxed (1.60–2.00) only for reading body and mono button labels. The leading jump is intentional — it gives the page a "telegraph ticker" rhythm.
+- **Display weight stays at 500.** Editorial confidence, not bombastic. The cinematic photography is doing the visual heavy-lifting — type doesn't need to compete.
+- **CTA labels are uppercase with 1.4px tracking.** Luxury-precision feel.
+- **Nav labels are uppercase with 0.65px tracking.** Consistent with CTA voice.
+- **Negative letter-spacing on display only.** -0.36px to -1.6px on display sizes; body stays at 0.
 
 ### Note on Font Substitutes
-The 0.80 line-height on Manuka display (107px, 90px, 60px) assumes the **proprietary Manuka face from Klim Type Foundry**, which has aggressively tight vertical metrics designed for athletic stance at large sizes. If you substitute with wide-metric open-source condensed displays like **Anton**, **Oswald**, **Bebas Neue**, or **Archivo Black**, loosen display line-heights by approximately **+0.10 to +0.15** to prevent ascender/descender collisions (e.g., 0.80 → 0.95). PolySans substitutes (Space Grotesk, DM Sans, Hanken Grotesk) work at the token values without adjustment — their metrics are close enough. PolySans Mono substitutes (Space Mono, JetBrains Mono) and FK Roman substitutes (Newsreader, Literata) also work without adjustment.
+FerrariSans is licensed. Open-source substitute: **Inter** at weight 500 with letter-spacing -1%, or **Söhne** for closer humanist proportions.
 
-## 4. Component Stylings
-
-### Buttons
-
-**Primary — Jelly Mint Pill**
-- Background: `#3cffd0` (Jelly Mint)
-- Text: `#000000` (Absolute Black), PolySans 16px / 700 or PolySans Mono 12px / 600 UPPERCASE
-- Border: none (pure fill)
-- Border radius: `24px` — fully rounded pill
-- Padding: `10px 24px`
-- Outline: `none` at rest
-- Hover: background shifts to `rgba(255, 255, 255, 0.2)` (translucent white), text stays black, adds a 1px `#c2c2c2` ring shadow
-- Active: background `rgba(140, 140, 140, 0.87)`, opacity `0.5`, ring shadow `#8c8c8c`
-- Focus: background `#1eaedb`, white text, 1px solid `#0500ff` border, translucent white focus ring
-- Transition: ~180ms ease on background and shadow
-
-**Secondary — Dark Slate Pill**
-- Background: `#2d2d2d` (Surface Slate)
-- Text: `#e9e9e9` (Muted Text), PolySans 16px / 400
-- Border: none
-- Border radius: `24px`
-- Padding: `10px 24px`
-- Outline: `rgb(233, 233, 233) none 0px`
-- Hover: same translucent white invert as primary — `rgba(255, 255, 255, 0.2)` bg, black text, 1px `#c2c2c2` ring
-- Focus: same cyan focus treatment as primary
-
-**Tertiary — Outlined Mint**
-- Background: transparent
-- Text: `#3cffd0`, PolySans Mono 12px / 600 UPPERCASE, 1.5px tracking
-- Border: `1px solid #3cffd0`
-- Border radius: `40px` — larger pill for secondary outline style
-- Padding: ~`10px 20px`
-- Hover: inverts to mint fill, black text
-- Transition: 150ms ease
-
-**Outlined Ultraviolet (Promotional)**
-- Background: transparent
-- Text: `#5200ff` or `#ffffff`
-- Border: `1px solid #5200ff`
-- Border radius: `30px`
-- Used for "Subscribe" or "Join the Stream" style promotional callouts
-
-**Pill Tag (Non-interactive)**
-- Background: saturated accent (`#3cffd0`, `#5200ff`, yellow, etc.)
-- Text: black or white depending on background luminance
-- Border radius: `20px` (tighter radius than buttons — this is the *text pill*)
-- Font: PolySans Mono 11px / 600 UPPERCASE, 1.8px tracking
-- Padding: ~`4px 10px`
-
-### Cards & Containers
-
-**StoryStream Tile**
-- Background: either `#131313` + 1px white border, OR a saturated accent fill (mint, purple, yellow, pink, orange, white)
-- Border radius: `20px` (standard) or `24px` (feature)
-- Border: `1px solid #ffffff` (on dark) or `0px 0px 1px solid #3cffd0` (on mint) or nothing (on saturated fill)
-- Padding: ~24–32px interior
-- Hover: no lift, no scale — the headline text color transitions from white to `#3860be` (deep link blue)
-- Transition: 150ms ease on color only
-
-**Feature Card (Top Story)**
-- Background: `#131313` with 1px hairline border, OR full-bleed color accent
-- Border radius: `24px`
-- Padding: 32px+
-- Image inside: clipped to match the outer radius (`3px` or `4px` inner radius when nested)
-- Hover: text color shift only; the image remains static
-
-**StoryStream Rail (Timeline)**
-- A vertical dashed or solid rule (1px `#3d00bf` or `#ffffff`) runs along the left edge of each item, marking the timeline spine
-- Timestamps sit on the left rail in PolySans Mono 11px / 500 / UPPERCASE / 1.1px tracking
-- Each entry is a pill-cornered rectangle separated from its neighbors by 12–16px vertical gap
-
-### Inputs & Forms
-- **Default**: `#131313` background, 1px solid `#ffffff` or `#949494` border, `2px` border radius (tight, newspaper-form feel), PolySans 15px text in `#ffffff`, placeholder in `#949494`.
-- **Focus**: border transitions to `#3cffd0` (jelly mint) with optional `1px solid #5200ff` inner ring on deep focus. No glow.
-- **Error**: border turns `#5200ff` (ultraviolet — used as error/alert accent here, not the usual red).
-- **Transition**: ~150ms ease on border-color.
-
-### Navigation
-
-- **Top nav**: thin `#131313` bar with the Verge wordmark (Manuka) left-aligned, a search icon and a few UPPERCASE mono category links (12–14px, PolySans Mono, 1.5–1.8px tracking), and a single mint-pill CTA (usually "Subscribe") pinned right.
-- **Wordmark**: massive on first scroll — the homepage treats the "The Verge" logo as a hero element, not a 32px corner logo.
-- **Hover**: every link transitions from `#ffffff` to `#3860be` (deep link blue). No underline — it's a color-only response.
-- **Active section**: marked by a 1px mint underline (inset box-shadow `0px -1px 0px 0px inset #3cffd0`)
-- **Mobile**: the wordmark shrinks, category nav collapses into a hamburger drawer. Inside the drawer, links are mono-uppercase and stack with 16–20px gaps.
-
-### Image Treatment
-
-- **Aspect ratios**: 16:9 dominates for hero and feature images, 4:3 for mid-feed, 1:1 for thumbnails and author avatars.
-- **Corners**: always rounded to match the parent card — `3px`, `4px`, or inherit `20px` / `24px` from the tile.
-- **Frame**: 1px `#313131` or `#ffffff` hairline around photography, giving a "contained Polaroid" feel.
-- **Full-bleed**: only within the color-block tiles, where the image runs to the padded edge of the accent fill.
-- **Hover**: static — no zoom, no scale, no opacity shift. The headline below is the only interactive response.
-- **Lazy loading**: `loading="lazy"` on everything below the first fold; eager on the masthead hero only.
-
-### StoryStream Timeline Item (Distinctive)
-
-- Vertical rail line (1px `#3d00bf` or `#ffffff` on `#131313`)
-- Mono timestamp on the left in PolySans Mono 11px / UPPERCASE
-- Pill-cornered body card (20px radius) with kicker, headline, and optional deck
-- Stacked vertically with 12–16px gap, the rail continuing between them
-- Often interleaved with full-bleed accent tiles that "break" the timeline rhythm for emphasis
-
-## 5. Layout Principles
+## Layout
 
 ### Spacing System
-- **Base unit**: 8px.
-- **Scale**: 1, 2, 4, 5, 6, 8, 9, 10, 12, 14, 15, 16, 20, 24, 25px.
-- **Section padding**: 32–64px vertical between major feed sections. StoryStream items themselves are tighter — 12–16px gaps.
-- **Card padding**: 20–32px interior. Feature cards expand to 40–48px.
-- **Inline spacing**: kickers sit ~6–10px above headlines; headlines sit ~10–14px above decks; timestamps sit ~6–8px below decks.
-- **Micro-scale**: The 2/4/5/6/9/10px values are used inside buttons, pills, and tight label clusters, not in the editorial grid.
+- **Base unit:** 4px.
+- **Tokens:** `{spacing.xxxs}` 4px · `{spacing.xxs}` 8px · `{spacing.xs}` 16px · `{spacing.sm}` 24px · `{spacing.md}` 32px · `{spacing.lg}` 48px · `{spacing.xl}` 64px · `{spacing.xxl}` 96px · `{spacing.super}` 128px.
+- **Section padding:** `{spacing.xxl}` (96px) for major bands; `{spacing.super}` (128px) reserved for hero band depth.
 
 ### Grid & Container
-- **Max width**: ~1280–1300px (dembrandt detected breakpoints at 1200/1280/1300).
-- **Column patterns**: a 12-column underlying grid that resolves into 3-column hero + 1-column StoryStream rail + feature panels. The homepage feels freeform because color-block tiles frequently span 2–3 columns on a whim.
-- **Container padding**: 24px mobile / 48px desktop on the outer edges.
-- **Gutters**: 16–24px between columns, tighter (8–12px) inside StoryStream items.
+- Max content width: ~1280px on editorial bands. Hero photography goes full-bleed.
+- Editorial body: 12-column grid.
+- Feature card grids: 2-up at desktop for hero splits, 3-up for benefit grids, 4-up for preowned listing tiles.
+- Footer: 5-column at desktop.
 
 ### Whitespace Philosophy
-The Verge treats whitespace like a club DJ treats silence — as a dramatic reset between loud moments. The canvas is so dark and the accents are so saturated that even 32px of empty `#131313` between two tiles acts as a palette cleanser. The page is not airy like Apple or Stripe; it's **paced**, with loud hazard-color blocks interrupting stretches of near-black. Whitespace carries the rhythm, not the elegance.
+Generous editorial pacing. Cinematic hero photography occupies generous viewport real-estate; body sections sit in tighter editorial layouts beneath. The canvas-light editorial bands (preowned, pricing) carry tighter density than the dark cinema bands.
 
-### Border Radius Scale
-- **2px** — inputs, small badges (feels like a typewriter tag)
-- **3px** — inline images (just enough to soften against the canvas)
-- **4px** — nested card images and small button variants
-- **20px** — standard pill cards and color-block tiles
-- **24px** — feature tile radius and primary button pill
-- **30px** — large promotional buttons
-- **40px** — outlined CTA pills (the loudest pill in the system)
-- **50%** — avatar circles, icon buttons, and certain round badges
+## Elevation & Depth
 
-Eight discrete radius values — a **lot** for a single site. This is deliberate: the rhythm between 2px typewriter tags, 20px pill cards, and 40px outlined buttons creates a "nested scale" feel where every component announces its hierarchy through its corners.
-
-## 6. Depth & Elevation
+The system uses **photographic depth + brightness-step** elevation. No drop shadows except a single soft-small `{shadow.small}` documented in extracted tokens.
 
 | Level | Treatment | Use |
 |---|---|---|
-| 0 | No border, no shadow | Default `#131313` canvas text |
-| 1 | `rgba(0,0,0,0) 0px 0px 0px 0px inset` (placeholder) | Reset state for interactive elements |
-| 2 | `1px solid #ffffff` or `#313131` hairline | Image frames and quiet card outlines |
-| 3 | `1px solid #3cffd0` hairline | Active button outlines, focused story tiles |
-| 4 | `1px solid #5200ff` hairline | Promotional/alternate state outlines |
-| 5 | `rgba(0, 0, 0, 0.33) 0px 0px 0px 1px` | The single "atmospheric" ring — applied to layered cards |
-| 6 | `0px -1px 0px 0px inset` (mint/black/white) | Active tab underline — a signature Verge move |
-| 7 | Saturated accent fill (`#3cffd0`, `#5200ff`, white, yellow, pink) | Story-tile elevation via color, not shadow |
-
-The Verge's depth philosophy is **color-as-elevation**. When something needs to stand out, it doesn't get a shadow — it gets a mint fill or a 1px hazard-color border. There are 14 shadow entries in the extracted tokens, but all of them are either inset underlines (0px -1px inset) or near-transparent 1px rings — none of them are traditional elevation shadows. The `#131313` canvas stays perfectly flat throughout, and hierarchy is carried by color saturation.
+| Flat (canvas) | `{colors.canvas}` (#181818) | Body bands, footer |
+| Card | `{colors.canvas-elevated}` (#303030) | Driver cards, livery plates |
+| Light band | `{colors.canvas-light}` (#ffffff) | Preowned listings, pricing |
+| Hairline border | 1px `{colors.hairline}` or `{colors.hairline-on-light}` | Card outlines, dividers |
+| Soft drop | `0 4px 8px rgba(0,0,0,0.1)` | Hovered cards (single shadow tier) |
+| Photographic | Full-bleed cinema imagery | Hero band, livery photographs |
 
 ### Decorative Depth
-- **1px inset underline** on active tabs/nav links (mint, black, or white depending on context)
-- **Subtle `rgba(0, 0, 0, 0.33)` 1px ring** on stacked cards — the only effect that faintly resembles a shadow
-- **No gradients, no glows, no atmospheric blurs** anywhere. The hazard-tape aesthetic would break if anything faded softly.
+- **Full-bleed cinema photography** is the brand's primary depth treatment.
+- **Brand red gradient** (`linear-gradient(180deg, #a00c01, #da291c 64%)`): The Rosso Corsa gradient used inside accent bands and CTA hover states.
+- **Dark grey gradient** (`linear-gradient(180deg, #3c3c3c, #030303 64%)`): Atmospheric darken used at section transitions.
 
-## 7. Do's and Don'ts
+## Shapes
+
+### Border Radius Scale
+
+| Token | Value | Use |
+|---|---|---|
+| `{rounded.none}` | 0px | Every CTA, card, band — dominant radius |
+| `{rounded.xs}` | 2px | Tight badges (rare) |
+| `{rounded.sm}` | 4px | Form inputs |
+| `{rounded.md}` | 6px | Compact cards (rare) |
+| `{rounded.lg}` | 8px | Mobile-only collapse cards |
+| `{rounded.xl}` | 12px | Modal/dialog corners (rare) |
+| `{rounded.full}` | 9999px | Avatar plates, badge pills |
+
+The radius vocabulary is **sharp by default**. Sharp 0px corners are the brand button shape — never rounded pills. Pill geometry is reserved for badge labels only.
+
+## Components
+
+### Top Navigation
+
+**`top-nav-on-dark`** — Default top nav on dark hero pages. Background `{colors.canvas}`, text `{colors.ink}`, height 64px. Layout: Cavallino mark left, primary horizontal menu (Models / F1 / Lifestyle / Owners / Preowned), language picker + utilities right. Menu items render uppercase with 0.65px tracking.
+
+**`top-nav-on-light`** — White-canvas variant for editorial light bands.
+
+### Buttons
+
+**`button-primary`** — The signature Rosso Corsa CTA. Background `{colors.primary}`, text `{colors.on-primary}`, type `{typography.button}` (14px / 700 / 1.4px tracking, uppercase), padding 14px × 32px, height 48px, **rounded `{rounded.none}` (0px — sharp corners)**.
+
+**`button-primary-active`** — Press state. Background `{colors.primary-active}`.
+
+**`button-outline-on-dark`** — Transparent with 1px white border. Background transparent, text `{colors.ink}`, 1px white border, same sharp 0px corners.
+
+**`button-outline-on-light`** — Transparent with 1px ink border on light bands.
+
+**`button-tertiary-text`** — Inline text link, uppercase tracking.
+
+### Hero Bands
+
+**`hero-band-cinema`** — Full-bleed cinematic photograph. Background `{colors.canvas}` underneath, but the photo fills the viewport. Display headline floats over the bottom of the photo or sits in a tight band beneath, in `{typography.display-mega}` (80px / 500 / -1.6px). One primary CTA + one outline CTA. Zero padding — the photo fills edge-to-edge.
+
+**`hero-band-light`** — White-canvas variant for editorial bands. Background `{colors.canvas-light}`, text `{colors.body-on-light}`, padding 96px.
+
+### Cards
+
+**`feature-card-photo`** — Image-first card. Background `{colors.canvas}`, text `{colors.ink}`, rounded `{rounded.none}`. Image fills the top edge-to-edge; title + body sit beneath in tight typography.
+
+**`feature-card-light`** — White-canvas variant. Background `{colors.canvas-light}`, text `{colors.body-on-light}`, rounded `{rounded.none}`, padding 32px.
+
+**`driver-card`** — F1 driver portrait card. Background `{colors.canvas-elevated}`, text `{colors.ink}`, rounded `{rounded.none}`, padding 24px. Layout: driver portrait + name + race number + team badge.
+
+### Editorial Surfaces
+
+**`livery-band`** — A full-width Rosso Corsa accent band. Background `{colors.primary}`, text `{colors.ink}`, type `{typography.display-lg}`, 96px padding. Used as a standout livery callout between dark editorial bands.
+
+**`preowned-listing-card`** — Used in the preowned Ferrari listing grid. Background `{colors.canvas-light}`, text `{colors.body-on-light}`, rounded `{rounded.none}`, padding 24px. Layout: car photo top + model name + year/mileage + price.
+
+### Spec & Race Surfaces
+
+**`spec-cell`** — Technical spec callout. Transparent background, value in `{typography.number-display}` (80px / 700 / -1.6px white), label below in `{typography.caption-uppercase}`.
+
+**`race-position-cell`** — F1 driver finishing position. Same number-display geometry but text in `{colors.primary}` Rosso Corsa for the brand's racing identity.
+
+**`race-calendar-row`** — Hairline-divided row in the F1 race calendar. Layout: date column left, race name + circuit middle, results column right.
+
+### Forms & Tags
+
+**`text-input-on-dark`** — Background `{colors.canvas}`, text `{colors.ink}`, rounded `{rounded.sm}` (4px), padding 14px × 16px, height 48px, 1px `{colors.hairline}` border.
+
+**`text-input-on-light`** — White-canvas variant.
+
+**`badge-pill`** — Small uppercase pill. Background `{colors.canvas-elevated}`, text `{colors.ink}`, type `{typography.caption-uppercase}` (11px / 600 / 1.1px tracking, uppercase), rounded `{rounded.full}` (9999px), padding 4px × 12px. The only place pill geometry is used.
+
+### Newsletter / CTA / Footer
+
+**`newsletter-input-band`** — Newsletter signup band. Background `{colors.canvas-elevated}`, padding 32px, rounded `{rounded.sm}`. Holds an inline email input + primary CTA.
+
+**`cta-band-dark`** — Pre-footer band. Background `{colors.canvas}`, centered display headline in `{typography.display-lg}`, single Rosso Corsa CTA. 96px padding.
+
+**`footer-dark`** — Closing dark footer. Background `{colors.canvas}`, text `{colors.body}`. 5-column link list. 64×48px padding.
+
+**`footer-link`** — Background transparent, text `{colors.body}`, type `{typography.body-sm}`.
+
+## Do's and Don'ts
 
 ### Do
-- **Do** use `#131313` as the canvas for every view. There is no light mode.
-- **Do** use Jelly Mint (`#3cffd0`) and Verge Ultraviolet (`#5200ff`) as hazard accents — buttons, borders, active states, and saturated color-block tiles.
-- **Do** use Manuka exclusively at 60px+ for hero headlines. Treat anything smaller as a bug.
-- **Do** round everything: 20px for cards, 24px for feature cards, 30–40px for pill buttons.
-- **Do** use PolySans Mono for UPPERCASE labels, timestamps, kickers, and button text. Lowercase mono doesn't exist here.
-- **Do** apply 1.5–1.9px letter-spacing to every ALL-CAPS label — this is a Verge signature.
-- **Do** use saturated color-block tiles (mint, purple, yellow, pink, orange, white) to elevate a story — never a drop shadow.
-- **Do** use `#3860be` (deep link blue) as the hover color on every link, regardless of base color.
-- **Do** apply the StoryStream timeline rail (1px dashed/solid `#3d00bf` or white) on feed views.
-- **Do** use thin-weight (300) PolySans at 19–20px with 1.9px tracking for "fashion-whisper" capitalized eyebrows — the contrast with the 107px Manuka shout is the whole voice.
+- Reserve `{colors.primary}` (Rosso Corsa) for primary CTAs, the Cavallino mark, and F1 race-position highlights.
+- Set every CTA at `{rounded.none}` (0px sharp corners) — the brand's signature precision.
+- Render CTA labels in uppercase with 1.4px tracking via `{typography.button}`.
+- Pair every hero with a full-bleed cinematic photograph — the photograph IS the depth.
+- Use the explicit 8px spacing ladder (`xxxs` through `super`) rather than ad-hoc px values.
+- Keep display weight at 500 — never bold.
 
 ### Don't
-- **Don't** use a light background. The dark canvas is the product.
-- **Don't** add `box-shadow` for elevation. Use 1px borders or saturated accent fills instead.
-- **Don't** use square corners. Every interactive and content container is rounded.
-- **Don't** use Manuka for UI, buttons, or body copy. It's strictly display.
-- **Don't** use lowercase mono. PolySans Mono is always UPPERCASE.
-- **Don't** let mint and ultraviolet appear as background washes — they're hazard accents, not canvas tints.
-- **Don't** use gradients anywhere. The system is solid color blocks only.
-- **Don't** introduce new accent colors outside the declared mint / purple / yellow / pink / orange tile palette.
-- **Don't** pair Manuka with FK Roman Standard in the same headline cluster — Manuka is the only display shout, serif pulls are reserved for body moments.
-- **Don't** use `#3cffd0` text on a `#131313` background at under 16px — the contrast vibrates at small sizes.
+- Don't introduce a saturated brand color other than Rosso Corsa.
+- Don't use rounded or pill CTAs — sharp 0px corners are the brand button.
+- Don't bold display copy. The cinematic photography does the visual heavy-lifting.
+- Don't use Hypersail yellow outside the Hypersail sailing program context.
+- Don't use pure black canvas. The brand canvas is `{colors.canvas}` (#181818) — slightly warm.
+- Don't add drop shadow tiers. Photography + brightness-step elevation carry the depth.
+- Don't extract a CTA color from a third-party widget (cookie consent, OneTrust). The brand's CTA color is what appears on actual product CTAs, not on injected modals.
 
-## 8. Responsive Behavior
+## Responsive Behavior
 
 ### Breakpoints
 
 | Name | Width | Key Changes |
 |---|---|---|
-| Small Mobile | <400px | Single column, Manuka hero scales down to ~48–54px, StoryStream rail collapses to inline timestamps |
-| Mobile | 400–549px | Single column, color-block tiles stack full-width, nav is a hamburger drawer |
-| Large Mobile | 550–767px | Still single column but padding opens up, tile radii stay at 20px |
-| Tablet | 768–1023px | 2-column StoryStream with feature card spanning, wordmark shrinks ~50% |
-| Small Desktop | 1024–1179px | Full 3–4 column editorial grid, mint pill CTA restored to nav |
-| Desktop | 1180–1299px | Max padding, Manuka wordmark at full hero scale |
-| Large Desktop | ≥1300px | Container caps at ~1280–1300px, whitespace expands at the margins, no further scaling |
-
-The dembrandt sweep detected 26 intermediate breakpoints (1300 → 1280 → 1200 → 1181 → 1180 → 1179 → 1024 → 1023 → 901 → 900 → 897 → 896 → 890 → 769 → 768 → 620 → 605 → 600 → 550 → 549 → 530 → 426 → 425 → 400 → 320). The Verge tunes its grid at virtually every major device boundary — an unusually aggressive responsive strategy.
+| Mobile | < 640px | Hero photograph crops vertically; hero h1 80→32px; feature card grid 1-up; nav hamburger; preowned listing 1-up. |
+| Tablet | 640–1024px | Hero h1 56px; feature card grid 2-up; preowned listing 2-up. |
+| Desktop | 1024–1280px | Full hero h1 80px; feature card grid 3-up; preowned listing 4-up. |
+| Wide | > 1280px | Editorial body content caps at 1280px; hero photography continues full-bleed. |
 
 ### Touch Targets
-- Primary pill buttons are ~44px minimum height (10px vertical padding + 16px text + 2px border) — meets WCAG AA.
-- Mono uppercase nav links are smaller (~28–32px tall) — for derivative work, pad to 44px on mobile.
-- Circle icon buttons are 40–44px circles, touch-friendly.
+- Primary CTA at 48px height — at WCAG AAA (44 × 44).
+- Nav items render uppercase with 0.65px tracking, padded for an effective 48px tap area.
 
 ### Collapsing Strategy
-- **Nav**: wordmark scales from hero (Manuka 60–107px) to ~24–32px on mobile. Category links collapse to a hamburger drawer below 900px.
-- **Grid**: 4-col → 3-col → 2-col → 1-col. Feature cards that span 2 columns on desktop reflow to full-width single-column on mobile.
-- **Spacing**: section padding tightens from 64px → 32px → 20px. Tile interior padding tightens from 32px → 20px.
-- **Type**: Manuka hero scales from 107px to ~48–54px on mobile. PolySans headlines scale from 34px → 24px. Mono labels stay pinned at 11–12px (they don't shrink further or they become unreadable).
-- **Color tiles**: accent story blocks never lose saturation on mobile — they just reflow to full width.
+- Top nav switches to hamburger below 768px.
+- Hero photograph reframes per breakpoint via art direction — desktop carries wide cinematic; mobile crops tighter or shifts to vertical.
+- Feature card grid: 4-up → 3-up → 2-up → 1-up.
+- F1 driver cards: 2-up at desktop, 1-up at mobile.
 
-### Image Behavior
-- Responsive raster via `srcset`, aspect ratios preserved.
-- No art-direction swaps — same crop scales across all viewports.
-- `loading="lazy"` on everything below the fold, `eager` on the masthead hero.
-- Images inside color-block tiles inherit the tile's inner radius (4px or 20px nested).
+## Iteration Guide
 
-## 9. Agent Prompt Guide
+1. Focus on a single component at a time.
+2. CTAs default to `{rounded.none}` (0px sharp). Cards use `{rounded.none}` too. Pill is reserved for badges.
+3. Variants live as separate entries inside `components:`.
+4. Use `{token.refs}` everywhere — never inline hex.
+5. Hover state never documented.
+6. FerrariSans 500 for display, 400/700 for body. Uppercase + tracking on CTAs and nav.
+7. Rosso Corsa stays scarce — primary CTAs, Cavallino, race-position highlights only.
+8. Use the explicit 8px named spacing ladder.
 
-### Quick Color Reference
-- **Primary CTA**: "Jelly Mint (`#3cffd0`)"
-- **Background (Canvas)**: "Canvas Black (`#131313`)"
-- **Accent (Secondary Hazard)**: "Verge Ultraviolet (`#5200ff`)"
-- **Heading Text**: "Hazard White (`#ffffff`)"
-- **Body Text**: "Hazard White (`#ffffff`)" (primary) or "Muted Text (`#e9e9e9`)"
-- **Secondary Text / Metadata**: "Secondary Text (`#949494`)"
-- **Card Border**: "Hazard White (`#ffffff`)" hairline on dark, "Console Mint Border (`#309875`)" on mint variants
-- **Link Hover**: "Deep Link Blue (`#3860be`)"
+## Known Gaps
 
-### Example Component Prompts
-1. *"Create a StoryStream timeline item on a `#131313` canvas: a 20px-radius rectangle with a 1px solid `#ffffff` border, a PolySans Mono 11px / 600 / UPPERCASE / 1.1px tracking timestamp on the left rail, a 12px PolySans UPPERCASE kicker in mint (`#3cffd0`), and a 24px / 700 PolySans headline in white below. No shadow, no lift — hover only shifts the headline color to `#3860be`."*
-2. *"Design a primary subscribe button with a Jelly Mint (`#3cffd0`) fill, black text in PolySans Mono 12px / 600 / UPPERCASE / 1.5px tracking, 24px border radius, 10px × 24px padding. Hover state shifts to `rgba(255, 255, 255, 0.2)` background with a 1px `#c2c2c2` ring shadow, 180ms ease."*
-3. *"Build a feature hero with a 107px Manuka 900 headline in white with 1.07px letter-spacing and 0.80 line-height, a thin-weight 300 PolySans 20px capitalized kicker above with 1.9px tracking, on a `#131313` canvas with 64px vertical padding."*
-4. *"Create a color-block accent tile filled with Verge Ultraviolet (`#5200ff`) at 0.9 alpha, 24px border radius, white text, a PolySans Mono 11px UPPERCASE category label with 1.5px tracking at the top, and a 32px PolySans 400 capitalized headline with 0.32px tracking below."*
-5. *"Design a dark slate secondary button with a `#2d2d2d` background, `#e9e9e9` PolySans 16px text, 24px radius pill shape, 10px × 24px padding. Hover matches the primary button — translucent white `rgba(255, 255, 255, 0.2)` bg with black text."*
-
-### Iteration Guide
-When refining existing screens generated with this design system:
-1. **Audit the canvas.** If you see a light background anywhere on the homepage, flatten it to `#131313`. There is no light mode.
-2. **Audit corners.** Every rectangle should land on 2/3/4/20/24/30/40px or 50%. Square corners break the voice.
-3. **Audit shadows.** Strip every `box-shadow` that isn't a 1px inset underline or a 1px hazard-color border. The Verge uses color for elevation, not shadow.
-4. **Audit type roles.** Manuka only ≥60px. PolySans Mono only UPPERCASE. PolySans 300 at 19–20px should have 1.9px tracking. FK Roman only for body/magazine moments, never UI.
-5. **Audit accent usage.** Mint and ultraviolet should appear as hazard accents — buttons, 1px borders, active underlines, saturated tile fills. If they're appearing as background washes or gradient fades, correct to solid blocks.
-6. **Audit labels.** Every kicker, timestamp, category tag, and button label should be ALL CAPS with 1.1–1.9px letter-spacing. Missing tracking = missing voice.
-7. **Audit link hover.** Every link, regardless of its base color, should hover to `#3860be` deep link blue with no underline. Any other hover color is drift.
+- FerrariSans is a licensed typeface; Inter at weight 500 is the documented substitute.
+- Animation timings (hero parallax, livery band entrance, race position counter) out of scope.
+- In-product surfaces (preowned configurator, F1 telemetry overlays) only partially captured via marketing surfaces.
+- Form validation states beyond focus not visible on captured surfaces.
+- Hypersail yellow tokens are extracted but only appear in the Hypersail sailing program context — documented as scoped accents.

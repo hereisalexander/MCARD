@@ -208,18 +208,18 @@ export const CardDetailView: React.FC<CardDetailViewProps> = ({
   const lastPoint = pointsCoords[pointsCoords.length - 1];
 
   return (
-    <div className="w-full py-6 max-w-7xl mx-auto px-4 md:px-0 flex flex-col gap-8 animate-fade-in">
+    <div className="w-full py-6 flex flex-col gap-8 animate-fade-in">
       {/* Top Back Navigation Bar */}
-      <div className="flex items-center justify-between border-b border-primary pb-4">
+      <div className="flex items-center justify-between border-b border-hairline/60 pb-4">
         <button
           onClick={onBack}
-          className="px-4 py-2 rounded-xl border-hairline border-primary bg-surface font-mono text-xs font-bold tracking-[1.5px] hover:bg-foreground hover:text-background transition-all duration-150 cursor-pointer flex items-center gap-2 uppercase"
+          className="h-10 px-5 rounded-full border border-hairline bg-surface font-sans text-xs font-semibold tracking-wide text-foreground hover:bg-surface-hover transition-colors cursor-pointer flex items-center gap-2 shadow-sm"
         >
           {t('back_to_explore')}
         </button>
 
         <div className="flex items-center gap-3">
-          <span className="px-3 py-1 rounded-xl bg-verge-ultraviolet text-white dark:bg-jelly-mint dark:text-absolute-black font-mono text-[10px] font-bold tracking-[1.5px] uppercase">
+          <span className="rounded-full px-3 py-1 bg-surface-hover border border-hairline text-foreground font-mono text-[10px] font-semibold tracking-wide">
             {card.set}
           </span>
           <span className="font-mono text-xs text-text-muted">#{card.number}</span>
@@ -227,18 +227,18 @@ export const CardDetailView: React.FC<CardDetailViewProps> = ({
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
         {/* Left 5 Cols: Card Showcase */}
-        <div className="lg:col-span-5 flex flex-col items-center gap-6 bg-surface p-8 rounded-[24px] border-hairline border-primary">
+        <div className="lg:col-span-5 flex flex-col items-center gap-6 bg-surface p-8 rounded-2xl border border-hairline/70 shadow-sm">
           <div className="w-full max-w-[340px]">
             <HoloCard src={card.imageUrl} alt={card.name} rarity={card.rarity} />
           </div>
 
-          <div className="flex flex-col items-center gap-1 border-t border-primary/40 pt-4 w-full text-center">
-            <span className="font-mono text-[10px] text-text-muted uppercase tracking-[1px]">{t('card_artist')}</span>
-            <span className="font-mono text-sm font-bold text-foreground">
-              {card.artist ? card.artist.toUpperCase() : 'OFFICIAL POKÉMON ARTIST'}
+          <div className="flex flex-col items-center gap-1 border-t border-hairline/60 pt-4 w-full text-center">
+            <span className="text-[10px] text-text-muted uppercase tracking-wider font-semibold">{t('card_artist')}</span>
+            <span className="font-sans text-sm font-medium text-foreground tracking-wide">
+              {card.artist || 'Official Pokémon Artist'}
             </span>
           </div>
 
@@ -247,7 +247,7 @@ export const CardDetailView: React.FC<CardDetailViewProps> = ({
               href={card.tcgplayerUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full py-3 rounded-xl border-hairline border-primary font-mono text-[11px] font-bold tracking-[1.5px] text-center bg-background hover:border-verge-ultraviolet dark:hover:border-jelly-mint transition-colors duration-150 uppercase"
+              className="w-full h-11 flex items-center justify-center rounded-xl border border-hairline font-sans text-xs font-semibold tracking-wide text-center bg-surface-hover text-foreground hover:border-text-muted transition-colors duration-150"
             >
               {t('view_on_tcgplayer')}
             </a>
@@ -255,74 +255,72 @@ export const CardDetailView: React.FC<CardDetailViewProps> = ({
         </div>
 
         {/* Right 7 Cols: Advanced Price History & Financial Chart */}
-        <div className="lg:col-span-7 flex flex-col gap-8">
+        <div className="lg:col-span-7 flex flex-col gap-6">
           <div>
-            <span className="font-mono text-[11px] font-bold text-verge-ultraviolet dark:text-jelly-mint tracking-[2px] uppercase">
-              {card.rarity.toUpperCase()} • {card.type.toUpperCase()} ELEMENTAL TYPE
+            <span className="text-[11px] font-semibold text-ferrari-red tracking-wider uppercase">
+              {card.rarity} • {card.type} Specification
             </span>
-            <h1 className="font-display font-bold text-4xl md:text-6xl uppercase tracking-tight text-foreground leading-none mt-2">
+            <h1 className="font-sans font-medium text-3xl sm:text-5xl tracking-tight text-foreground leading-tight mt-1">
               {card.name}
             </h1>
           </div>
 
           {/* Key Financial Indicators Bar */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="bg-surface p-5 rounded-[20px] border-hairline border-primary flex flex-col">
-              <span className="font-mono text-[9px] text-text-muted tracking-[1px] uppercase">
-                {selectedCondition.toUpperCase()} {t('est_market_price')}
+            <div className="bg-surface p-5 rounded-2xl border border-hairline/70 shadow-sm flex flex-col">
+              <span className="text-[9px] text-text-muted tracking-wider uppercase font-semibold">
+                {selectedCondition} {t('est_market_price')}
               </span>
-              <span className="font-mono font-bold text-2xl md:text-3xl text-foreground mt-1">
+              <span className="font-sans font-medium text-2xl md:text-3xl text-foreground tracking-tight mt-1">
                 ${currentPrice.toFixed(2)}
               </span>
             </div>
 
-            <div className="bg-surface p-5 rounded-[20px] border-hairline border-primary flex flex-col">
-              <span className="font-mono text-[9px] text-text-muted tracking-[1px] uppercase">
+            <div className="bg-surface p-5 rounded-2xl border border-hairline/70 shadow-sm flex flex-col">
+              <span className="text-[9px] text-text-muted tracking-wider uppercase font-semibold">
                 {timeRange} {t('price_change_3m')}
               </span>
-              <span className={`font-mono font-bold text-xl md:text-2xl mt-1 ${isPositive ? 'text-emerald-500 dark:text-jelly-mint' : 'text-red-500'}`}>
+              <span className={`font-sans font-medium text-xl md:text-2xl tracking-tight mt-1 ${isPositive ? 'text-semantic-success' : 'text-ferrari-red'}`}>
                 {isPositive ? '+' : ''}${priceChange.toFixed(2)}
               </span>
-              <span className={`font-mono text-xs ${isPositive ? 'text-emerald-500 dark:text-jelly-mint' : 'text-red-500'}`}>
+              <span className={`font-mono text-xs ${isPositive ? 'text-semantic-success' : 'text-ferrari-red'}`}>
                 ({isPositive ? '+' : ''}{priceChangePct.toFixed(1)}%)
               </span>
             </div>
 
-            <div className="bg-surface p-5 rounded-[20px] border-hairline border-primary flex flex-col">
-              <span className="font-mono text-[9px] text-text-muted tracking-[1px] uppercase">
+            <div className="bg-surface p-5 rounded-2xl border border-hairline/70 shadow-sm flex flex-col">
+              <span className="text-[9px] text-text-muted tracking-wider uppercase font-semibold">
                 {timeRange} {t('high_low_range')}
               </span>
-              <span className="font-mono font-bold text-lg text-foreground mt-1">
+              <span className="font-sans font-medium text-lg text-foreground mt-1">
                 ${rawMinPrice.toFixed(2)} - ${rawMaxPrice.toFixed(2)}
               </span>
             </div>
           </div>
 
-          {/* Reference Screenshot Styled Detailed Price Chart Container */}
-          <div className="bg-surface p-6 rounded-[24px] border-hairline border-primary flex flex-col gap-6 shadow-sm">
+          {/* Detailed Price Chart Container */}
+          <div className="bg-surface p-6 rounded-2xl border border-hairline/70 shadow-sm flex flex-col gap-6">
             
-            {/* Chart Title Header & Time Tabs (Exact Reference Style) */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-primary/30 pb-4">
+            {/* Chart Title Header & Time Tabs */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-hairline/60 pb-4">
               <div className="flex items-center gap-2.5">
-                <span className="w-7 h-7 rounded-full bg-verge-ultraviolet/10 dark:bg-jelly-mint/10 text-verge-ultraviolet dark:text-jelly-mint flex items-center justify-center font-bold text-sm">
-                  ↺
-                </span>
-                <h3 className="font-display text-xl md:text-2xl font-bold uppercase tracking-wide text-foreground">
+                <div className="w-2.5 h-2.5 rounded-full bg-ferrari-red" />
+                <h3 className="font-sans text-base sm:text-lg font-medium tracking-wide text-foreground">
                   {t('price_history_title', { condition: selectedCondition })}
                 </h3>
               </div>
 
-              {/* Time Range Selector Tabs (1M, 3M, 6M, 1Y) */}
-              <div className="flex items-center gap-1.5 bg-background p-1.5 rounded-2xl border border-primary/40 self-start sm:self-auto">
+              {/* Time Range Selector Tabs */}
+              <div className="flex items-center border border-hairline/80 bg-surface-hover p-1 rounded-xl self-start sm:self-auto">
                 {(['1M', '3M', '6M', '1Y'] as TimeRange[]).map((range) => {
                   const isActive = timeRange === range;
                   return (
                     <button
                       key={range}
                       onClick={() => setTimeRange(range)}
-                      className={`px-3.5 py-1.5 rounded-xl font-mono text-[11px] font-bold tracking-[1px] transition-all duration-150 cursor-pointer ${
+                      className={`px-3.5 py-1 rounded-lg font-sans text-xs font-semibold tracking-wide transition-all duration-150 cursor-pointer ${
                         isActive
-                          ? 'bg-surface text-foreground shadow-sm border border-primary/60 font-extrabold'
+                          ? 'bg-ferrari-red text-white font-bold shadow-sm'
                           : 'text-text-muted hover:text-foreground'
                       }`}
                     >
@@ -333,22 +331,22 @@ export const CardDetailView: React.FC<CardDetailViewProps> = ({
               </div>
             </div>
 
-            {/* High Precision SVG Line Chart with Grid & Axis Labels */}
-            <div className="relative w-full bg-background rounded-2xl p-4 border border-primary/40">
+            {/* High Precision SVG Line Chart */}
+            <div className="relative w-full bg-surface-hover/50 rounded-xl p-4 border border-hairline/60">
               <svg
                 viewBox={`0 0 ${svgWidth} ${svgHeight}`}
                 className="w-full h-auto overflow-visible select-none"
               >
                 <defs>
-                  {/* Soft Teal / Turquoise Area Fill Gradient */}
-                  <linearGradient id="refChartAreaGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#00c4b4" stopOpacity="0.25" />
-                    <stop offset="100%" stopColor="#00c4b4" stopOpacity="0.01" />
+                  {/* Area Gradient */}
+                  <linearGradient id="ferrariChartAreaGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#da291c" stopOpacity="0.22" />
+                    <stop offset="100%" stopColor="#da291c" stopOpacity="0.01" />
                   </linearGradient>
 
                   {/* Dot Grid Pattern */}
-                  <pattern id="gridPattern" width="20" height="20" patternUnits="userSpaceOnUse">
-                    <circle cx="2" cy="2" r="1" fill="currentColor" className="text-text-muted/15" />
+                  <pattern id="gridPattern" width="24" height="24" patternUnits="userSpaceOnUse">
+                    <circle cx="2" cy="2" r="0.8" fill="currentColor" className="text-text-muted/20" />
                   </pattern>
                 </defs>
 
@@ -372,45 +370,45 @@ export const CardDetailView: React.FC<CardDetailViewProps> = ({
                         x2={marginLeft + chartInnerWidth}
                         y2={y}
                         stroke="currentColor"
-                        strokeDasharray="4 4"
-                        className="text-text-muted/20"
+                        strokeDasharray="2 4"
+                        className="text-text-muted/15"
                         strokeWidth="1"
                       />
                       <text
                         x={marginLeft - 8}
                         y={y + 4}
                         textAnchor="end"
-                        className="fill-text-muted font-mono text-[11px]"
+                        className="fill-text-muted font-mono text-[10px]"
                       >
-                        {val}
+                        ${val}
                       </text>
                     </g>
                   );
                 })}
 
-                {/* Gradient Fill under Bézier Curve with Smooth Morph Animation */}
+                {/* Gradient Fill under Bézier Curve */}
                 <path
                   d={areaD}
-                  fill="url(#refChartAreaGradient)"
+                  fill="url(#ferrariChartAreaGradient)"
                   style={{ transition: 'd 0.5s cubic-bezier(0.4, 0, 0.2, 1)' }}
                 />
 
-                {/* Turquoise Main Curve Line with Smooth Morph Animation */}
+                {/* Main Track Curve */}
                 <path
                   d={pathD}
                   fill="none"
-                  stroke="#00c4b4"
-                  strokeWidth="3.5"
+                  stroke="#da291c"
+                  strokeWidth="2.5"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   style={{ transition: 'd 0.5s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.3s ease' }}
                 />
 
-                {/* X-Axis Slanted Date Labels */}
+                {/* X-Axis Date Labels */}
                 {xAxisLabels.map((p, idx) => (
-                  <g key={`x-axis-${idx}`} transform={`translate(${p.x}, ${marginTop + chartInnerHeight + 14})`}>
+                  <g key={`x-axis-${idx}`} transform={`translate(${p.x}, ${marginTop + chartInnerHeight + 16})`}>
                     <text
-                      transform="rotate(-40)"
+                      transform="rotate(-30)"
                       textAnchor="end"
                       className="fill-text-muted font-mono text-[10px]"
                     >
@@ -419,14 +417,14 @@ export const CardDetailView: React.FC<CardDetailViewProps> = ({
                   </g>
                 ))}
 
-                {/* Current Price Endpoint Dot (Reference Screenshot Dot) */}
+                {/* Current Price Endpoint Dot */}
                 {lastPoint && (
                   <g
                     transform={`translate(${lastPoint.x}, ${lastPoint.y})`}
                     style={{ transition: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)' }}
                   >
-                    <circle r="6" fill="#00c4b4" opacity="0.3" className="animate-ping" />
-                    <circle r="4.5" fill="#00c4b4" stroke="#ffffff" strokeWidth="2" />
+                    <circle r="6" fill="#da291c" opacity="0.3" className="animate-ping" />
+                    <circle r="4" fill="#da291c" stroke="#ffffff" strokeWidth="1.5" />
                   </g>
                 )}
 
@@ -438,17 +436,17 @@ export const CardDetailView: React.FC<CardDetailViewProps> = ({
                       y1={marginTop}
                       x2={pointsCoords[hoveredPointIndex].x}
                       y2={marginTop + chartInnerHeight}
-                      stroke="#00c4b4"
-                      strokeDasharray="3 3"
-                      strokeWidth="1.5"
+                      stroke="#da291c"
+                      strokeDasharray="2 2"
+                      strokeWidth="1"
                     />
                     <circle
                       cx={pointsCoords[hoveredPointIndex].x}
                       cy={pointsCoords[hoveredPointIndex].y}
-                      r="6"
+                      r="5"
                       fill="#ffffff"
-                      stroke="#00c4b4"
-                      strokeWidth="3"
+                      stroke="#da291c"
+                      strokeWidth="2.5"
                     />
                   </g>
                 )}
@@ -471,7 +469,7 @@ export const CardDetailView: React.FC<CardDetailViewProps> = ({
 
               {/* Hover Tooltip Box */}
               {hoveredPointIndex !== null && priceHistoryData[hoveredPointIndex] && (
-                <div className="absolute top-4 left-14 bg-foreground text-background font-mono text-[11px] font-bold px-4 py-2 rounded-xl shadow-xl border border-primary uppercase">
+                <div className="absolute top-4 left-14 bg-surface text-foreground font-mono text-[11px] font-semibold px-3 py-1.5 rounded-lg border border-hairline shadow-lg">
                   {priceHistoryData[hoveredPointIndex].fullDate}: ${priceHistoryData[hoveredPointIndex].price.toFixed(2)}
                 </div>
               )}
@@ -479,25 +477,25 @@ export const CardDetailView: React.FC<CardDetailViewProps> = ({
           </div>
 
           {/* Condition Picker & Add to Portfolio Bar */}
-          <div className="bg-surface p-6 rounded-[24px] border-hairline border-primary flex flex-col sm:flex-row items-center justify-between gap-6">
-            <div className="flex flex-col gap-1 w-full sm:w-auto">
-              <span className="font-mono text-[10px] font-bold text-text-muted uppercase">{t('select_condition')}</span>
+          <div className="bg-surface p-6 rounded-2xl border border-hairline/70 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div className="flex flex-col gap-1.5 w-full sm:w-auto">
+              <span className="text-[10px] font-semibold text-text-muted tracking-wide">{t('select_condition')}</span>
               <select
                 value={selectedCondition}
                 onChange={(e) => setSelectedCondition(e.target.value as CardCondition)}
-                className="bg-background border border-primary rounded-xl px-4 py-3 font-mono text-xs font-bold text-foreground focus:outline-none focus:border-verge-ultraviolet dark:focus:border-jelly-mint cursor-pointer uppercase w-full sm:w-auto"
+                className="h-11 bg-surface-hover border border-hairline rounded-xl px-4 font-mono text-xs font-semibold text-foreground focus:outline-none focus:border-ferrari-red cursor-pointer w-full sm:w-auto"
               >
-                <option value="Ungraded">UNGRADED</option>
-                <option value="PSA 10">PSA 10 GEM MINT</option>
-                <option value="PSA 9">PSA 9 MINT</option>
-                <option value="BGS 10">BGS 10 PRISTINE</option>
-                <option value="BGS Black Label">BGS BLACK LABEL</option>
+                <option value="Ungraded">Ungraded</option>
+                <option value="PSA 10">PSA 10 Gem Mint</option>
+                <option value="PSA 9">PSA 9 Mint</option>
+                <option value="BGS 10">BGS 10 Pristine</option>
+                <option value="BGS Black Label">BGS Black Label</option>
               </select>
             </div>
 
             <button
               onClick={handleAddClick}
-              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-verge-ultraviolet text-white dark:bg-jelly-mint dark:text-absolute-black font-mono text-xs font-bold tracking-[2px] hover:opacity-85 active:opacity-60 transition-all duration-150 cursor-pointer uppercase shadow-lg"
+              className="w-full sm:w-auto h-11 px-8 rounded-xl bg-ferrari-red text-white hover:bg-ferrari-red-hover active:bg-ferrari-red-active font-sans text-xs font-semibold tracking-wide transition-colors cursor-pointer shadow-sm"
             >
               {t('add_to_portfolio')} (${currentPrice.toFixed(2)})
             </button>

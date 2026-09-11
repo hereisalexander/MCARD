@@ -206,20 +206,20 @@ export const CardGrid: React.FC<CardGridProps> = ({
   ];
 
   return (
-    <div className="w-full py-6 max-w-7xl mx-auto px-4 md:px-0">
-      {/* Search & Multi-Dimensional Filter Bar */}
-      <div className="flex flex-col gap-6 mb-8 bg-surface p-6 rounded-[20px] border-hairline border-primary">
+    <div className="w-full py-6 animate-fade-in">
+      {/* Search & Multi-Dimensional Filter Bar (Modern soft elevated panel) */}
+      <div className="flex flex-col gap-6 mb-8 bg-surface-hover/50 p-6 sm:p-8 rounded-2xl border border-hairline/60 shadow-sm">
         
         {/* Top Row: Search Input + Sort Selector */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
           <div className="md:col-span-8 flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <label htmlFor="card-search" className="font-mono text-[11px] font-bold tracking-[1.5px] text-text-muted uppercase">
+              <label htmlFor="card-search" className="text-[11px] font-semibold tracking-wider text-text-muted">
                 {t('search_label')}
               </label>
               {debouncedSearch && (
-                <span className="font-mono text-[10px] text-jelly-mint dark:text-jelly-mint bg-verge-ultraviolet/20 px-2 py-0.5 rounded">
-                  FILTERED BY &quot;{debouncedSearch.toUpperCase()}&quot;
+                <span className="text-[10px] font-semibold text-white bg-ferrari-red px-2.5 py-0.5 rounded-full tracking-wider">
+                  FILTERED BY &quot;{debouncedSearch}&quot;
                 </span>
               )}
             </div>
@@ -229,20 +229,20 @@ export const CardGrid: React.FC<CardGridProps> = ({
               value={searchQuery}
               onChange={handleSearchChange}
               placeholder={t('search_placeholder')}
-              className="w-full bg-background border border-primary rounded-[4px] px-4 py-3 font-body text-sm text-foreground placeholder-text-muted focus:outline-none focus:border-verge-ultraviolet dark:focus:border-jelly-mint transition-colors duration-150"
+              className="w-full h-11 bg-surface border border-hairline rounded-xl px-4 text-sm text-foreground placeholder-text-muted/60 focus:outline-none focus:border-ferrari-red focus:ring-2 focus:ring-ferrari-red/10 transition-all duration-150"
             />
           </div>
 
           {/* Sort By Selector */}
           <div className="md:col-span-4 flex flex-col gap-2">
-            <label htmlFor="sort-select" className="font-mono text-[11px] font-bold tracking-[1.5px] text-text-muted uppercase">
+            <label htmlFor="sort-select" className="text-[11px] font-semibold tracking-wider text-text-muted">
               {t('sort_by_label')}
             </label>
             <select
               id="sort-select"
               value={sortBy}
               onChange={handleSortChange}
-              className="w-full bg-background border border-primary rounded-[4px] px-4 py-3 font-mono text-xs font-bold text-foreground focus:outline-none focus:border-verge-ultraviolet dark:focus:border-jelly-mint cursor-pointer uppercase"
+              className="w-full h-11 bg-surface border border-hairline rounded-xl px-4 font-sans text-xs font-semibold text-foreground focus:outline-none focus:border-ferrari-red focus:ring-2 focus:ring-ferrari-red/10 cursor-pointer"
             >
               <option value="DEFAULT">{t('sort_default')}</option>
               <option value="PRICE_DESC">{t('sort_price_desc')}</option>
@@ -255,7 +255,7 @@ export const CardGrid: React.FC<CardGridProps> = ({
 
         {/* Middle Row: Price Range Filters */}
         <div className="flex flex-col gap-2">
-          <span className="font-mono text-[11px] font-bold tracking-[1.5px] text-text-muted uppercase">
+          <span className="text-[11px] font-semibold tracking-wider text-text-muted">
             {t('filter_price_range')}
           </span>
           <div className="flex flex-nowrap overflow-x-auto no-scrollbar md:flex-wrap gap-2 py-1 scroll-smooth">
@@ -265,10 +265,10 @@ export const CardGrid: React.FC<CardGridProps> = ({
                 <button
                   key={opt.id}
                   onClick={() => handlePriceRangeSelect(opt.id)}
-                  className={`px-3 py-1.5 rounded-xl font-mono text-[10px] font-bold tracking-[1px] cursor-pointer border-hairline transition-all duration-150 shrink-0 whitespace-nowrap ${
+                  className={`h-8 px-3.5 rounded-lg font-sans text-xs font-semibold tracking-wide cursor-pointer transition-all duration-150 shrink-0 whitespace-nowrap border ${
                     isActive
-                      ? 'bg-verge-ultraviolet text-white border-transparent dark:bg-jelly-mint dark:text-absolute-black'
-                      : 'bg-background hover:border-verge-ultraviolet dark:hover:border-jelly-mint text-foreground'
+                      ? 'bg-ferrari-red text-white border-ferrari-red shadow-sm'
+                      : 'bg-surface text-text-muted border-hairline/80 hover:text-foreground hover:bg-surface-hover hover:border-hairline'
                   }`}
                   aria-label={`Filter cards by price range ${opt.label}`}
                 >
@@ -279,9 +279,9 @@ export const CardGrid: React.FC<CardGridProps> = ({
           </div>
         </div>
 
-        {/* Bottom Row: Expansion Set Filters */}
+        {/* Expansion Set Filters */}
         <div className="flex flex-col gap-2">
-          <span className="font-mono text-[11px] font-bold tracking-[1.5px] text-text-muted uppercase">
+          <span className="text-[11px] font-semibold tracking-wider text-text-muted">
             {t('filter_expansion_set')}
           </span>
           <div className="flex flex-nowrap overflow-x-auto no-scrollbar md:flex-wrap gap-2 py-1 scroll-smooth">
@@ -291,14 +291,14 @@ export const CardGrid: React.FC<CardGridProps> = ({
                 <button
                   key={setName}
                   onClick={() => handleSetSelect(setName)}
-                  className={`px-3 py-1.5 rounded-xl font-mono text-[10px] font-bold tracking-[1px] cursor-pointer border-hairline transition-all duration-150 shrink-0 whitespace-nowrap ${
+                  className={`h-8 px-3.5 rounded-lg font-sans text-xs font-semibold tracking-wide cursor-pointer transition-all duration-150 shrink-0 whitespace-nowrap border ${
                     isActive
-                      ? 'bg-verge-ultraviolet text-white border-transparent dark:bg-jelly-mint dark:text-absolute-black'
-                      : 'bg-background hover:border-verge-ultraviolet dark:hover:border-jelly-mint text-foreground'
+                      ? 'bg-ferrari-red text-white border-ferrari-red shadow-sm'
+                      : 'bg-surface text-text-muted border-hairline/80 hover:text-foreground hover:bg-surface-hover hover:border-hairline'
                   }`}
                   aria-label={`Filter cards by set ${setName}`}
                 >
-                  {setName.toUpperCase()}
+                  {setName}
                 </button>
               );
             })}
@@ -307,7 +307,7 @@ export const CardGrid: React.FC<CardGridProps> = ({
 
         {/* Type Filters */}
         <div className="flex flex-col gap-2">
-          <span className="font-mono text-[11px] font-bold tracking-[1.5px] text-text-muted uppercase">
+          <span className="text-[11px] font-semibold tracking-wider text-text-muted">
             {t('filter_elemental_type')}
           </span>
           <div className="flex flex-nowrap overflow-x-auto no-scrollbar md:flex-wrap gap-2 py-1 scroll-smooth">
@@ -317,14 +317,14 @@ export const CardGrid: React.FC<CardGridProps> = ({
                 <button
                   key={typeName}
                   onClick={() => handleTypeSelect(typeName)}
-                  className={`px-3 py-1.5 rounded-xl font-mono text-[10px] font-bold tracking-[1px] cursor-pointer border-hairline transition-all duration-150 shrink-0 whitespace-nowrap ${
+                  className={`h-8 px-3.5 rounded-lg font-sans text-xs font-semibold tracking-wide cursor-pointer transition-all duration-150 shrink-0 whitespace-nowrap border ${
                     isActive
-                      ? 'bg-verge-ultraviolet text-white border-transparent dark:bg-jelly-mint dark:text-absolute-black'
-                      : 'bg-background hover:border-verge-ultraviolet dark:hover:border-jelly-mint text-foreground'
+                      ? 'bg-ferrari-red text-white border-ferrari-red shadow-sm'
+                      : 'bg-surface text-text-muted border-hairline/80 hover:text-foreground hover:bg-surface-hover hover:border-hairline'
                   }`}
-                  aria-label={`Filter cards by elemental type ${typeName}`}
+                  aria-label={`Filter cards by type ${typeName}`}
                 >
-                  {typeName.toUpperCase()}
+                  {typeName}
                 </button>
               );
             })}
@@ -332,21 +332,21 @@ export const CardGrid: React.FC<CardGridProps> = ({
         </div>
       </div>
 
-      {/* Grid Header & Stats */}
-      <div className="flex justify-between items-center mb-6">
-        <span className="font-mono text-[11px] font-bold tracking-[1.5px] text-text-muted uppercase">
+      {/* Result Count Status Bar */}
+      <div className="flex justify-between items-center mb-6 pb-2 border-b border-hairline/60">
+        <span className="text-xs font-semibold tracking-wide text-text-muted">
           {t('showing_cards', { count: processedCards.length, total: totalCount })}
         </span>
-        {isLoading && (
-          <span className="font-mono text-[11px] text-verge-ultraviolet dark:text-jelly-mint animate-pulse uppercase tracking-[1px]">
-            {t('fetching_live_data')}
+        {isLoadingMore && (
+          <span className="font-mono text-xs text-ferrari-red animate-pulse tracking-wider">
+            UPDATING TELEMETRY...
           </span>
         )}
       </div>
 
-      {/* Error Banner */}
+      {/* Error Message */}
       {error && (
-        <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-500 font-mono text-xs font-bold tracking-wider">
+        <div className="bg-[#181818] border border-ferrari-red text-white p-4 rounded-none mb-8 text-center text-sm">
           {error}
         </div>
       )}
@@ -357,39 +357,39 @@ export const CardGrid: React.FC<CardGridProps> = ({
           {Array.from({ length: 8 }).map((_, idx) => (
             <div
               key={`skeleton-${idx}`}
-              className="bg-surface border-hairline border-primary rounded-[20px] p-5 flex flex-col justify-between animate-pulse"
+              className="bg-surface border border-hairline/70 rounded-2xl p-5 flex flex-col justify-between animate-pulse"
             >
               <div>
-                <div className="aspect-[3/4] w-full bg-background rounded-xl mb-4 border border-primary/40" />
-                <div className="h-4 bg-background rounded w-1/3 mb-2" />
-                <div className="h-6 bg-background rounded w-3/4 mb-3" />
-                <div className="h-4 bg-background rounded w-1/2 mb-4" />
+                <div className="aspect-[2.5/3.5] w-full bg-surface-hover rounded-xl mb-4" />
+                <div className="h-4 bg-surface-hover rounded-lg w-1/3 mb-2" />
+                <div className="h-5 bg-surface-hover rounded-lg w-3/4 mb-3" />
+                <div className="h-4 bg-surface-hover rounded-lg w-1/2 mb-4" />
               </div>
-              <div className="border-t border-primary/40 pt-3 flex justify-between items-center">
-                <div className="h-6 bg-background rounded w-1/3" />
-                <div className="h-8 bg-background rounded w-1/3" />
+              <div className="border-t border-hairline/60 pt-3 flex justify-between items-center">
+                <div className="h-5 bg-surface-hover rounded-lg w-1/3" />
+                <div className="h-8 bg-surface-hover rounded-lg w-1/3" />
               </div>
             </div>
           ))}
         </div>
       ) : processedCards.length === 0 ? (
         /* Empty State */
-        <div className="text-center py-20 bg-surface rounded-[20px] border-hairline border-dashed">
-          <p className="font-display text-2xl uppercase text-text-muted mb-2">{t('no_cards_found')}</p>
+        <div className="text-center py-20 bg-canvas-elevated rounded-none border border-hairline border-dashed">
+          <p className="font-sans font-medium text-2xl uppercase text-white mb-2">{t('no_cards_found')}</p>
           <span className="font-mono text-xs text-text-muted">{t('try_resetting_filters')}</span>
         </div>
       ) : (
-        /* Real Cards Grid */
+        /* Real Cards Grid (Modern rounded cards, subtle border, smooth hover elevation) */
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-6">
             {processedCards.map((card) => (
               <div
                 key={card.id}
                 onClick={() => handleCardClick(card)}
-                className="bg-surface border-hairline border-primary rounded-[20px] p-5 flex flex-col justify-between hover:border-verge-ultraviolet dark:hover:border-jelly-mint transition-all duration-200 group hover:-translate-y-1 hover:shadow-lg cursor-pointer"
+                className="bg-surface rounded-2xl p-5 flex flex-col justify-between border border-hairline/70 hover:border-hairline hover:shadow-md hover:-translate-y-1 transition-all duration-200 group cursor-pointer"
               >
                 <div>
-                  {/* 3D Interactive Frame */}
+                  {/* 3D Interactive Holo Frame */}
                   <div className="w-full mb-4">
                     <HoloCard
                       src={card.imageUrl}
@@ -398,9 +398,9 @@ export const CardGrid: React.FC<CardGridProps> = ({
                     />
                   </div>
 
-                  {/* Card Tags */}
+                  {/* Card Telemetry Tags */}
                   <div className="flex items-center gap-2 mb-2 flex-wrap">
-                    <span className="px-2 py-0.5 rounded-[20px] bg-verge-ultraviolet/10 dark:bg-jelly-mint/10 text-verge-ultraviolet dark:text-jelly-mint font-mono text-[9px] font-bold tracking-[1px] uppercase max-w-[150px] truncate">
+                    <span className="rounded-full px-2.5 py-0.5 text-[9px] font-semibold tracking-wide bg-surface-hover text-text-muted border border-hairline/60 max-w-[140px] truncate">
                       {card.set}
                     </span>
                     <span className="font-mono text-[10px] text-text-muted">
@@ -409,21 +409,21 @@ export const CardGrid: React.FC<CardGridProps> = ({
                   </div>
 
                   {/* Card Name */}
-                  <h4 className="font-display text-xl md:text-2xl font-bold uppercase tracking-tight text-foreground group-hover:text-deep-link-blue transition-colors duration-150 mb-1 line-clamp-1">
+                  <h4 className="font-sans font-medium text-base sm:text-lg tracking-tight text-foreground mb-1 line-clamp-1 group-hover:text-ferrari-red transition-colors">
                     {card.name}
                   </h4>
 
                   {/* Rarity & Type */}
                   <div className="flex justify-between items-center text-[11px] text-text-muted mb-4 font-mono">
-                    <span className="truncate max-w-[120px]">{card.rarity.toUpperCase()}</span>
-                    <span className="font-bold">{card.type.toUpperCase()}</span>
+                    <span className="truncate max-w-[120px]">{card.rarity}</span>
+                    <span className="font-semibold text-foreground/80">{card.type}</span>
                   </div>
                 </div>
 
                 {/* Price & Action row */}
-                <div className="flex items-center justify-between border-t border-primary pt-3 mt-auto">
+                <div className="flex items-center justify-between border-t border-hairline/60 pt-3 mt-auto">
                   <div className="flex flex-col">
-                    <span className="font-mono text-[9px] tracking-[0.5px] text-text-muted uppercase">{t('est_market_price')}</span>
+                    <span className="text-[9px] tracking-wide text-text-muted font-semibold">{t('est_market_price')}</span>
                     <span className="font-mono font-bold text-base text-foreground">
                       ${card.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
@@ -434,7 +434,7 @@ export const CardGrid: React.FC<CardGridProps> = ({
                       e.stopPropagation();
                       onAddCard(card.name, card.price, card.imageUrl);
                     }}
-                    className="px-4 py-2 rounded-2xl bg-verge-ultraviolet text-white dark:bg-jelly-mint dark:text-absolute-black font-mono text-[10px] font-bold tracking-[1.5px] hover:opacity-85 active:opacity-60 transition-all duration-150 cursor-pointer shadow-sm"
+                    className="px-3 py-1.5 rounded-lg bg-ferrari-red text-white hover:bg-ferrari-red-hover active:bg-ferrari-red-active font-sans text-xs font-semibold tracking-wide transition-all duration-150 cursor-pointer shadow-sm"
                     aria-label={`Add ${card.name} to portfolio`}
                   >
                     {t('add_to_portfolio')}
@@ -450,11 +450,11 @@ export const CardGrid: React.FC<CardGridProps> = ({
               <button
                 onClick={handleLoadMore}
                 disabled={isLoadingMore}
-                className="px-8 py-4 rounded-2xl bg-surface border-hairline border-primary font-mono text-xs font-bold tracking-[2px] text-foreground hover:bg-verge-ultraviolet hover:text-white dark:hover:bg-jelly-mint dark:hover:text-absolute-black transition-all duration-150 cursor-pointer disabled:opacity-50 flex items-center gap-3 uppercase shadow-md"
+                className="h-11 px-8 rounded-full bg-surface border border-hairline font-sans text-xs font-semibold tracking-wide text-foreground hover:bg-surface-hover hover:border-foreground/20 transition-all duration-150 cursor-pointer disabled:opacity-50 flex items-center gap-3 shadow-sm"
               >
                 {isLoadingMore ? (
                   <>
-                    <span className="w-2 h-2 rounded-full bg-verge-ultraviolet dark:bg-jelly-mint animate-ping" />
+                    <span className="w-2 h-2 rounded-full bg-ferrari-red animate-ping" />
                     {t('fetching_live_data')}
                   </>
                 ) : (

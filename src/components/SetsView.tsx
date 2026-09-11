@@ -50,39 +50,39 @@ export const SetsView: React.FC<SetsViewProps> = ({ portfolio, onSelectSet }) =>
   };
 
   return (
-    <div className="w-full py-6 max-w-7xl mx-auto px-4 md:px-0 animate-fade-in">
-      {/* Section Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-primary pb-4 mb-8 gap-2">
+    <div className="w-full py-6 flex flex-col gap-8 animate-fade-in">
+      {/* Top Header */}
+      <div className="flex items-center justify-between border-b border-hairline/60 pb-4">
         <div>
-          <span className="font-mono text-[10px] font-bold text-verge-ultraviolet dark:text-jelly-mint tracking-[2px] uppercase">
-            LIVE POKÉMON TCG EXPANSIONS
+          <span className="text-[11px] font-semibold text-ferrari-red tracking-wider uppercase">
+            Expansion Archives
           </span>
-          <h2 className="font-display font-bold text-3xl md:text-5xl uppercase tracking-tight text-foreground leading-none mt-1">
+          <h2 className="font-sans font-medium text-2xl sm:text-4xl text-foreground tracking-tight mt-1">
             {t('sets_page_title')}
           </h2>
         </div>
-        <span className="font-mono text-[11px] text-text-muted">
-          {t('sets_active_count').replace('{count}', (sets.length || 36).toString())}
+        <span className="font-mono text-xs text-text-muted hidden sm:inline tracking-wider">
+          {t('sets_active_count', { count: sets.length })}
         </span>
       </div>
 
       {/* Loading Skeleton */}
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
           {Array.from({ length: 9 }).map((_, i) => (
             <div
               key={i}
-              className="bg-surface border-hairline border-primary rounded-[20px] p-6 flex flex-col justify-between h-56 animate-pulse"
+              className="bg-surface border border-hairline/70 rounded-2xl p-6 flex flex-col justify-between h-56 animate-pulse"
             >
-              <div className="h-16 w-3/4 bg-background border border-primary/20 rounded-xl" />
-              <div className="h-4 w-1/2 bg-background border border-primary/20 rounded mt-4" />
-              <div className="h-3 w-full bg-background border border-primary/20 rounded-full mt-6" />
+              <div className="h-16 w-3/4 bg-surface-hover rounded-xl" />
+              <div className="h-4 w-1/2 bg-surface-hover rounded-lg mt-4" />
+              <div className="h-2 w-full bg-surface-hover rounded-full mt-6" />
             </div>
           ))}
         </div>
       ) : (
         /* Expansion Sets Grid */
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
           {sets.map((set) => {
             const ownedCount = getCollectedCount(set.name);
             const totalCards = set.printedTotal || set.total || 100;
@@ -94,12 +94,12 @@ export const SetsView: React.FC<SetsViewProps> = ({ portfolio, onSelectSet }) =>
                 onClick={() => handleSetClick(set.name)}
                 onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && handleSetClick(set.name)}
                 tabIndex={0}
-                className="bg-surface border-hairline border-primary rounded-[22px] p-6 flex flex-col justify-between gap-6 hover:border-verge-ultraviolet dark:hover:border-jelly-mint transition-all duration-150 cursor-pointer group shadow-sm hover:shadow-md"
+                className="bg-surface border border-hairline/70 rounded-2xl p-6 flex flex-col justify-between gap-6 hover:border-hairline hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer group"
                 aria-label={`View cards in set ${set.name}`}
               >
                 <div className="flex flex-col gap-4">
                   {/* Top Set Card Header (Symbol + Series) */}
-                  <div className="flex items-center justify-between border-b border-primary/30 pb-3">
+                  <div className="flex items-center justify-between border-b border-hairline/60 pb-3">
                     <div className="flex items-center gap-2">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
@@ -107,8 +107,8 @@ export const SetsView: React.FC<SetsViewProps> = ({ portfolio, onSelectSet }) =>
                         alt={`${set.name} symbol`}
                         className="w-5 h-5 object-contain"
                       />
-                      <span className="font-mono text-[10px] font-bold text-verge-ultraviolet dark:text-jelly-mint tracking-[1px] uppercase">
-                        {set.series.toUpperCase()}
+                      <span className="rounded-full px-2.5 py-0.5 bg-surface-hover border border-hairline/60 text-foreground font-mono text-[9px] font-semibold tracking-wide">
+                        {set.series}
                       </span>
                     </div>
                     <span className="font-mono text-[10px] text-text-muted">
@@ -117,7 +117,7 @@ export const SetsView: React.FC<SetsViewProps> = ({ portfolio, onSelectSet }) =>
                   </div>
 
                   {/* Set Logo Image */}
-                  <div className="h-20 w-full rounded-xl flex items-center justify-center p-3 border border-primary/20 bg-background relative overflow-hidden group-hover:border-verge-ultraviolet dark:group-hover:border-jelly-mint transition-colors">
+                  <div className="h-20 w-full rounded-xl flex items-center justify-center p-3 bg-surface-hover/60 relative overflow-hidden group-hover:bg-surface-hover transition-colors">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={set.images.logo}
@@ -128,17 +128,17 @@ export const SetsView: React.FC<SetsViewProps> = ({ portfolio, onSelectSet }) =>
 
                   {/* Set Details */}
                   <div className="flex justify-between items-center font-mono text-[11px]">
-                    <h3 className="font-display font-bold text-lg uppercase text-foreground truncate max-w-[180px]">
+                    <h3 className="font-sans font-medium text-lg text-foreground truncate max-w-[180px] group-hover:text-ferrari-red transition-colors">
                       {set.name}
                     </h3>
                     <span className="text-text-muted">
-                      {set.printedTotal} CARDS
+                      {set.printedTotal} Cards
                     </span>
                   </div>
                 </div>
 
                 {/* Collection Progress bar */}
-                <div className="flex flex-col gap-2 border-t border-primary/40 pt-4">
+                <div className="flex flex-col gap-2 border-t border-hairline/60 pt-4">
                   <div className="flex justify-between items-center text-xs font-mono">
                     <span className="text-text-muted">{t('sets_collected_progress')}</span>
                     <span className="font-bold text-foreground">
@@ -147,10 +147,10 @@ export const SetsView: React.FC<SetsViewProps> = ({ portfolio, onSelectSet }) =>
                   </div>
                   
                   {/* Progress Track */}
-                  <div className="w-full h-2 bg-background border border-primary rounded-full overflow-hidden">
+                  <div className="w-full h-2 bg-surface-hover rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-verge-ultraviolet dark:bg-jelly-mint transition-all duration-300"
-                      style={{ width: `${percent > 0 ? Math.max(percent, 5) : 0}%` }}
+                      className="h-full bg-ferrari-red rounded-full transition-all duration-300"
+                      style={{ width: `${percent > 0 ? Math.max(percent, 4) : 0}%` }}
                     />
                   </div>
                 </div>
