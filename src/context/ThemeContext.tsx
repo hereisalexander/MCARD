@@ -27,7 +27,7 @@ const applyThemeClass = (targetTheme: ThemeMode) => {
 };
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [theme, setThemeState] = useState<ThemeMode>('dark');
+  const [theme, setThemeState] = useState<ThemeMode>('light');
 
   // Load saved theme from localStorage on mount
   useEffect(() => {
@@ -37,7 +37,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         setThemeState(saved);
         applyThemeClass(saved);
       } else {
-        applyThemeClass('dark');
+        applyThemeClass('light');
       }
     }, 0);
     return () => clearTimeout(timer);

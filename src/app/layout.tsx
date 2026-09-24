@@ -32,7 +32,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${interFont.variable} ${monoFont.variable} h-full antialiased dark`}
+      className={`${interFont.variable} ${monoFont.variable} h-full antialiased light`}
     >
       <body className="min-h-full flex flex-col font-sans bg-background text-foreground selection:bg-ferrari-red selection:text-white transition-colors duration-200">
         <ThemeProvider>
