@@ -11,7 +11,8 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-const LANGUAGE_STORAGE_KEY = 'pokemon_collector_language';
+const LANGUAGE_STORAGE_KEY = 'mcard_language';
+const OLD_LANGUAGE_STORAGE_KEY = 'pokemon_collector_language';
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>('en');
@@ -19,7 +20,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   // Load language preference from localStorage on mount
   useEffect(() => {
     const timer = setTimeout(() => {
-      const savedLang = localStorage.getItem(LANGUAGE_STORAGE_KEY) as Language;
+      const savedLang = (localStorage.getItem(LANGUAGE_STORAGE_KEY) || localStorage.getItem(OLD_LANGUAGE_STORAGE_KEY)) as Language;
       if (savedLang && (savedLang === 'en' || savedLang === 'zh-TW' || savedLang === 'zh-CN')) {
         setLanguageState(savedLang);
       }

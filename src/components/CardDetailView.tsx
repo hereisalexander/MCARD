@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { ApiPokemonCard } from '@/services/pokemonApi';
+import { UniversalCard, CardCategory } from '@/services/multiCardService';
 import { CardCondition } from '@/components/PortfolioDashboard';
 import { HoloCard } from '@/components/HoloCard';
 import { useLanguage } from '@/context/LanguageContext';
@@ -9,15 +9,17 @@ import { useLanguage } from '@/context/LanguageContext';
 type TimeRange = '1M' | '3M' | '6M' | '1Y';
 
 interface CardDetailViewProps {
-  card: ApiPokemonCard;
+  card: UniversalCard;
   onBack: () => void;
-  onAddCard: (cardName: string, price: number, imageUrl: string, condition: CardCondition) => void;
+  onAddCard: (cardName: string, price: number, imageUrl: string, condition: CardCondition, category?: CardCategory) => void;
+  onSelectCategory?: (category: CardCategory) => void;
 }
 
 export const CardDetailView: React.FC<CardDetailViewProps> = ({
   card,
   onBack,
   onAddCard,
+  onSelectCategory,
 }) => {
   const { t } = useLanguage();
   const [selectedCondition, setSelectedCondition] = useState<CardCondition>('Ungraded');
@@ -202,27 +204,47 @@ export const CardDetailView: React.FC<CardDetailViewProps> = ({
   }, [pointsCoords]);
 
   const handleAddClick = () => {
-    onAddCard(card.name, currentPrice, card.imageUrl, selectedCondition);
+    onAddCard(card.name, currentPrice, card.imageUrl, selectedCondition, card.category);
   };
 
   const lastPoint = pointsCoords[pointsCoords.length - 1];
 
   return (
     <div className="w-full py-6 flex flex-col gap-8 animate-fade-in">
-      {/* Top Back Navigation Bar */}
-      <div className="flex items-center justify-between border-b border-hairline/60 pb-4">
-        <button
-          onClick={onBack}
-          className="h-10 px-5 rounded-full border border-hairline bg-surface font-sans text-xs font-semibold tracking-wide text-foreground hover:bg-surface-hover transition-colors cursor-pointer flex items-center gap-2 shadow-sm"
-        >
-          {t('back_to_explore')}
-        </button>
-
+      {/* Top Back Navigation Bar & Breadcrumbs */}
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-hairline/60 pb-4">
         <div className="flex items-center gap-3">
-          <span className="rounded-full px-3 py-1 bg-surface-hover border border-hairline text-foreground font-mono text-[10px] font-semibold tracking-wide">
+          <button
+            onClick={onBack}
+            className="h-9 px-4 rounded-xl border border-hairline bg-surface font-sans text-xs font-semibold tracking-wide text-foreground hover:bg-surface-hover hover:border-ferrari-red transition-all duration-150 cursor-pointer flex items-center gap-2 shadow-xs"
+            aria-label={t('back_to_explore')}
+          >
+            <span>{t('back_to_explore')}</span>
+          </button>
+
+          {/* Breadcrumbs */}
+          <nav className="hidden sm:flex items-center gap-1.5 text-xs text-text-muted font-medium" aria-label="Breadcrumb">
+            <span className="text-hairline">/</span>
+            {card.category && (
+              <>
+                <button
+                  onClick={() => onSelectCategory ? onSelectCategory(card.category!) : onBack()}
+                  className="hover:text-ferrari-red transition-colors uppercase font-semibold cursor-pointer text-[11px]"
+                >
+                  {card.category}
+                </button>
+                <span className="text-hairline">/</span>
+              </>
+            )}
+            <span className="text-foreground font-medium max-w-[200px] truncate">{card.name}</span>
+          </nav>
+        </div>
+
+        <div className="flex items-center gap-2.5">
+          <span className="rounded-lg px-3 py-1 bg-surface-hover border border-hairline text-foreground font-mono text-[11px] font-semibold tracking-wide">
             {card.set}
           </span>
-          <span className="font-mono text-xs text-text-muted">#{card.number}</span>
+          <span className="font-mono text-xs text-text-muted font-medium">#{card.number}</span>
         </div>
       </div>
 
@@ -236,9 +258,11 @@ export const CardDetailView: React.FC<CardDetailViewProps> = ({
           </div>
 
           <div className="flex flex-col items-center gap-1 border-t border-hairline/60 pt-4 w-full text-center">
-            <span className="text-[10px] text-text-muted uppercase tracking-wider font-semibold">{t('card_artist')}</span>
+            <span className="text-[10px] text-text-muted uppercase tracking-wider font-semibold">
+              {card.category === 'nba' || card.category === 'fifa' ? t('player_or_artist') : t('card_artist')}
+            </span>
             <span className="font-sans text-sm font-medium text-foreground tracking-wide">
-              {card.artist || 'Official Pokémon Artist'}
+              {card.artistOrPlayer || 'Official Card Illustrator'}
             </span>
           </div>
 
@@ -340,8 +364,8 @@ export const CardDetailView: React.FC<CardDetailViewProps> = ({
                 <defs>
                   {/* Area Gradient */}
                   <linearGradient id="ferrariChartAreaGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#da291c" stopOpacity="0.22" />
-                    <stop offset="100%" stopColor="#da291c" stopOpacity="0.01" />
+                    <stop offset="0%" stopColor="#e7000b" stopOpacity="0.22" />
+                    <stop offset="100%" stopColor="#e7000b" stopOpacity="0.01" />
                   </linearGradient>
 
                   {/* Dot Grid Pattern */}
@@ -397,7 +421,7 @@ export const CardDetailView: React.FC<CardDetailViewProps> = ({
                 <path
                   d={pathD}
                   fill="none"
-                  stroke="#da291c"
+                  stroke="#e7000b"
                   strokeWidth="2.5"
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -423,8 +447,8 @@ export const CardDetailView: React.FC<CardDetailViewProps> = ({
                     transform={`translate(${lastPoint.x}, ${lastPoint.y})`}
                     style={{ transition: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)' }}
                   >
-                    <circle r="6" fill="#da291c" opacity="0.3" className="animate-ping" />
-                    <circle r="4" fill="#da291c" stroke="#ffffff" strokeWidth="1.5" />
+                    <circle r="6" fill="#e7000b" opacity="0.3" className="animate-ping" />
+                    <circle r="4" fill="#e7000b" stroke="#ffffff" strokeWidth="1.5" />
                   </g>
                 )}
 
@@ -436,7 +460,7 @@ export const CardDetailView: React.FC<CardDetailViewProps> = ({
                       y1={marginTop}
                       x2={pointsCoords[hoveredPointIndex].x}
                       y2={marginTop + chartInnerHeight}
-                      stroke="#da291c"
+                      stroke="#e7000b"
                       strokeDasharray="2 2"
                       strokeWidth="1"
                     />
@@ -445,7 +469,7 @@ export const CardDetailView: React.FC<CardDetailViewProps> = ({
                       cy={pointsCoords[hoveredPointIndex].y}
                       r="5"
                       fill="#ffffff"
-                      stroke="#da291c"
+                      stroke="#e7000b"
                       strokeWidth="2.5"
                     />
                   </g>

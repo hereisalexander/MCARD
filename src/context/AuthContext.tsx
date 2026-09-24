@@ -24,7 +24,8 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const AUTH_STORAGE_KEY = 'pokemon_collector_user_session';
+const AUTH_STORAGE_KEY = 'mcard_user_session';
+const OLD_AUTH_STORAGE_KEY = 'pokemon_collector_user_session';
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<UserProfile | null>(null);
@@ -34,7 +35,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const timer = setTimeout(() => {
       try {
-        const savedSession = localStorage.getItem(AUTH_STORAGE_KEY);
+        const savedSession = localStorage.getItem(AUTH_STORAGE_KEY) || localStorage.getItem(OLD_AUTH_STORAGE_KEY);
         if (savedSession) {
           setUser(JSON.parse(savedSession));
         }

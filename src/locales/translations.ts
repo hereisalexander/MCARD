@@ -100,7 +100,18 @@ export type TranslationKey =
   | 'quantity_label'
   | 'image_url_label'
   | 'cancel'
-  | 'confirm_add';
+  | 'confirm_add'
+  // Multi-Category Keys
+  | 'cat_all'
+  | 'cat_pokemon'
+  | 'cat_yugioh'
+  | 'cat_onepiece'
+  | 'cat_dragonball'
+  | 'cat_nba'
+  | 'cat_fifa'
+  | 'cat_breakdown_title'
+  | 'player_or_artist'
+  | 'release_year';
 
 export const translations: Record<Language, Record<TranslationKey, string>> = {
   en: {
@@ -204,6 +215,16 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     image_url_label: 'Card Image URL (Optional)',
     cancel: 'Cancel',
     confirm_add: 'Add to Portfolio',
+    cat_all: 'All',
+    cat_pokemon: 'Pokémon',
+    cat_yugioh: 'Yu-Gi-Oh!',
+    cat_onepiece: 'One Piece',
+    cat_dragonball: 'Dragon Ball',
+    cat_nba: 'NBA Cards',
+    cat_fifa: 'FIFA Football',
+    cat_breakdown_title: 'Asset Allocation by Category',
+    player_or_artist: 'Player / Artist',
+    release_year: 'Release Year',
   },
   'zh-TW': {
     // Navigation & Header
@@ -306,6 +327,16 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     image_url_label: '卡牌圖片網址 (選填)',
     cancel: '取消',
     confirm_add: '確認加入資產庫',
+    cat_all: '全部',
+    cat_pokemon: '寶可夢',
+    cat_yugioh: '遊戲王',
+    cat_onepiece: '海賊王',
+    cat_dragonball: '七龍珠',
+    cat_nba: 'NBA 球星卡',
+    cat_fifa: 'FIFA 足球卡',
+    cat_breakdown_title: '跨品類資產配置分佈',
+    player_or_artist: '球星 / 繪師',
+    release_year: '發行年份',
   },
   'zh-CN': {
     // Navigation & Header
@@ -408,5 +439,15 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     image_url_label: '卡牌图片网址 (选填)',
     cancel: '取消',
     confirm_add: '确认加入资产库',
+    cat_all: '全部',
+    cat_pokemon: '宝可梦',
+    cat_yugioh: '游戏王',
+    cat_onepiece: '航海王',
+    cat_dragonball: '七龙珠',
+    cat_nba: 'NBA 球星卡',
+    cat_fifa: 'FIFA 足球卡',
+    cat_breakdown_title: '跨品类资产配置分布',
+    player_or_artist: '球星 / 画师',
+    release_year: '发行年份',
   },
 };

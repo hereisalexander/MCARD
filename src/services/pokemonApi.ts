@@ -141,23 +141,22 @@ export const fetchPokemonCardsFromApi = async ({
 
     const qParam = queryParts.length > 0 ? queryParts.join(' ') : '';
     
-    // Try internal proxy route first for max reliability, fallback to direct API
-    const proxyUrl = `/api/pokemon/cards?page=${page}&pageSize=${pageSize}${qParam ? `&q=${encodeURIComponent(qParam)}` : ''}`;
     const directUrl = `https://api.pokemontcg.io/v2/cards?page=${page}&pageSize=${pageSize}${qParam ? `&q=${encodeURIComponent(qParam)}` : ''}`;
 
     let response: Response;
     try {
-      response = await fetch(proxyUrl);
-      if (!response.ok) {
-        throw new Error(`Proxy status: ${response.status}`);
-      }
-    } catch {
-      // Fallback to direct API with headers if proxy fails
       response = await fetch(directUrl, {
         headers: {
           'Accept': 'application/json',
         },
       });
+      if (!response.ok) {
+        throw new Error(`Direct API status: ${response.status}`);
+      }
+    } catch {
+      // Fallback to internal proxy route if available
+      const proxyUrl = `/api/pokemon/cards?page=${page}&pageSize=${pageSize}${qParam ? `&q=${encodeURIComponent(qParam)}` : ''}`;
+      response = await fetch(proxyUrl);
     }
 
     if (!response.ok) {
@@ -327,11 +326,23 @@ export const FALLBACK_POKEMON_SETS: ApiPokemonSet[] = [
 
 export const fetchPokemonSets = async (): Promise<ApiPokemonSet[]> => {
   try {
-    const internalUrl = '/api/pokemon/sets';
-    const response = await fetch(internalUrl);
+    const directUrl = 'https://api.pokemontcg.io/v2/sets?orderBy=-releaseDate&pageSize=36';
+    let response: Response;
+    try {
+      response = await fetch(directUrl, {
+        headers: {
+          'Accept': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`Direct sets API status: ${response.status}`);
+      }
+    } catch {
+      response = await fetch('/api/pokemon/sets');
+    }
 
     if (!response.ok) {
-      console.warn('[Pokemon TCG API] Internal Sets API returned non-OK status, using fallback sets.');
+      console.warn('[Pokemon TCG API] Sets API returned non-OK status, using fallback sets.');
       return FALLBACK_POKEMON_SETS;
     }
 
@@ -341,7 +352,7 @@ export const fetchPokemonSets = async (): Promise<ApiPokemonSet[]> => {
     }
     return FALLBACK_POKEMON_SETS;
   } catch (error) {
-    console.warn('[Pokemon TCG API] Internal Sets API failed, using fallback sets:', error);
+    console.warn('[Pokemon TCG API] Sets API failed, using fallback sets:', error);
     return FALLBACK_POKEMON_SETS;
   }
 };

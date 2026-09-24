@@ -1,6 +1,6 @@
 <div align="center">
 
-# ⚡ Pokémon Collector (寶可夢卡牌投資與收藏管理系統)
+# ⚡ MCARD (多領域卡牌與體育球星卡投資與收藏管理系統)
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![Next.js](https://img.shields.io/badge/Next.js-16.2-black?style=flat&logo=next.js)](https://nextjs.org/)
@@ -63,10 +63,10 @@
 
 ```bash
 # 複製專案
-git clone https://github.com/hereisalexander/Pokemon_Collector.git
+git clone https://github.com/hereisalexander/MCARD.git
 
 # 進入專案目錄
-cd Pokemon_Collector
+cd MCARD
 
 # 安裝相依套件
 npm install

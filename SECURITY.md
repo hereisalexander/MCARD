@@ -1,6 +1,6 @@
 # 安全政策 (Security Policy)
 
-感謝你協助維護 **Pokémon Collector** 的安全性與穩健性。我們非常重視專案與使用者的安全。
+感謝你協助維護 **MCARD** 的安全性與穩健性。我們非常重視專案與使用者的安全。
 
 ---
 
@@ -22,7 +22,7 @@
 我們完全透過 **GitHub 平台** 進行私密安全漏洞回報與處理（無需寄送 Email）：
 
 ### 🛡️ 建議通報管道：GitHub 私密安全通報 (Private Vulnerability Reporting)
-1. 前往本儲存庫的 **[Security Advisories 頁面](https://github.com/hereisalexander/Pokemon_Collector/security/advisories/new)**。
+1. 前往本儲存庫的 **[Security Advisories 頁面](https://github.com/hereisalexander/MCARD/security/advisories/new)**。
 2. 點擊 **"Report a vulnerability"** 建立私密報告。
 3. 詳細填寫以下資訊：
    - 受影響的元件、檔案或路由（例如 API 端點、狀態持久化邏輯等）。

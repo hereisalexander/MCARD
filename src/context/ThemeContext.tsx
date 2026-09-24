@@ -12,7 +12,8 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-const THEME_STORAGE_KEY = 'pokemon_collector_theme';
+const THEME_STORAGE_KEY = 'mcard_theme';
+const OLD_THEME_STORAGE_KEY = 'pokemon_collector_theme';
 
 const applyThemeClass = (targetTheme: ThemeMode) => {
   const root = document.documentElement;
@@ -31,7 +32,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // Load saved theme from localStorage on mount
   useEffect(() => {
     const timer = setTimeout(() => {
-      const saved = localStorage.getItem(THEME_STORAGE_KEY) as ThemeMode;
+      const saved = (localStorage.getItem(THEME_STORAGE_KEY) || localStorage.getItem(OLD_THEME_STORAGE_KEY)) as ThemeMode;
       if (saved && (saved === 'light' || saved === 'dark')) {
         setThemeState(saved);
         applyThemeClass(saved);

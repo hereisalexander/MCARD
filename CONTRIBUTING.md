@@ -1,6 +1,6 @@
 # 🤝 貢獻指南 (Contributing Guide)
 
-感謝你對 **Pokémon Collector** 的關注與支持！我們歡迎任何形式的貢獻，包括但不限於：問題回報（Bug Reports）、新功能建議（Feature Requests）、文件改進以及代碼提交（Pull Requests）。
+感謝你對 **MCARD** 的關注與支持！我們歡迎任何形式的貢獻，包括但不限於：問題回報（Bug Reports）、新功能建議（Feature Requests）、文件改進以及代碼提交（Pull Requests）。
 
 在開始貢獻前，請花一點時間閱讀以下指引，並請遵守我們的 [行為準則 (Code of Conduct)](./CODE_OF_CONDUCT.md)。
 
@@ -28,8 +28,8 @@
 
 2. **Clone 至本機**：
    ```bash
-   git clone https://github.com/<your-username>/Pokemon_Collector.git
-   cd Pokemon_Collector
+   git clone https://github.com/<your-username>/MCARD.git
+   cd MCARD
    ```
 
 3. **安裝相依套件**：

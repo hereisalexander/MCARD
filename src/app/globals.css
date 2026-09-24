@@ -7,32 +7,34 @@
   --border-color: #e4e4e7;
   --surface: #ffffff;
   --surface-hover: #f4f4f5;
+  --canvas: #ffffff;
   --canvas-dark: #ffffff;
   --canvas-elevated: #ffffff;
   --text-muted: #71717a;
   --text-body: #18181b;
   --hairline: #e4e4e7;
-  --primary: #da291c;
-  --primary-hover: #9d2211;
-  --primary-active: #b01e0a;
+  --primary: #e7000b;
+  --primary-hover: #c4000a;
+  --primary-active: #a00008;
   --accent-yellow: #ca8a04;
 }
 
 html.dark {
-  /* Dark Mode (Ferrari classic near-black racing canvas) */
+  /* Dark Mode (Tailwind v4 Red 600 Theme) */
   --background: #181818;
   --foreground: #ffffff;
   --border-color: #303030;
   --surface: #303030;
   --surface-hover: #3a3a3a;
+  --canvas: #181818;
   --canvas-dark: #181818;
   --canvas-elevated: #303030;
   --text-muted: #969696;
   --text-body: #969696;
   --hairline: #303030;
-  --primary: #da291c;
-  --primary-hover: #9d2211;
-  --primary-active: #b01e0a;
+  --primary: #e7000b;
+  --primary-hover: #c4000a;
+  --primary-active: #a00008;
   --accent-yellow: #f6e500;
 }
 
@@ -46,10 +48,11 @@ html.dark {
   --color-text-body: var(--text-body);
   --color-hairline: var(--hairline);
 
-  /* Ferrari Design System Tokens */
-  --color-ferrari-red: #da291c;
-  --color-ferrari-red-active: #b01e0a;
-  --color-ferrari-red-hover: #9d2211;
+  /* Tailwind v4 Red 600 Tokens (#e7000b) */
+  --color-ferrari-red: #e7000b;
+  --color-ferrari-red-active: #a00008;
+  --color-ferrari-red-hover: #c4000a;
+  --color-canvas: var(--canvas);
   --color-canvas-dark: var(--canvas-dark);
   --color-canvas-elevated: var(--canvas-elevated);
   --color-surface-card: var(--canvas-elevated);

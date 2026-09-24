@@ -7,24 +7,24 @@ import { CardGrid } from '@/components/CardGrid';
 import { SetsView } from '@/components/SetsView';
 import { PortfolioDashboard, UserPortfolioItem, CardCondition } from '@/components/PortfolioDashboard';
 import { CardDetailView } from '@/components/CardDetailView';
-import { ApiPokemonCard } from '@/services/pokemonApi';
+import { UniversalCard, CardCategory } from '@/services/multiCardService';
+import { FooterModals, FooterModalType } from '@/components/FooterModals';
 
 interface ToastState {
   show: boolean;
   message: string;
 }
 
-import { FooterModals, FooterModalType } from '@/components/FooterModals';
-
 export default function Home() {
   const [activeTab, setActiveTab] = useState<string>('stream');
+  const [selectedCategory, setSelectedCategory] = useState<CardCategory>('all');
   const [portfolio, setPortfolio] = useState<UserPortfolioItem[]>([]);
   const [selectedSetFilter, setSelectedSetFilter] = useState<string>('ALL');
   const [toast, setToast] = useState<ToastState>({ show: false, message: '' });
   const [footerModal, setFooterModal] = useState<FooterModalType>(null);
   
   // State for Full-Page Card Detail View
-  const [selectedDetailCard, setSelectedDetailCard] = useState<ApiPokemonCard | null>(null);
+  const [selectedDetailCard, setSelectedDetailCard] = useState<UniversalCard | null>(null);
 
   // Load portfolio from localStorage on mount & perform safe migration for old items
   useEffect(() => {
@@ -37,6 +37,7 @@ export default function Home() {
             const migrated: UserPortfolioItem[] = parsed.map((item: Partial<UserPortfolioItem>) => ({
               id: item.id || `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
               name: item.name || 'Unknown Card',
+              category: item.category || 'pokemon',
               price: item.price || 0,
               buyPrice: item.buyPrice ?? item.price ?? 0,
               quantity: item.quantity && item.quantity > 0 ? item.quantity : 1,
@@ -65,6 +66,7 @@ export default function Home() {
     price: number,
     imageUrl: string,
     condition: CardCondition = 'Ungraded',
+    category: CardCategory = 'pokemon',
     buyPrice?: number
   ) => {
     const cost = buyPrice !== undefined ? buyPrice : price;
@@ -85,6 +87,7 @@ export default function Home() {
       const newItem: UserPortfolioItem = {
         id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         name: cardName,
+        category,
         price,
         buyPrice: cost,
         quantity: 1,
@@ -100,7 +103,7 @@ export default function Home() {
       savePortfolio(updated);
     }
     
-    // Show Ferrari telemetry toast
+    // Show telemetry toast
     setToast({
       show: true,
       message: `ADDED: ${cardName.toUpperCase()} TO PORTFOLIO`,
@@ -121,6 +124,7 @@ export default function Home() {
     const sanitized: UserPortfolioItem[] = importedItems.map((item) => ({
       id: item.id || `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       name: item.name || 'Imported Card',
+      category: item.category || 'pokemon',
       price: item.price || 0,
       buyPrice: item.buyPrice ?? item.price ?? 0,
       quantity: item.quantity && item.quantity > 0 ? item.quantity : 1,
@@ -141,12 +145,22 @@ export default function Home() {
     setActiveTab('explore');
   };
 
-  const handleSelectCardDetail = (card: ApiPokemonCard) => {
+  const handleSelectCardDetail = (card: UniversalCard) => {
     setSelectedDetailCard(card);
+    if (card.category) {
+      setSelectedCategory(card.category);
+    }
   };
 
   const handleBackFromDetail = () => {
     setSelectedDetailCard(null);
+  };
+
+  const handleSelectCategory = (cat: CardCategory) => {
+    setSelectedCategory(cat);
+    setSelectedDetailCard(null);
+    setActiveTab('explore');
+    setSelectedSetFilter('ALL');
   };
 
   // Hide toast after timeout
@@ -176,21 +190,28 @@ export default function Home() {
         }}
         portfolioCount={portfolioItemCount}
         portfolioValue={portfolioValue}
+        selectedCategory={selectedCategory}
+        onCategoryChange={handleSelectCategory}
+        onSelectSet={(setName) => {
+          setSelectedCategory('pokemon');
+          handleSelectSetFromSets(setName);
+        }}
       />
 
-      <main className="flex-1 w-full max-w-[1600px] mx-auto px-4 md:px-10 py-8">
+      <main className="flex-1 w-full max-w-[1600px] mx-auto px-4 md:px-10 py-6">
         {/* Full Page Card Detail View when card is selected */}
         {selectedDetailCard ? (
           <CardDetailView
             card={selectedDetailCard}
             onBack={handleBackFromDetail}
-            onAddCard={handleAddCard}
+            onAddCard={(name, price, img, cond, cat) => handleAddCard(name, price, img, cond, cat || selectedCategory)}
+            onSelectCategory={handleSelectCategory}
           />
         ) : (
           <>
             {activeTab === 'stream' && (
               <PaddockTelemetry
-                onAddCard={handleAddCard}
+                onAddCard={(name, price, img) => handleAddCard(name, price, img, 'Ungraded', 'pokemon')}
                 onExploreClick={() => setActiveTab('explore')}
                 onPortfolioClick={() => setActiveTab('portfolio')}
               />
@@ -198,7 +219,9 @@ export default function Home() {
             
             {activeTab === 'explore' && (
               <CardGrid
-                onAddCard={handleAddCard}
+                category={selectedCategory}
+                onSelectCategory={handleSelectCategory}
+                onAddCard={(name, price, img, cond, cat) => handleAddCard(name, price, img, cond, cat || selectedCategory)}
                 onSelectCardDetail={handleSelectCardDetail}
                 initialSetFilter={selectedSetFilter}
               />
@@ -249,7 +272,7 @@ export default function Home() {
           <div className="flex items-center gap-2.5">
             <div className="w-1 h-3.5 bg-ferrari-red" />
             <span className="font-sans text-[11px] tracking-[0.5px] text-text-muted">
-              © 2026 MCARD. Archive & Telemetry Edition. All rights reserved.
+              © 2026 MCARD. Multi-TCG & Sports Cards Telemetry Edition. All rights reserved.
             </span>
           </div>
           <div className="flex gap-4 font-sans text-[11px] tracking-[0.5px] text-text-muted">
