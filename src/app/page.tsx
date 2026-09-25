@@ -96,8 +96,15 @@ export default function Home() {
       if (savedWishlist) {
         try {
           const parsedWishlist = JSON.parse(savedWishlist);
-          if (Array.isArray(parsedWishlist) && parsedWishlist.length > 0) {
-            setWishlist(parsedWishlist);
+          if (Array.isArray(parsedWishlist)) {
+            // Filter out legacy dummy demo items
+            const cleaned = parsedWishlist.filter(
+              (item: WishlistItem) => item.id !== 'wish-mewtwo-vstar' && item.id !== 'wish-luffy-gear5'
+            );
+            setWishlist(cleaned);
+            if (cleaned.length !== parsedWishlist.length) {
+              localStorage.setItem('mcard_wishlist_items', JSON.stringify(cleaned));
+            }
           }
         } catch (e) {
           console.error('Failed to parse wishlist from localStorage', e);
