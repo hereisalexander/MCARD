@@ -4,6 +4,7 @@ import React, { useState, useRef, useMemo } from 'react';
 import { HoloCard } from '@/components/HoloCard';
 import { useLanguage } from '@/context/LanguageContext';
 import { CardCategory } from '@/services/multiCardService';
+import { TagIcon } from '@/components/icons/AppIcons';
 
 export type CardCondition = 'Ungraded' | 'PSA 10' | 'PSA 9' | 'BGS 10' | 'BGS Black Label';
 
@@ -26,6 +27,8 @@ interface PortfolioDashboardProps {
   onImportPortfolio: (importedItems: UserPortfolioItem[]) => void;
   portfolioValue: number;
   mode: 'portfolio' | 'showcase';
+  listings?: import('@/types/marketplace').CardListing[];
+  onNavigateToMarket?: () => void;
 }
 
 const CATEGORY_COLORS: Record<CardCategory, { label: string; barColor: string; textColor: string }> = {
@@ -45,6 +48,8 @@ export const PortfolioDashboard: React.FC<PortfolioDashboardProps> = ({
   onImportPortfolio,
   portfolioValue,
   mode,
+  listings = [],
+  onNavigateToMarket,
 }) => {
   const { t } = useLanguage();
   const [editingBuyPriceId, setEditingBuyPriceId] = useState<string | null>(null);
@@ -481,6 +486,28 @@ export const PortfolioDashboard: React.FC<PortfolioDashboardProps> = ({
                         <option value="BGS 10">BGS 10</option>
                         <option value="BGS Black Label">BGS BLACK LABEL</option>
                       </select>
+
+                      {/* Marketplace Active Listing Badge */}
+                      {(() => {
+                        const activeListing = listings.find(
+                          (l) =>
+                            l.isOwner &&
+                            l.status === 'active' &&
+                            (l.portfolioCardId === item.id ||
+                              l.cardName.toLowerCase() === item.name.toLowerCase())
+                        );
+                        if (!activeListing) return null;
+                        return (
+                          <button
+                            onClick={onNavigateToMarket}
+                            className="px-2 py-0.5 rounded-full bg-ferrari-red/10 border border-ferrari-red/30 text-ferrari-red font-mono text-[9px] font-bold flex items-center gap-1 hover:bg-ferrari-red hover:text-white transition-colors cursor-pointer"
+                            title="點擊前往市集查看該卡刊登"
+                          >
+                            <TagIcon className="w-2.5 h-2.5" />
+                            <span>市集刊登中 · ${activeListing.askingPrice.toLocaleString()}</span>
+                          </button>
+                        );
+                      })()}
                     </div>
 
                     <div className="flex items-center gap-3 font-mono text-[10px] text-text-muted">

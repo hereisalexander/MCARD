@@ -4,6 +4,8 @@ import React, { useState, useMemo } from 'react';
 import { UniversalCard, CardCategory } from '@/services/multiCardService';
 import { CardCondition } from '@/components/PortfolioDashboard';
 import { HoloCard } from '@/components/HoloCard';
+import { HeartIcon, ExternalLinkIcon } from '@/components/icons/AppIcons';
+import { getEbayAffiliateUrl, getTcgplayerAffiliateUrl, trackAffiliateClick } from '@/utils/affiliate';
 import { useLanguage } from '@/context/LanguageContext';
 
 type TimeRange = '1M' | '3M' | '6M' | '1Y';
@@ -13,6 +15,8 @@ interface CardDetailViewProps {
   onBack: () => void;
   onAddCard: (cardName: string, price: number, imageUrl: string, condition: CardCondition, category?: CardCategory) => void;
   onSelectCategory?: (category: CardCategory) => void;
+  isInWishlist?: boolean;
+  onToggleWishlist?: (card: UniversalCard) => void;
 }
 
 export const CardDetailView: React.FC<CardDetailViewProps> = ({
@@ -20,11 +24,38 @@ export const CardDetailView: React.FC<CardDetailViewProps> = ({
   onBack,
   onAddCard,
   onSelectCategory,
+  isInWishlist = false,
+  onToggleWishlist,
 }) => {
   const { t } = useLanguage();
   const [selectedCondition, setSelectedCondition] = useState<CardCondition>('Ungraded');
   const [timeRange, setTimeRange] = useState<TimeRange>('1M');
   const [hoveredPointIndex, setHoveredPointIndex] = useState<number | null>(null);
+
+  // Dynamic condition-aware affiliate URLs
+  const ebayAffiliateUrl = useMemo(
+    () =>
+      getEbayAffiliateUrl({
+        name: card.name,
+        set: card.set,
+        number: card.number,
+        category: card.category,
+        condition: selectedCondition,
+      }),
+    [card, selectedCondition]
+  );
+
+  const tcgplayerAffiliateUrl = useMemo(
+    () =>
+      getTcgplayerAffiliateUrl({
+        name: card.name,
+        set: card.set,
+        number: card.number,
+        category: card.category,
+        tcgplayerUrl: card.tcgplayerUrl,
+      }),
+    [card]
+  );
 
   // Days count mapping per time range
   const daysCount = useMemo(() => {
@@ -266,16 +297,40 @@ export const CardDetailView: React.FC<CardDetailViewProps> = ({
             </span>
           </div>
 
-          {card.tcgplayerUrl && (
+          {/* Affiliate Outbound Purchase Buttons */}
+          <div className="flex flex-col gap-2.5 w-full pt-1">
             <a
-              href={card.tcgplayerUrl}
+              href={ebayAffiliateUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full h-11 flex items-center justify-center rounded-xl border border-hairline font-sans text-xs font-semibold tracking-wide text-center bg-surface-hover text-foreground hover:border-text-muted transition-colors duration-150"
+              onClick={() => trackAffiliateClick('ebay', `${card.name} (${selectedCondition})`, ebayAffiliateUrl)}
+              className="w-full h-11 px-4 flex items-center justify-between rounded-xl border border-hairline font-sans text-xs font-semibold tracking-wide bg-surface-hover text-foreground hover:border-amber-500/50 hover:bg-amber-500/5 transition-all shadow-2xs group cursor-pointer"
             >
-              {t('view_on_tcgplayer')}
+              <span className="flex items-center gap-2">
+                <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-500/15 text-amber-500 border border-amber-500/30">
+                  eBay
+                </span>
+                <span>{t('view_on_ebay')}</span>
+              </span>
+              <ExternalLinkIcon className="w-3.5 h-3.5 text-text-muted group-hover:text-amber-500 transition-colors" />
             </a>
-          )}
+
+            <a
+              href={tcgplayerAffiliateUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackAffiliateClick('tcgplayer', card.name, tcgplayerAffiliateUrl)}
+              className="w-full h-11 px-4 flex items-center justify-between rounded-xl border border-hairline font-sans text-xs font-semibold tracking-wide bg-surface-hover text-foreground hover:border-blue-500/50 hover:bg-blue-500/5 transition-all shadow-2xs group cursor-pointer"
+            >
+              <span className="flex items-center gap-2">
+                <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-blue-500/15 text-blue-500 border border-blue-500/30">
+                  TCGPlayer
+                </span>
+                <span>{t('view_on_tcgplayer')}</span>
+              </span>
+              <ExternalLinkIcon className="w-3.5 h-3.5 text-text-muted group-hover:text-blue-500 transition-colors" />
+            </a>
+          </div>
         </div>
 
         {/* Right 7 Cols: Advanced Price History & Financial Chart */}
@@ -517,12 +572,43 @@ export const CardDetailView: React.FC<CardDetailViewProps> = ({
               </select>
             </div>
 
-            <button
-              onClick={handleAddClick}
-              className="w-full sm:w-auto h-11 px-8 rounded-xl bg-ferrari-red text-white hover:bg-ferrari-red-hover active:bg-ferrari-red-active font-sans text-xs font-semibold tracking-wide transition-colors cursor-pointer shadow-sm"
-            >
-              {t('add_to_portfolio')} (${currentPrice.toFixed(2)})
-            </button>
+            <div className="flex items-center gap-2.5 w-full sm:w-auto">
+              <a
+                href={ebayAffiliateUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackAffiliateClick('ebay', `${card.name} (${selectedCondition})`, ebayAffiliateUrl)}
+                className="h-11 px-3.5 rounded-xl border border-hairline font-sans text-xs font-semibold tracking-wide bg-surface-hover hover:border-amber-500/50 hover:bg-amber-500/5 text-foreground transition-all cursor-pointer flex items-center justify-center gap-1.5 shrink-0"
+                title="在 eBay 查看全球現貨與競標"
+              >
+                <span className="font-mono text-[10px] font-bold text-amber-500">eBay</span>
+                <span className="hidden sm:inline">{t('find_on_ebay')}</span>
+                <ExternalLinkIcon className="w-3.5 h-3.5 text-text-muted" />
+              </a>
+
+              {onToggleWishlist && (
+                <button
+                  type="button"
+                  onClick={() => onToggleWishlist(card)}
+                  className={`h-11 px-4 rounded-xl border font-sans text-xs font-semibold tracking-wide transition-all cursor-pointer flex items-center justify-center gap-1.5 shrink-0 ${
+                    isInWishlist
+                      ? 'bg-rose-500/15 border-rose-500/50 text-rose-500'
+                      : 'bg-surface-hover hover:bg-surface-hover/80 border-hairline text-foreground'
+                  }`}
+                  title={isInWishlist ? '移出願望清單' : '加入願望清單'}
+                >
+                  <HeartIcon filled={isInWishlist} className={`w-4 h-4 ${isInWishlist ? 'text-rose-500' : 'text-text-muted'}`} />
+                  <span className="hidden sm:inline">{isInWishlist ? '已在心願單' : '加至心願單'}</span>
+                </button>
+              )}
+
+              <button
+                onClick={handleAddClick}
+                className="flex-1 sm:flex-none h-11 px-8 rounded-xl bg-ferrari-red text-white hover:bg-ferrari-red-hover active:bg-ferrari-red-active font-sans text-xs font-semibold tracking-wide transition-colors cursor-pointer shadow-sm text-center"
+              >
+                {t('add_to_portfolio')} (${currentPrice.toFixed(2)})
+              </button>
+            </div>
           </div>
 
         </div>

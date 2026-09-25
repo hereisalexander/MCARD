@@ -4,11 +4,13 @@ export type TranslationKey =
   // Navigation & Header
   | 'nav_stream'
   | 'nav_explore'
+  | 'nav_market'
   | 'nav_sets'
   | 'nav_showcase'
   | 'nav_portfolio'
   | 'nav_total_portfolio_value'
   | 'nav_select_language'
+  | 'nav_account'
 
   // Auth & User Profile
   | 'auth_login'
@@ -56,6 +58,11 @@ export type TranslationKey =
   | 'back_to_explore'
   | 'card_artist'
   | 'view_on_tcgplayer'
+  | 'view_on_ebay'
+  | 'find_on_ebay'
+  | 'tcgplayer_lowest_price'
+  | 'affiliate_disclosure_footer'
+  | 'affiliate_badge'
   | 'select_condition'
   | 'price_history_title'
   | 'price_change_3m'
@@ -111,18 +118,108 @@ export type TranslationKey =
   | 'cat_fifa'
   | 'cat_breakdown_title'
   | 'player_or_artist'
-  | 'release_year';
+  | 'release_year'
+
+  // Marketplace & P2P Trading
+  | 'marketplace_title'
+  | 'marketplace_subtitle'
+  | 'marketplace_p2p_badge'
+  | 'marketplace_list_card_btn'
+  | 'marketplace_tab_all'
+  | 'marketplace_tab_my'
+  | 'marketplace_tab_sold'
+  | 'marketplace_search_placeholder'
+  | 'marketplace_discount_only'
+  | 'marketplace_all_conditions'
+  | 'marketplace_all_categories'
+  | 'marketplace_seller_active_title'
+  | 'marketplace_seller_active_val'
+  | 'marketplace_seller_sold_title'
+  | 'marketplace_seller_sold_val'
+  | 'marketplace_seller_add_hint'
+  | 'marketplace_asking_price'
+  | 'marketplace_official_ref'
+  | 'marketplace_deal_sold_badge'
+  | 'marketplace_deal_completed'
+  | 'marketplace_realized_price'
+  | 'marketplace_my_listing_tag'
+  | 'marketplace_edit_price'
+  | 'marketplace_mark_sold'
+  | 'marketplace_delist'
+  | 'marketplace_empty_all'
+  | 'marketplace_empty_all_desc'
+  | 'marketplace_empty_my'
+  | 'marketplace_empty_my_desc'
+  | 'marketplace_empty_sold'
+  | 'marketplace_below_pct'
+  | 'marketplace_delist_confirm'
+  | 'marketplace_contact_seller'
+  | 'marketplace_seller_info'
+  | 'marketplace_copied_toast'
+  | 'modal_close'
+  | 'modal_asking_price'
+  | 'modal_official_ref'
+  | 'modal_below_market'
+  | 'modal_premium'
+  | 'modal_photo_hint'
+  | 'modal_seller_rating'
+  | 'modal_seller_sales'
+  | 'modal_posted_at'
+  | 'modal_trade_location'
+  | 'modal_condition_notes'
+  | 'modal_copy_contact'
+  | 'modal_copied'
+  | 'modal_safety_tip'
+  | 'create_modal_title'
+  | 'create_modal_err_name'
+  | 'create_modal_err_price'
+  | 'create_modal_err_contact'
+  | 'create_modal_import_label'
+  | 'create_modal_import_placeholder'
+  | 'create_modal_card_name'
+  | 'create_modal_card_name_ph'
+  | 'create_modal_category'
+  | 'create_modal_ref_price'
+  | 'create_modal_asking_price'
+  | 'create_modal_asking_price_ph'
+  | 'create_modal_comparison'
+  | 'create_modal_below_market'
+  | 'create_modal_equal_market'
+  | 'create_modal_above_market'
+  | 'create_modal_condition_label'
+  | 'create_modal_series_label'
+  | 'create_modal_series_ph'
+  | 'create_modal_photo_label'
+  | 'create_modal_photo_change'
+  | 'create_modal_photo_upload'
+  | 'create_modal_contact_label'
+  | 'create_modal_contact_ph'
+  | 'create_modal_location_label'
+  | 'create_modal_location_ph'
+  | 'create_modal_notes_label'
+  | 'create_modal_notes_ph'
+  | 'create_modal_submit'
+  | 'create_modal_default_notes'
+  | 'create_modal_default_location'
+  | 'create_modal_cond_psa10'
+  | 'create_modal_cond_psa9'
+  | 'create_modal_cond_bgs95'
+  | 'create_modal_cond_cgc10'
+  | 'create_modal_cond_raw_nm'
+  | 'create_modal_cond_played';
 
 export const translations: Record<Language, Record<TranslationKey, string>> = {
   en: {
     // Navigation & Header
-    nav_stream: 'Telemetry',
+    nav_stream: 'Live',
     nav_explore: 'Explore',
+    nav_market: 'Market',
     nav_sets: 'Sets',
     nav_showcase: 'Showcase',
     nav_portfolio: 'Portfolio',
     nav_total_portfolio_value: 'Total Portfolio Value',
     nav_select_language: 'Language',
+    nav_account: 'Account',
 
     // Auth & User Profile
     auth_login: 'Log In',
@@ -169,7 +266,12 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     // Card Detail View
     back_to_explore: '← Back to Explore',
     card_artist: 'Card Artist',
-    view_on_tcgplayer: 'View on TCGPlayer ↗',
+    view_on_tcgplayer: 'TCGPlayer Lowest',
+    view_on_ebay: 'View on eBay',
+    find_on_ebay: 'eBay Stock',
+    tcgplayer_lowest_price: 'TCGPlayer Lowest',
+    affiliate_disclosure_footer: 'Affiliate Disclosure: When you click links on this site to our partner merchants (such as eBay or TCGPlayer) and make a purchase, this site may earn an affiliate commission. This does not affect your purchase price.',
+    affiliate_badge: 'Verified Partner Merchant',
     select_condition: 'Select Condition & Grading',
     price_history_title: '{condition} Price History',
     price_change_3m: 'Price Change',
@@ -225,16 +327,108 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     cat_breakdown_title: 'Asset Allocation by Category',
     player_or_artist: 'Player / Artist',
     release_year: 'Release Year',
+
+    // Marketplace & P2P Trading
+    marketplace_title: 'P2P Physical Card Marketplace',
+    marketplace_subtitle: '0% Commission, Direct P2P Trading! Buy or sell authentic cards directly with verified collectors with live price benchmarks.',
+    marketplace_p2p_badge: 'P2P Verified Collector Market',
+    marketplace_list_card_btn: '+ List My Card',
+    marketplace_tab_all: 'All Market',
+    marketplace_tab_my: 'My Listings',
+    marketplace_tab_sold: 'Sold Archive',
+    marketplace_search_placeholder: 'Search cards, sellers, or sets...',
+    marketplace_discount_only: 'Below Market Deals Only',
+    marketplace_all_conditions: 'All Conditions',
+    marketplace_all_categories: 'All Categories',
+    marketplace_seller_active_title: 'Active Listings',
+    marketplace_seller_active_val: 'Total Listed Value',
+    marketplace_seller_sold_title: 'Completed Deals',
+    marketplace_seller_sold_val: 'Total Realized Revenue',
+    marketplace_seller_add_hint: 'Import from portfolio or list directly',
+    marketplace_asking_price: 'Asking Price',
+    marketplace_official_ref: 'Official Benchmark',
+    marketplace_deal_sold_badge: 'Sold',
+    marketplace_deal_completed: 'Deal Completed',
+    marketplace_realized_price: 'Realized',
+    marketplace_my_listing_tag: 'My Listing',
+    marketplace_edit_price: 'Edit Price',
+    marketplace_mark_sold: 'Mark Sold',
+    marketplace_delist: 'Delist',
+    marketplace_empty_all: 'No active listings found',
+    marketplace_empty_all_desc: 'Try resetting your search query or switching categories.',
+    marketplace_empty_my: 'You have not listed any cards yet',
+    marketplace_empty_my_desc: 'Click "+ List My Card" above to showcase your physical collection!',
+    marketplace_empty_sold: 'No sold archives found',
+    marketplace_below_pct: '{pct}% Below Market',
+    marketplace_delist_confirm: 'Are you sure you want to delist "{name}" from the marketplace?',
+    marketplace_contact_seller: 'Contact Seller',
+    marketplace_seller_info: 'Seller Information',
+    marketplace_copied_toast: 'Contact info copied to clipboard!',
+    modal_close: 'Close',
+    modal_asking_price: 'Asking Price',
+    modal_official_ref: 'Official Market Price:',
+    modal_below_market: 'Cheaper than market by {pct}% (Save ${save})',
+    modal_premium: 'Grade Premium +{pct}%',
+    modal_photo_hint: 'Actual photo by seller, condition as shown.',
+    modal_seller_rating: 'Rating {rating}',
+    modal_seller_sales: '{count} sales',
+    modal_posted_at: 'Posted {time}',
+    modal_trade_location: 'Location:',
+    modal_condition_notes: 'Seller Condition Notes:',
+    modal_copy_contact: 'Copy Seller {platform}: {val}',
+    modal_copied: 'Copied!',
+    modal_safety_tip: 'Free P2P info matching. Meet in safe public places for high-value cards.',
+
+    // Create Listing Modal
+    create_modal_title: 'List Card for Sale',
+    create_modal_err_name: 'Please enter card name!',
+    create_modal_err_price: 'Please enter a valid asking price!',
+    create_modal_err_contact: 'Please enter contact information (e.g., LINE ID or phone) so buyers can reach you!',
+    create_modal_import_label: 'Quick import from Portfolio',
+    create_modal_import_placeholder: '-- Select from existing holdings --',
+    create_modal_card_name: 'Card Name *',
+    create_modal_card_name_ph: 'e.g. Charizard ex SAR #199',
+    create_modal_category: 'Card Category',
+    create_modal_ref_price: 'Official Benchmark ($)',
+    create_modal_asking_price: 'Your Asking Price ($) *',
+    create_modal_asking_price_ph: 'Asking price',
+    create_modal_comparison: 'Market comparison:',
+    create_modal_below_market: 'Below official market by {pct}% (Save ${save})',
+    create_modal_equal_market: 'Equal to official market price',
+    create_modal_above_market: 'Above official benchmark +{pct}%',
+    create_modal_condition_label: 'Condition / Grading Tag',
+    create_modal_series_label: 'Expansion / Set',
+    create_modal_series_ph: 'e.g. 151 / Evolving Skies',
+    create_modal_photo_label: 'Physical Card Photo (Camera or Album)',
+    create_modal_photo_change: 'Change Photo',
+    create_modal_photo_upload: 'Take Photo or Upload Image',
+    create_modal_contact_label: 'Buyer Contact Method *',
+    create_modal_contact_ph: 'Enter your ID or account handle',
+    create_modal_location_label: 'Trade Location / Shipping',
+    create_modal_location_ph: 'e.g. Meetup in NYC / Tracked shipping',
+    create_modal_notes_label: 'Condition Description & Notes',
+    create_modal_notes_ph: 'Describe condition details (e.g., clean edges, magnetic case, smoke-free storage) to build buyer trust!',
+    create_modal_submit: 'Publish to Marketplace',
+    create_modal_default_notes: 'Authentic physical card collection. Feel free to contact for condition details.',
+    create_modal_default_location: 'Meetup available / Tracked shipping',
+    create_modal_cond_psa10: 'PSA 10 (Gem Mint)',
+    create_modal_cond_psa9: 'PSA 9 (Mint)',
+    create_modal_cond_bgs95: 'BGS 9.5 (Gold Label)',
+    create_modal_cond_cgc10: 'CGC 10 (Pristine)',
+    create_modal_cond_raw_nm: 'Ungraded Near Mint',
+    create_modal_cond_played: 'Played / Moderately Played',
   },
   'zh-TW': {
     // Navigation & Header
-    nav_stream: '即時遙測',
-    nav_explore: '探索圖鑑',
-    nav_sets: '卡牌擴充包',
+    nav_stream: '即時',
+    nav_explore: '探索',
+    nav_market: '市場',
+    nav_sets: '擴充包',
     nav_showcase: '3D展覽館',
-    nav_portfolio: '資產組合',
+    nav_portfolio: '資產',
     nav_total_portfolio_value: '收藏總資產估值',
     nav_select_language: '選擇語言',
+    nav_account: '帳戶',
 
     // Auth & User Profile
     auth_login: '會員登入',
@@ -281,7 +475,12 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     // Card Detail View
     back_to_explore: '← 返回圖鑑頁面',
     card_artist: '繪師資訊',
-    view_on_tcgplayer: '前往 TCGPLAYER 查看 ↗',
+    view_on_tcgplayer: '在 TCGPlayer 查看最低價 ↗',
+    view_on_ebay: '在 eBay 查看現貨 ↗',
+    find_on_ebay: 'eBay 現貨',
+    tcgplayer_lowest_price: 'TCGPlayer 最低價',
+    affiliate_disclosure_footer: '聯盟行銷聲明：當您點擊本站導向合作夥伴商戶（如 eBay 或 TCGPlayer）的推廣連結並完成購買時，本站可能會獲得微量佣金報酬。這不會增加您的購買費用，感謝您支持本站持續營運。',
+    affiliate_badge: '官方認證導購合作夥伴',
     select_condition: '選擇卡牌品相與鑑定等級',
     price_history_title: '{condition} 歷史價格走勢圖',
     price_change_3m: '價格變動',
@@ -337,16 +536,108 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     cat_breakdown_title: '跨品類資產配置分佈',
     player_or_artist: '球星 / 繪師',
     release_year: '發行年份',
+
+    // Marketplace & P2P Trading
+    marketplace_title: '實體卡自由交易市場',
+    marketplace_subtitle: '免抽成、零手續費！直接向真實卡友購買或出售正版實體卡，即時比對官方行情，透明安心。',
+    marketplace_p2p_badge: 'P2P 玩家認證市場',
+    marketplace_list_card_btn: '+ 上架我的實體卡',
+    marketplace_tab_all: '全部市場',
+    marketplace_tab_my: '我的刊登管理',
+    marketplace_tab_sold: '歷史成交紀錄',
+    marketplace_search_placeholder: '搜尋市場卡牌、賣家或系列...',
+    marketplace_discount_only: '僅看低於市價破盤卡',
+    marketplace_all_conditions: '全部卡況',
+    marketplace_all_categories: '全部分類',
+    marketplace_seller_active_title: '在庫刊登中卡牌',
+    marketplace_seller_active_val: '總掛牌估值',
+    marketplace_seller_sold_title: '已成功結案售出',
+    marketplace_seller_sold_val: '累計成交實收',
+    marketplace_seller_add_hint: '直接從資產庫匯入或拍照刊登',
+    marketplace_asking_price: '賣家報價',
+    marketplace_official_ref: '官方行情參考價',
+    marketplace_deal_sold_badge: '已成交',
+    marketplace_deal_completed: '已完成交易手續',
+    marketplace_realized_price: '實收',
+    marketplace_my_listing_tag: '我的刊登',
+    marketplace_edit_price: '改價',
+    marketplace_mark_sold: '標記售出',
+    marketplace_delist: '下架',
+    marketplace_empty_all: '目前沒有符合條件的卡牌商品',
+    marketplace_empty_all_desc: '可嘗試重設篩選條件或切換不同分類。',
+    marketplace_empty_my: '您目前尚未在市場刊登任何卡牌',
+    marketplace_empty_my_desc: '點擊上方「上架我的實體卡」，開始向全球卡友展示您的實體收藏！',
+    marketplace_empty_sold: '目前尚無已完成的成交歷史',
+    marketplace_below_pct: '低於市價 {pct}%',
+    marketplace_delist_confirm: '確定要將「{name}」從市場下架嗎？',
+    marketplace_contact_seller: '聯絡賣家',
+    marketplace_seller_info: '賣家詳細資訊',
+    marketplace_copied_toast: '聯絡方式已複製到剪貼簿！',
+    modal_close: '關閉',
+    modal_asking_price: '賣家期望售價',
+    modal_official_ref: '官方市場參考價：',
+    modal_below_market: '比官方行情便宜 {pct}% (省下 ${save})',
+    modal_premium: '評級溢價 +{pct}%',
+    modal_photo_hint: '賣家手機實體拍攝，品相以此圖為準',
+    modal_seller_rating: '評價 {rating}',
+    modal_seller_sales: '已售 {count} 筆',
+    modal_posted_at: '發布於 {time}',
+    modal_trade_location: '交易地區：',
+    modal_condition_notes: '賣家卡況說明：',
+    modal_copy_contact: '複製賣家 {platform}: {val}',
+    modal_copied: '已複製！',
+    modal_safety_tip: '平台提供免費資訊撮合，建議高價卡選擇公開場所面交驗卡。',
+
+    // Create Listing Modal
+    create_modal_title: '上架我的實體卡',
+    create_modal_err_name: '請填寫卡牌名稱！',
+    create_modal_err_price: '請輸入有效的出售售價！',
+    create_modal_err_contact: '請填寫聯絡方式（如 LINE ID 或電話），以便買家聯繫！',
+    create_modal_import_label: '從我的資產庫 (Portfolio) 一鍵快速匯入',
+    create_modal_import_placeholder: '-- 點擊選擇現有持倉卡牌 --',
+    create_modal_card_name: '卡牌名稱 *',
+    create_modal_card_name_ph: '例如：噴火龍 ex SAR #199',
+    create_modal_category: '卡牌分類',
+    create_modal_ref_price: '官方市場參考價 ($)',
+    create_modal_asking_price: '您的期望售價 ($) *',
+    create_modal_asking_price_ph: '期望開價',
+    create_modal_comparison: '行情比對：',
+    create_modal_below_market: '低於官方市價 {pct}% (省下 ${save})',
+    create_modal_equal_market: '符合官方行情價',
+    create_modal_above_market: '高於官方參考價 +{pct}%',
+    create_modal_condition_label: '卡況評級標籤',
+    create_modal_series_label: '所屬系列',
+    create_modal_series_ph: '例如：151 / 蒼空烈流',
+    create_modal_photo_label: '實體卡照片 (支援手機相機拍照或相簿)',
+    create_modal_photo_change: '更換實拍照',
+    create_modal_photo_upload: '拍照或上傳實體圖',
+    create_modal_contact_label: '買家聯繫方式 *',
+    create_modal_contact_ph: '請輸入您的 ID 或帳號',
+    create_modal_location_label: '交易地區 / 寄送方式',
+    create_modal_location_ph: '例如：雙北可面交 / 7-11店到店',
+    create_modal_notes_label: '卡況描述與交易說明',
+    create_modal_notes_ph: '說明卡牌現況（例如：四角無白邊、附磁吸卡夾、防潮箱存放），提高買家信任！',
+    create_modal_submit: '確認發布到市場',
+    create_modal_default_notes: '正版實體卡收藏，歡迎私訊洽談或確認卡況細節。',
+    create_modal_default_location: '雙北可面交 / 7-11店到店',
+    create_modal_cond_psa10: 'PSA 10 (滿分神卡)',
+    create_modal_cond_psa9: 'PSA 9 (Mint 完美)',
+    create_modal_cond_bgs95: 'BGS 9.5 (金標)',
+    create_modal_cond_cgc10: 'CGC 10 (Pristine)',
+    create_modal_cond_raw_nm: '未評級 NM (無傷裸卡)',
+    create_modal_cond_played: '微瑕 / 下場卡 (Played)',
   },
   'zh-CN': {
     // Navigation & Header
-    nav_stream: '实时遥测',
-    nav_explore: '探索图鉴',
-    nav_sets: '卡牌扩展包',
+    nav_stream: '即时',
+    nav_explore: '探索',
+    nav_market: '市场',
+    nav_sets: '扩展包',
     nav_showcase: '3D展览馆',
-    nav_portfolio: '资产组合',
+    nav_portfolio: '资产',
     nav_total_portfolio_value: '收藏总资产估值',
     nav_select_language: '选择语言',
+    nav_account: '账户',
 
     // Auth & User Profile
     auth_login: '会员登录',
@@ -393,7 +684,12 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     // Card Detail View
     back_to_explore: '← 返回图鉴页面',
     card_artist: '画师信息',
-    view_on_tcgplayer: '前往 TCGPLAYER 查看 ↗',
+    view_on_tcgplayer: '在 TCGPlayer 查看最低价 ↗',
+    view_on_ebay: '在 eBay 查看现货 ↗',
+    find_on_ebay: 'eBay 现货',
+    tcgplayer_lowest_price: 'TCGPlayer 最低价',
+    affiliate_disclosure_footer: '联盟营销声明：当您点击本站导向合作伙伴商户（如 eBay 或 TCGPlayer）的推广链接并完成购买时，本站可能会获得微量佣金报酬。这不会增加您的购买费用，感谢您支持本站持续营运。',
+    affiliate_badge: '官方认证导购合作伙伴',
     select_condition: '选择卡牌品相与鉴定等级',
     price_history_title: '{condition} 历史价格走势图',
     price_change_3m: '价格变动',
@@ -449,5 +745,97 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     cat_breakdown_title: '跨品类资产配置分布',
     player_or_artist: '球星 / 画师',
     release_year: '发行年份',
+
+    // Marketplace & P2P Trading
+    marketplace_title: '实体卡自由交易市场',
+    marketplace_subtitle: '免抽成、零手续费！直接向真实卡友购买或出售正版实体卡，实时比对官方行情，透明安心。',
+    marketplace_p2p_badge: 'P2P 玩家认证市场',
+    marketplace_list_card_btn: '+ 上架我的实体卡',
+    marketplace_tab_all: '全部市场',
+    marketplace_tab_my: '我的刊登管理',
+    marketplace_tab_sold: '历史成交记录',
+    marketplace_search_placeholder: '搜索市场卡牌、卖家或系列...',
+    marketplace_discount_only: '仅看低于市价破盘卡',
+    marketplace_all_conditions: '全部卡况',
+    marketplace_all_categories: '全部分类',
+    marketplace_seller_active_title: '在库刊登中卡牌',
+    marketplace_seller_active_val: '总挂牌估值',
+    marketplace_seller_sold_title: '已成功结案售出',
+    marketplace_seller_sold_val: '累计成交实收',
+    marketplace_seller_add_hint: '直接从资产库导入或拍照刊登',
+    marketplace_asking_price: '卖家报价',
+    marketplace_official_ref: '官方行情参考价',
+    marketplace_deal_sold_badge: '已成交',
+    marketplace_deal_completed: '已完成交易手续',
+    marketplace_realized_price: '实收',
+    marketplace_my_listing_tag: '我的刊登',
+    marketplace_edit_price: '改价',
+    marketplace_mark_sold: '标记售出',
+    marketplace_delist: '下架',
+    marketplace_empty_all: '目前没有符合条件的卡牌商品',
+    marketplace_empty_all_desc: '可尝试重设筛选条件或切换不同分类。',
+    marketplace_empty_my: '您目前尚未在市场刊登任何卡牌',
+    marketplace_empty_my_desc: '点击上方“上架我的实体卡”，开始向全球卡友展示您的实体收藏！',
+    marketplace_empty_sold: '目前尚无已完成的成交历史',
+    marketplace_below_pct: '低于市价 {pct}%',
+    marketplace_delist_confirm: '确定要将“{name}”从市场下架吗？',
+    marketplace_contact_seller: '联系卖家',
+    marketplace_seller_info: '卖家详细信息',
+    marketplace_copied_toast: '联系方式已复制到剪贴板！',
+
+    // Listing Detail & Action Modal
+    modal_close: '关闭',
+    modal_asking_price: '卖家挂牌售价',
+    modal_official_ref: '官方行情参考价',
+    modal_below_market: '比官方行情便宜 {pct}% (省下 ${save})',
+    modal_premium: '评级溢价 +{pct}%',
+    modal_photo_hint: '卖家手机实物拍摄，品相以此图为准',
+    modal_seller_rating: '评价 {rating}',
+    modal_seller_sales: '已售 {count} 笔',
+    modal_posted_at: '发布于 {time}',
+    modal_trade_location: '交易地区：',
+    modal_condition_notes: '卖家卡况说明：',
+    modal_copy_contact: '复制卖家 {platform}: {val}',
+    modal_copied: '已复制！',
+    modal_safety_tip: '平台提供免费信息撮合，建议高价卡选择公开场所面交验卡。',
+
+    // Create Listing Modal
+    create_modal_title: '上架我的实体卡',
+    create_modal_err_name: '请填写卡牌名称！',
+    create_modal_err_price: '请输入有效的出售售价！',
+    create_modal_err_contact: '请填写联系方式（如微信、LINE ID 或电话），以便买家联系！',
+    create_modal_import_label: '从我的资产库 (Portfolio) 一键快速导入',
+    create_modal_import_placeholder: '-- 点击选择现有持仓卡牌 --',
+    create_modal_card_name: '卡牌名称 *',
+    create_modal_card_name_ph: '例如：喷火龙 ex SAR #199',
+    create_modal_category: '卡牌分类',
+    create_modal_ref_price: '官方市场参考价 ($)',
+    create_modal_asking_price: '您的期望售价 ($) *',
+    create_modal_asking_price_ph: '期望开价',
+    create_modal_comparison: '行情比对：',
+    create_modal_below_market: '低于官方市价 {pct}% (省下 ${save})',
+    create_modal_equal_market: '符合官方行情价',
+    create_modal_above_market: '高于官方参考价 +{pct}%',
+    create_modal_condition_label: '卡况评级标签',
+    create_modal_series_label: '所属系列',
+    create_modal_series_ph: '例如：151 / 苍空烈流',
+    create_modal_photo_label: '实体卡照片 (支持手机相机拍照或相册)',
+    create_modal_photo_change: '更换实拍照',
+    create_modal_photo_upload: '拍照或上传实体图',
+    create_modal_contact_label: '买家联系方式 *',
+    create_modal_contact_ph: '请输入您的 ID 或账号',
+    create_modal_location_label: '交易地区 / 寄送方式',
+    create_modal_location_ph: '例如：同城面交 / 顺丰包邮',
+    create_modal_notes_label: '卡况描述与交易说明',
+    create_modal_notes_ph: '说明卡牌现况（例如：四角无白边、附带磁吸卡砖、防潮箱存放），提升买家信任！',
+    create_modal_submit: '确认发布到市场',
+    create_modal_default_notes: '正版实体卡收藏，欢迎私信洽谈或确认卡况细节。',
+    create_modal_default_location: '同城面交 / 顺丰包邮',
+    create_modal_cond_psa10: 'PSA 10 (满分神卡)',
+    create_modal_cond_psa9: 'PSA 9 (Mint 完美)',
+    create_modal_cond_bgs95: 'BGS 9.5 (金标)',
+    create_modal_cond_cgc10: 'CGC 10 (Pristine)',
+    create_modal_cond_raw_nm: '未评级 NM (无伤裸卡)',
+    create_modal_cond_played: '微瑕 / 实战下场卡 (Played)',
   },
 };

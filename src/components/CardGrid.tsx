@@ -5,6 +5,8 @@ import { fetchUniversalCards, UniversalCard, CardCategory } from '@/services/mul
 import { HoloCard } from '@/components/HoloCard';
 import { CardCondition } from '@/components/PortfolioDashboard';
 import { useLanguage } from '@/context/LanguageContext';
+import { CompareIcon, HeartIcon, ExternalLinkIcon } from '@/components/icons/AppIcons';
+import { getEbayAffiliateUrl, trackAffiliateClick } from '@/utils/affiliate';
 
 export type SortOption = 'DEFAULT' | 'PRICE_DESC' | 'PRICE_ASC' | 'NAME_ASC' | 'NUMBER_ASC';
 export type PriceRangeFilter = 'ALL' | 'UNDER_25' | '25_100' | '100_300' | 'OVER_300';
@@ -15,6 +17,10 @@ interface CardGridProps {
   onAddCard: (cardName: string, price: number, imageUrl: string, condition?: CardCondition, category?: CardCategory) => void;
   onSelectCardDetail?: (card: UniversalCard) => void;
   initialSetFilter?: string;
+  wishlistCardNames?: string[];
+  onToggleWishlist?: (card: UniversalCard) => void;
+  comparedCardIds?: string[];
+  onToggleCompare?: (card: UniversalCard) => void;
 }
 
 const CATEGORY_TAG_INFO: Record<CardCategory, { label: string; style: string }> = {
@@ -33,6 +39,10 @@ export const CardGrid: React.FC<CardGridProps> = ({
   onAddCard,
   onSelectCardDetail,
   initialSetFilter = 'ALL',
+  wishlistCardNames = [],
+  onToggleWishlist,
+  comparedCardIds = [],
+  onToggleCompare,
 }) => {
   const { t } = useLanguage();
   const [cards, setCards] = useState<UniversalCard[]>([]);
@@ -180,45 +190,50 @@ export const CardGrid: React.FC<CardGridProps> = ({
   }, [cards, priceRange, selectedSet]);
 
   return (
-    <div className="w-full flex flex-col gap-6 py-6 animate-fade-in">
-      {/* Control Header & Filters Bar */}
-      <div className="flex flex-col gap-4 bg-surface p-5 rounded-2xl border border-hairline/70 shadow-sm">
+    <div className="w-full flex flex-col gap-3 sm:gap-6 py-2 sm:py-6 animate-fade-in">
+      {/* Control Header & Filters Bar (Compact on mobile) */}
+      <div className="flex flex-col gap-2.5 sm:gap-4 bg-surface p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-hairline/70 shadow-2xs">
         {/* Top row: Search input & Sorting */}
-        <div className="flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center">
+        <div className="flex flex-col md:flex-row gap-2.5 sm:gap-4 justify-between items-stretch md:items-center">
           {/* Search Box */}
           <div className="relative flex-1">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-text-muted">
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
             <input
               type="text"
               value={searchQuery}
               onChange={handleSearchChange}
               placeholder={
                 category === 'nba'
-                  ? 'Search NBA stars (e.g. Jordan, LeBron, Wemby, Curry)...'
+                  ? 'Search NBA stars (e.g. Jordan, Curry)...'
                   : category === 'fifa'
-                  ? 'Search football stars (e.g. Messi, Ronaldo, Mbappé)...'
+                  ? 'Search football stars (e.g. Messi, Ronaldo)...'
                   : category === 'yugioh'
-                  ? 'Search Yu-Gi-Oh! (e.g. Blue-Eyes, Dark Magician)...'
+                  ? 'Search Yu-Gi-Oh! (e.g. Blue-Eyes)...'
                   : category === 'onepiece'
-                  ? 'Search One Piece (e.g. Luffy, Shanks, Zoro)...'
+                  ? 'Search One Piece (e.g. Luffy, Shanks)...'
                   : t('search_placeholder')
               }
               aria-label={t('search_label')}
-              className="w-full px-4 py-2.5 bg-surface-hover/80 text-foreground border border-hairline/80 rounded-xl font-mono text-xs focus:outline-none focus:border-ferrari-red transition-colors"
+              className="w-full pl-9 pr-4 py-2 sm:py-2.5 bg-surface-hover/80 text-foreground border border-hairline/80 rounded-xl font-mono text-xs focus:outline-none focus:border-ferrari-red transition-colors"
             />
           </div>
 
-          {/* Category & Sort Controls */}
-          <div className="flex items-center gap-3 flex-wrap">
+          {/* Category & Sort Controls (2-columns on mobile, inline on desktop) */}
+          <div className="grid grid-cols-2 md:flex items-center gap-2 sm:gap-3">
             {onSelectCategory && (
-              <div className="flex items-center gap-1.5">
-                <span className="text-[11px] font-semibold text-text-muted shrink-0 font-sans tracking-wide">
+              <div className="flex items-center gap-1.5 w-full md:w-auto">
+                <span className="hidden md:inline text-[11px] font-semibold text-text-muted shrink-0 font-sans tracking-wide">
                   Category:
                 </span>
                 <select
                   value={category}
                   onChange={(e) => onSelectCategory(e.target.value as CardCategory)}
                   aria-label="Filter category"
-                  className="h-9 px-3 bg-surface-hover/80 text-foreground border border-hairline/80 rounded-xl font-mono text-xs focus:outline-none focus:border-ferrari-red transition-colors cursor-pointer"
+                  className="w-full md:w-auto h-8.5 sm:h-9 px-2 sm:px-3 bg-surface-hover/80 text-foreground border border-hairline/80 rounded-xl font-mono text-[11px] sm:text-xs focus:outline-none focus:border-ferrari-red transition-colors cursor-pointer"
                 >
                   <option value="all">{t('cat_all')}</option>
                   <option value="pokemon">{t('cat_pokemon')}</option>
@@ -232,15 +247,15 @@ export const CardGrid: React.FC<CardGridProps> = ({
             )}
 
             {/* Sort Dropdown */}
-            <div className="flex items-center gap-1.5">
-              <span className="text-[11px] font-semibold text-text-muted shrink-0 font-sans tracking-wide">
+            <div className="flex items-center gap-1.5 w-full md:w-auto">
+              <span className="hidden md:inline text-[11px] font-semibold text-text-muted shrink-0 font-sans tracking-wide">
                 {t('sort_by_label')}:
               </span>
               <select
                 value={sortBy}
                 onChange={handleSortChange}
                 aria-label={t('sort_by_label')}
-                className="h-9 px-3 bg-surface-hover/80 text-foreground border border-hairline/80 rounded-xl font-mono text-xs focus:outline-none focus:border-ferrari-red transition-colors cursor-pointer"
+                className="w-full md:w-auto h-8.5 sm:h-9 px-2 sm:px-3 bg-surface-hover/80 text-foreground border border-hairline/80 rounded-xl font-mono text-[11px] sm:text-xs focus:outline-none focus:border-ferrari-red transition-colors cursor-pointer"
               >
                 <option value="DEFAULT">{t('sort_default')}</option>
                 <option value="PRICE_DESC">{t('sort_price_desc')}</option>
@@ -252,8 +267,8 @@ export const CardGrid: React.FC<CardGridProps> = ({
         </div>
 
         {/* Price Range Badges Filter Bar */}
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pt-1">
-          <span className="text-[11px] font-semibold text-text-muted shrink-0 mr-1">
+        <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar pt-0.5 pb-0.5">
+          <span className="hidden sm:inline text-[11px] font-semibold text-text-muted shrink-0 mr-1">
             {t('filter_price_range')}:
           </span>
 
@@ -272,9 +287,9 @@ export const CardGrid: React.FC<CardGridProps> = ({
                 key={filter.id}
                 tabIndex={0}
                 onClick={() => handlePriceRangeSelect(filter.id)}
-                className={`px-3 py-1 rounded-lg font-mono text-xs font-semibold whitespace-nowrap transition-all cursor-pointer border ${
+                className={`px-2.5 sm:px-3 py-1 rounded-lg font-mono text-[10px] sm:text-xs font-semibold whitespace-nowrap transition-all cursor-pointer border ${
                   isSelected
-                    ? 'bg-ferrari-red text-white border-ferrari-red shadow-sm'
+                    ? 'bg-ferrari-red text-white border-ferrari-red shadow-2xs'
                     : 'bg-surface-hover/60 hover:bg-surface-hover text-text-muted border-hairline/60'
                 }`}
               >
@@ -305,11 +320,11 @@ export const CardGrid: React.FC<CardGridProps> = ({
 
       {/* Loading Skeleton */}
       {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6 gap-3 sm:gap-4 md:gap-6">
           {Array.from({ length: 12 }).map((_, idx) => (
             <div
               key={`skeleton-${idx}`}
-              className="bg-surface border border-hairline/70 rounded-2xl p-5 flex flex-col justify-between animate-pulse"
+              className="bg-surface border border-hairline/70 rounded-2xl p-3 sm:p-5 flex flex-col justify-between animate-pulse"
             >
               <div>
                 <div className="aspect-[2.5/3.5] w-full bg-surface-hover rounded-xl mb-4" />
@@ -332,7 +347,7 @@ export const CardGrid: React.FC<CardGridProps> = ({
       ) : (
         /* Real Cards Grid */
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6 gap-3 sm:gap-4 md:gap-6">
             {processedCards.map((card) => {
               const catTag = CATEGORY_TAG_INFO[card.category] || CATEGORY_TAG_INFO.all;
 
@@ -340,11 +355,62 @@ export const CardGrid: React.FC<CardGridProps> = ({
                 <div
                   key={card.id}
                   onClick={() => handleCardClick(card)}
-                  className="bg-surface rounded-2xl p-5 flex flex-col justify-between border border-hairline/70 hover:border-hairline hover:shadow-md hover:-translate-y-1 transition-all duration-200 group cursor-pointer"
+                  className="bg-surface rounded-2xl p-3 sm:p-5 flex flex-col justify-between border border-hairline/70 hover:border-hairline hover:shadow-md hover:-translate-y-1 transition-all duration-200 group cursor-pointer"
                 >
                   <div>
+                    {/* Floating Wishlist & Compare Buttons */}
+                    <div className="flex items-center justify-between mb-1.5">
+                      {/* Compare Checkbox Pill */}
+                      {onToggleCompare ? (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onToggleCompare(card);
+                          }}
+                          className={`px-2 py-0.5 rounded-full text-[9px] font-mono font-bold tracking-tight transition-all cursor-pointer flex items-center gap-1 border ${
+                            comparedCardIds.includes(card.id)
+                              ? 'bg-blue-600 text-white border-blue-500 shadow-2xs'
+                              : 'bg-surface-hover/80 text-text-muted hover:text-foreground border-hairline/60'
+                          }`}
+                          title="加入對比走勢"
+                        >
+                          <CompareIcon className="w-3 h-3" />
+                          <span className="hidden sm:inline">
+                            {comparedCardIds.includes(card.id) ? '對比中' : '對比'}
+                          </span>
+                        </button>
+                      ) : <div />}
+
+                      {/* Wishlist Heart Button */}
+                      {onToggleWishlist && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onToggleWishlist(card);
+                          }}
+                          className={`ml-auto p-1 rounded-full text-xs transition-transform active:scale-125 cursor-pointer ${
+                            wishlistCardNames.some(
+                              (name) => name.toLowerCase() === card.name.toLowerCase()
+                            )
+                              ? 'text-rose-500 filter drop-shadow-[0_0_4px_rgba(244,63,94,0.4)]'
+                              : 'text-text-muted/60 hover:text-rose-400'
+                          }`}
+                          title="加入/移出願望清單"
+                        >
+                          <HeartIcon
+                            filled={wishlistCardNames.some(
+                              (name) => name.toLowerCase() === card.name.toLowerCase()
+                            )}
+                            className="w-3.5 h-3.5"
+                          />
+                        </button>
+                      )}
+                    </div>
+
                     {/* 3D Interactive Holo Frame */}
-                    <div className="w-full mb-4">
+                    <div className="w-full mb-2 sm:mb-4">
                       <HoloCard
                         src={card.imageUrl}
                         alt={card.name}
@@ -353,47 +419,64 @@ export const CardGrid: React.FC<CardGridProps> = ({
                     </div>
 
                     {/* Category & Set Tags */}
-                    <div className="flex items-center gap-1.5 mb-2 flex-wrap">
-                      <span className={`rounded-full px-2 py-0.5 text-[8px] font-mono font-bold tracking-wider border ${catTag.style}`}>
+                    <div className="flex items-center gap-1 sm:gap-1.5 mb-1.5 sm:mb-2 flex-wrap">
+                      <span className={`rounded-full px-1.5 sm:px-2 py-0.5 text-[8px] font-mono font-bold tracking-wider border ${catTag.style}`}>
                         {catTag.label}
                       </span>
-                      <span className="rounded-full px-2 py-0.5 text-[9px] font-semibold tracking-wide bg-surface-hover text-text-muted border border-hairline/60 max-w-[120px] truncate">
+                      <span className="rounded-full px-1.5 sm:px-2 py-0.5 text-[8px] sm:text-[9px] font-semibold tracking-wide bg-surface-hover text-text-muted border border-hairline/60 max-w-[80px] sm:max-w-[120px] truncate">
                         {card.set}
                       </span>
                     </div>
 
                     {/* Card Name */}
-                    <h4 className="font-sans font-medium text-base tracking-tight text-foreground mb-1 line-clamp-1 group-hover:text-ferrari-red transition-colors">
+                    <h4 className="font-sans font-medium text-xs sm:text-base tracking-tight text-foreground mb-1 line-clamp-1 group-hover:text-ferrari-red transition-colors">
                       {card.name}
                     </h4>
 
                     {/* Rarity & Type / Player */}
-                    <div className="flex justify-between items-center text-[11px] text-text-muted mb-4 font-mono">
-                      <span className="truncate max-w-[110px]">{card.rarity}</span>
-                      <span className="font-semibold text-foreground/80 truncate max-w-[100px]">
+                    <div className="flex justify-between items-center text-[10px] sm:text-[11px] text-text-muted mb-2 sm:mb-4 font-mono">
+                      <span className="truncate max-w-[65px] sm:max-w-[110px]">{card.rarity}</span>
+                      <span className="font-semibold text-foreground/80 truncate max-w-[65px] sm:max-w-[100px]">
                         {card.artistOrPlayer || card.type}
                       </span>
                     </div>
                   </div>
 
                   {/* Price & Action row */}
-                  <div className="flex items-center justify-between border-t border-hairline/60 pt-3 mt-auto">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-t border-hairline/60 pt-2 sm:pt-3 mt-auto">
                     <div className="flex flex-col">
-                      <span className="text-[9px] tracking-wide text-text-muted font-semibold">{t('est_market_price')}</span>
-                      <span className="font-mono font-bold text-base text-foreground">
+                      <span className="text-[8px] sm:text-[9px] tracking-wide text-text-muted font-semibold">{t('est_market_price')}</span>
+                      <span className="font-mono font-bold text-xs sm:text-base text-foreground">
                         ${card.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </span>
                     </div>
 
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onAddCard(card.name, card.price, card.imageUrl, 'Ungraded', card.category);
-                      }}
-                      className="px-3 py-1.5 rounded-lg bg-surface-hover hover:bg-ferrari-red hover:text-white border border-hairline/70 text-text-muted font-mono text-xs font-semibold tracking-wide transition-all cursor-pointer shadow-sm active:scale-95"
-                    >
-                      {t('add_to_portfolio')}
-                    </button>
+                    <div className="flex items-center gap-1.5 w-full sm:w-auto">
+                      <a
+                        href={getEbayAffiliateUrl(card)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          trackAffiliateClick('ebay', card.name, getEbayAffiliateUrl(card));
+                        }}
+                        className="px-2 py-1 sm:py-1.5 rounded-lg bg-surface-hover hover:border-amber-500/50 hover:bg-amber-500/10 border border-hairline/70 text-text-muted hover:text-amber-500 font-mono text-[10px] sm:text-xs font-semibold tracking-wide transition-all cursor-pointer shadow-2xs flex items-center gap-1 shrink-0"
+                        title="在 eBay 查看全球現貨"
+                      >
+                        <span className="font-bold text-amber-500">eBay</span>
+                        <ExternalLinkIcon className="w-2.5 h-2.5" />
+                      </a>
+
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onAddCard(card.name, card.price, card.imageUrl, 'Ungraded', card.category);
+                        }}
+                        className="flex-1 sm:flex-none px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg bg-surface-hover hover:bg-ferrari-red hover:text-white border border-hairline/70 text-text-muted font-mono text-[10px] sm:text-xs font-semibold tracking-wide transition-all cursor-pointer shadow-xs active:scale-95 text-center"
+                      >
+                        {t('add_to_portfolio')}
+                      </button>
+                    </div>
                   </div>
                 </div>
               );

@@ -15,7 +15,7 @@ const LANGUAGE_STORAGE_KEY = 'mcard_language';
 const OLD_LANGUAGE_STORAGE_KEY = 'pokemon_collector_language';
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [language, setLanguageState] = useState<Language>('en');
+  const [language, setLanguageState] = useState<Language>('zh-TW');
 
   // Load language preference from localStorage on mount
   useEffect(() => {
@@ -34,8 +34,8 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   const t = (key: TranslationKey, params?: Record<string, string | number>): string => {
-    const dict = translations[language] || translations.en;
-    let text = dict[key] || translations.en[key] || key;
+    const dict = translations[language] || translations['zh-TW'] || translations.en;
+    let text = dict[key] || translations['zh-TW'][key] || translations.en[key] || key;
 
     if (params) {
       Object.entries(params).forEach(([paramKey, value]) => {
