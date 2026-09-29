@@ -19,6 +19,8 @@ interface AuthContextType {
   closeAuthModal: () => void;
   loginWithGoogle: () => void;
   loginWithEmail: (email: string, name: string) => void;
+  updateProfile: (updates: Partial<UserProfile>) => void;
+  switchDemoProfile: (profile: 'ash' | 'kaiba' | 'red') => void;
   logout: () => void;
 }
 
@@ -79,6 +81,42 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     saveSession(emailUser);
   };
 
+  const updateProfile = (updates: Partial<UserProfile>) => {
+    if (!user) return;
+    const updated = { ...user, ...updates };
+    saveSession(updated);
+  };
+
+  const switchDemoProfile = (profile: 'ash' | 'kaiba' | 'red') => {
+    const presets: Record<'ash' | 'kaiba' | 'red', UserProfile> = {
+      ash: {
+        id: 'usr_ash_001',
+        name: 'Ash Ketchum (小智)',
+        email: 'ash@palette-town.kanto',
+        avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Ash',
+        provider: 'google',
+        joinedAt: '2026/01/15',
+      },
+      kaiba: {
+        id: 'usr_kaiba_002',
+        name: 'Seto Kaiba (海馬瀨人)',
+        email: 'president@kaibacorp.com',
+        avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Kaiba',
+        provider: 'google',
+        joinedAt: '2026/02/01',
+      },
+      red: {
+        id: 'usr_red_003',
+        name: 'Trainer Red (赤紅)',
+        email: 'red@mt-silver.kanto',
+        avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=RedTrainer',
+        provider: 'email',
+        joinedAt: '2026/03/10',
+      },
+    };
+    saveSession(presets[profile]);
+  };
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem(AUTH_STORAGE_KEY);
@@ -94,6 +132,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         closeAuthModal,
         loginWithGoogle,
         loginWithEmail,
+        updateProfile,
+        switchDemoProfile,
         logout,
       }}
     >

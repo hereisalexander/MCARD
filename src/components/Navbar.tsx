@@ -504,7 +504,21 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <div className="p-3 rounded-xl bg-surface-hover/50 border border-hairline/60 flex items-center justify-between">
                     {isLoggedIn && user ? (
                       <div className="flex items-center justify-between w-full">
-                        <div className="flex items-center gap-2.5">
+                        <div
+                          role="button"
+                          tabIndex={0}
+                          onClick={() => {
+                            onTabChange('account');
+                            setIsDrawerOpen(false);
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              onTabChange('account');
+                              setIsDrawerOpen(false);
+                            }
+                          }}
+                          className="flex items-center gap-2.5 cursor-pointer hover:opacity-80 transition-opacity"
+                        >
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
                             src={user.avatarUrl}
@@ -512,7 +526,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                             className="w-7 h-7 rounded-full bg-background border border-hairline object-cover"
                           />
                           <div className="flex flex-col">
-                            <span className="text-xs font-bold text-foreground">{user.name}</span>
+                            <span className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                              {user.name}
+                              <span className="text-[9px] text-ferrari-red font-mono font-semibold">→</span>
+                            </span>
                             <span className="text-[10px] text-text-muted">{user.email}</span>
                           </div>
                         </div>

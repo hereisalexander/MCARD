@@ -19,6 +19,7 @@ import { WishlistView } from '@/components/WishlistView';
 import { AddToWishlistModal } from '@/components/AddToWishlistModal';
 import { VersusFloatBar } from '@/components/VersusFloatBar';
 import { CardVersusModal } from '@/components/CardVersusModal';
+import { AccountProfileView } from '@/components/AccountProfileView';
 import { useLanguage } from '@/context/LanguageContext';
 
 interface ToastState {
@@ -515,6 +516,19 @@ export default function Home() {
                 mode="portfolio"
                 listings={listings}
                 onNavigateToMarket={() => setActiveTab('market')}
+              />
+            )}
+
+            {activeTab === 'account' && (
+              <AccountProfileView
+                onNavigateToTab={(tab) => {
+                  setSelectedDetailCard(null);
+                  setActiveTab(tab);
+                }}
+                portfolioCount={portfolioItemCount}
+                portfolioValue={portfolioValue}
+                wishlistCount={wishlist.length}
+                listingsCount={listings.filter((l) => l.status === 'active').length}
               />
             )}
           </>

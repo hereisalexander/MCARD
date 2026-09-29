@@ -5,7 +5,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 
 export const AuthModal: React.FC = () => {
-  const { isAuthModalOpen, closeAuthModal, loginWithGoogle, loginWithEmail } = useAuth();
+  const { isAuthModalOpen, closeAuthModal, loginWithGoogle, loginWithEmail, switchDemoProfile } = useAuth();
   const { t } = useLanguage();
 
   const [email, setEmail] = useState<string>('');
@@ -19,6 +19,10 @@ export const AuthModal: React.FC = () => {
     e.preventDefault();
     if (!email || !password) return;
     loginWithEmail(email, name);
+  };
+
+  const handleQuickDemoLogin = () => {
+    switchDemoProfile('ash');
   };
 
   return (
@@ -56,7 +60,7 @@ export const AuthModal: React.FC = () => {
         </div>
 
         {/* Fast Auth Providers */}
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2.5">
           <button
             onClick={loginWithGoogle}
             className="w-full h-11 rounded-xl bg-surface-hover border border-hairline font-sans text-xs font-semibold tracking-wide text-foreground hover:border-text-muted transition-all duration-150 flex items-center justify-center gap-3 cursor-pointer shadow-sm"
@@ -81,6 +85,15 @@ export const AuthModal: React.FC = () => {
               />
             </svg>
             {t('auth_continue_google')}
+          </button>
+
+          {/* Developer Instant Test Login Shortcut */}
+          <button
+            type="button"
+            onClick={handleQuickDemoLogin}
+            className="w-full h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 font-sans text-xs font-semibold text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <span>⚡ 開發測試專用：一鍵以測試藏家身分登入</span>
           </button>
         </div>
 

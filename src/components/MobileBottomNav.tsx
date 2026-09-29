@@ -124,18 +124,24 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
       id: 'account',
       labelKey: 'nav_account',
       fallbackLabel: '帳戶',
-      isAction: true,
-      onClick: openAuthModal,
-      icon: () => (
+      onClick: () => {
+        handleTabClick('account');
+        if (!isLoggedIn) {
+          openAuthModal();
+        }
+      },
+      icon: (isActive: boolean) => (
         isLoggedIn && user?.avatarUrl ? (
-          <div className="relative w-5 h-5 rounded-full overflow-hidden border border-hairline shrink-0">
+          <div className={`relative w-5 h-5 rounded-full overflow-hidden transition-all duration-150 shrink-0 ${
+            isActive ? 'ring-2 ring-ferrari-red ring-offset-1 border-transparent scale-110' : 'border border-hairline'
+          }`}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
             <span className="absolute bottom-0 right-0 w-1.5 h-1.5 bg-emerald-500 rounded-full border border-surface" />
           </div>
         ) : (
           <svg
-            className="w-5 h-5 transition-transform duration-150"
+            className={`w-5 h-5 transition-transform duration-150 ${isActive ? 'scale-110' : ''}`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -144,7 +150,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              strokeWidth="1.8"
+              strokeWidth={isActive ? '2.5' : '1.8'}
               d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
             />
           </svg>
