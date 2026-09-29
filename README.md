@@ -9,7 +9,7 @@
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-v4-38B2AC?style=flat&logo=tailwind-css)](https://tailwindcss.com/)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](./CODE_OF_CONDUCT.md)
 
-專為寶可夢 TCG 玩家、卡牌藏家與投資愛好者打造的現代化資產管理與圖鑑瀏覽平台。具備極致平滑的 3D 全像光影卡牌傾斜效果、即時市場行情走勢追蹤，以及完整的收藏投資組合損益（P&L）分析。
+專為卡牌玩家、高階藏家與投資愛好者打造的**多領域跨界卡牌（Multi-TCG & Sports Cards）資產管理與即時市場遙測平台**。融合一級方程式（F1）遙測工程美學，具備極致平滑的 3D 全像光影卡牌傾斜效果、多卡行情疊加對比、心願降價預警、C2C 二手市集，以及完整的收藏投資組合損益（P&L）深度分析。
 
 [快速開始](#-快速開始-getting-started) • [核心功能](#-核心功能-key-features) • [技術架構](#-技術架構-tech-stack) • [貢獻指引](#-開源貢獻-contributing) • [安全政策](./SECURITY.md) • [開源授權與免責聲明](#-授權協議--版權免責-license--disclaimer)
 
@@ -19,44 +19,82 @@
 
 ## ✨ 核心功能 (Key Features)
 
-- 🌈 **3D 全像光影傾斜效果 (Holographic Foil Tilt)**
-  - 擬真 3D 視差傾斜與動態彩虹炫光反應，游標懸停或移動設備陀螺儀交互，完美重現高罕貴度（SAR, UR, SR 等）卡牌的實體反光質感。
+### 1. 🌐 六大多元卡種跨界支援 (Multi-TCG Ecosystem)
+- **寶可夢 (Pokémon TCG)**：官方 API 即時對接，涵蓋初代無印、151、超電壓軸至最新系列。
+- **航海王 / 海賊王 (One Piece TCG)**：漫畫背景稀有卡（Manga Rare）、太陽神五檔魯夫等頂級行情。
+- **遊戲王 (Yu-Gi-Oh!)**：初代青眼白龍、黑魔導、紅碎等經典傳奇神卡收藏。
+- **體育球星卡 (Sports Cards)**：NBA 麥可·喬丹、柯比·布萊恩新秀卡及頂級評級資產追蹤。
+- **魔法風雲會 (Magic: The Gathering)**：黑蓮花（Black Lotus）、力量九人（Power 9）古典逸品。
+- **迪士尼洛卡納 (Disney Lorcana)**：魔法附魔（Enchanted）罕見卡即時行情。
 
-- 📊 **投資組合與資產損益管理 (Portfolio & P&L Tracker)**
-  - 記錄購入成本（Buy-in Cost）、持倉數量與實時市場價值。
-  - 即時計算投資報酬率（ROI %）與總未實現損益。
-  - 支援卡牌品相評級標籤（`Ungraded`、`PSA 10`、`PSA 9`、`BGS 10` 等）。
-  - 支援資產資料以 JSON 格式安全備份與匯出/匯入。
+### 2. 📡 即時市場遙測儀表板 (Paddock Telemetry / Stream)
+- **大盤實時數據**：監控全球即時 24h 交易量（Tracked Volume）、流動性指數與 API 遙測連線率。
+- **即時信號廣播**：包括價格飆升信號（Price Surge Alerts）、拍賣行天價落槌成交紀錄（Auction Records）與大師收藏庫入庫通知。
+- **熱門系列導航**：一鍵直達 151、Surging Sparks、Crown Zenith、Evolving Skies 等人氣系列。
 
-- 📈 **獨立卡牌詳情與動態歷史走勢圖 (Price Analytics)**
-  - 支援 1M / 3M / 6M / 1Y 歷史時間軸切換。
-  - 動態自適應 Y 軸縮放與平滑無鋸齒貝茲曲線渲染。
-  - 完整展示繪師資訊、系列編號、卡牌稀有度與市場均價。
+### 3. 🌈 3D 全像光影傾斜效果 (Holographic Foil Tilt)
+- **擬真 3D 視差傾斜**：根據滑鼠游標或行動裝置陀螺儀動態即時計算 3D 俯仰角。
+- **動態彩虹炫光反應**：精準模擬實體 SAR、UR、SR、HR 等高罕貴度卡牌在光線下的炫彩物理反光質感。
 
-- 🔍 **全系列圖鑑搜尋與進階篩選 (Search & Filter)**
-  - 介接真實 Pokémon TCG API，提供全卡牌資料庫即時檢索。
-  - 支援依照價格區間、卡牌名稱、系列名稱、稀有度與發行日期多維度排序。
+### 4. 🔍 全系列圖鑑檢索與進階篩選 (Archive & Advanced Filters)
+- **全域即時搜尋**：支援按卡名、卡號（如 `#199/165`）、系列名稱模糊搜尋，全站支援 `/` 快速鍵觸發。
+- **多維度篩選排序**：依價格高低、卡牌編號、名稱排序，支援稀有度標籤（SAR, UR, AR, Promo）快速過濾。
+- **無限滾動加載**：基於 Intersection Observer 實現順暢的無感卡牌加載（Infinite Scroll）。
 
-- 🌐 **多語系支援 (i18n)**
-  - 內建繁體中文、簡體中文與英文即時切換。
+### 5. 📈 獨立卡牌詳情與動態歷史走勢圖 (Price Analytics)
+- **極致平滑曲線圖**：動態自適應 Y 軸縮放，以貝茲曲線繪製平滑無鋸齒的歷史成交走勢。
+- **多時間軸切換**：自由切換 1 個月（1M）、3 個月（3M）、6 個月（6M）與 1 年（1Y）趨勢。
+- **權威交易市場外鏈**：直接導航至 TCGplayer、eBay、PriceCharting、Cardmarket 與 CardHobby 行情頁。
+
+### 6. ⚔️ 卡牌對比與行情疊加矩陣 (Card Versus & Comparison Matrix)
+- **多卡靈活挑選**：支援在圖鑑中勾選 2～4 張卡牌，底部即時顯示專屬浮動卡槽。
+- **多曲線疊加走勢**：在同一張走勢圖中以不同色彩疊加各卡歷史價格曲線。
+- **數據矩陣對比**：橫向對齊當前市價、歷史漲跌幅、波動度、系列與稀有度，提供深度的橫向決策分析。
+
+### 7. 💼 投資組合與資產損益管理 (Portfolio & Vault)
+- **成本與回報追蹤**：記錄卡牌購入成本（Buy-in Cost）、持倉數量與實時市值，自動計算總投資報酬率（ROI %）與未實現損益。
+- **品相評級標註**：支援標註評級等級（`Ungraded`、`PSA 10`、`PSA 9`、`BGS 10`、`CGC 10`）。
+- **資料備份與還原**：支援本地資產資料庫一鍵匯出為標準 JSON，隨時備份並在跨裝置無痛匯入恢復。
+
+### 8. 💖 願望清單與目標價預警 (Wishlist & Price Target Alerts)
+- **心願收藏管理**：一鍵將心儀神卡收入清單，告別遺漏。
+- **目標價降價預警**：支援自訂「目標入手價」，系統自動計算折價空間並在達成目標時即時醒目標示。
+- **一鍵入庫**：達成目標入手後，可直接一鍵轉入個人資產庫（Vault）。
+
+### 9. 🏪 C2C 二手卡牌市集 (Marketplace)
+- **卡牌掛單發布**：藏家可自主發布二手出售資訊，支援直接從個人 Vault 一鍵代入卡牌數據。
+- **交易生命週期**：支援「在售中（Active）」、「已售出（Sold）」狀態標記與價格即時動態調整。
+- **買家賣家聯絡**：整合聯絡彈窗與交易備忘，建立藏家間的去中心化互信交易通路。
+
+### 10. 👤 會員帳戶與身分認證 (User Auth & Profile)
+- **多元登入機制**：支援 Google、Discord 一鍵快速授權，以及 Email 登入。
+- **頭像與狀態持久化**：支援個人大頭照、暱稱展示，並在行動端底欄與導航列同步顯示登入狀態。
+
+### 11. 📱 行動端原生級觸控體驗 (Mobile App-like Experience)
+- **視窗安全區適配**：採用 `viewport-fit=cover` 與動態視窗高度（`dvh`），無縫相容全面屏瀏海、動態島與底欄手勢條。
+- **GPU 加速懸浮底欄**：具備硬體合成層（Hardware Compositing Layer）的 5 合 1 底部導航欄，釘選視窗底部不卡頓。
+
+### 12. 🌓 日夜雙主題與多語系國際化 (Theme & i18n)
+- **雙主題配色**：支援純白簡潔畫布模式（Pure Light）與法拉利賽道深色主題（Dark Red-600）。
+- **全球化語系**：內建繁體中文（預設）、簡體中文與英文（English），全站介面隨時切換。
 
 ---
 
 ## 🛠 技術架構 (Tech Stack)
 
-- **前端框架**：[Next.js 16 (App Router)](https://nextjs.org/)
+- **前端框架**：[Next.js 16 (Turbopack & App Router)](https://nextjs.org/)
 - **UI 庫**：[React 19](https://react.dev/)
 - **樣式庫**：[Tailwind CSS v4](https://tailwindcss.com/)
-- **語言**：[TypeScript 5](https://www.typescriptlang.org/)
-- **資料來源**：[Pokémon TCG API v2](https://pokemontcg.io/)
-- **代碼品質**：ESLint 9
+- **程式語言**：[TypeScript 5](https://www.typescriptlang.org/)
+- **資料來源**：[Pokémon TCG API v2](https://pokemontcg.io/) 及自建多領域卡牌資料庫
+- **程式碼品質**：ESLint 9
 
 ---
 
 ## 🚀 快速開始 (Getting Started)
 
 ### 1. 先決條件
-- [Node.js](https://nodejs.org/) 20.x 或更高版本
+- [Node.js](https://nodejs.org/) 20.x 或更高版本（建議搭配 `.nvmrc`）
 - npm, yarn, pnpm 或 bun
 
 ### 2. 下載與安裝
@@ -93,6 +131,16 @@ npm run dev
 
 開啟瀏覽器前往 [http://localhost:3000](http://localhost:3000) 即可開始體驗！
 
+### 5. 靜態建置與驗證
+
+```bash
+# 執行靜態分析
+npm run lint
+
+# 產生靜態匯出（支援 Cloudflare Pages / Vercel）
+npm run build
+```
+
 ---
 
 ## 🤝 開源貢獻 (Contributing)
@@ -110,5 +158,8 @@ npm run dev
 
 ### 寶可夢商標與第三方素材免責聲明 (Trademark & Disclaimer)
 - **Pokémon**、寶可夢角色名稱、卡牌圖片及相關商標與圖像版權均屬於 **Nintendo**、**Creatures Inc.** 以及 **GAME FREAK inc.** 所有。
-- **獨立第三方工具聲明**：本平台為獨立開發之卡牌資產管理與行情數據分析工具，與 Nintendo、The Pokémon Company 無任何官方附屬、贊助或背書關係。
+- **One Piece** 相關商標與圖像版權屬於 **Eiichiro Oda / Shueisha, Toei Animation, Bandai** 所有。
+- **Yu-Gi-Oh!** 相關商標與圖像版權屬於 **Studio Dice / SHUEISHA, TV TOKYO, KONAMI** 所有。
+- **NBA** 及球員相關標誌版權屬於 **National Basketball Association** 及各球團所有。
+- **獨立第三方工具聲明**：本平台為獨立開發之卡牌資產管理與行情數據分析工具，與各版權官方無任何官方附屬、贊助或背書關係。
 - 本專案所有卡牌資訊與圖片均取自公開第三方 API，僅基於**指稱性合理使用原則 (Nominative Fair Use)** 用於卡牌識別、行情追蹤與市場資訊整理，非官方授權商品。
