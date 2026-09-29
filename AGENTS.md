@@ -36,8 +36,5 @@ This version has breaking changes — APIs, conventions, and file structure may 
 2. **封印盒/未拆箱資產管理 (Sealed Product Tracker)**：
    - 在 Portfolio 支援 `Sealed Products` 頁籤，追蹤 Booster Box / ETB 盒裝市價與成本。
 
-3. **虛擬拆包與抽卡體驗 (Booster Pack Opening Simulator)**：
-   - 提供 151 / Evolving Skies 虛擬拆包撕開動畫與抽卡配率，抽中神卡可一鍵放入 Portfolio。
-
-4. **收藏庫資產分析報告導出 (Graphic Infographic Export)**：
+3. **收藏庫資產分析報告導出 (Graphic Infographic Export)**：
    - 一鍵生成炫酷的個人卡牌收藏資產報告海報，方便社群分享。
