@@ -406,7 +406,7 @@ export default function Home() {
   const portfolioItemCount = portfolio.reduce((acc, curr) => acc + (curr.quantity || 1), 0);
 
   return (
-    <div className="flex flex-col min-h-screen bg-background text-foreground transition-colors duration-200">
+    <div className="flex flex-col min-h-screen min-h-dvh bg-background text-foreground transition-colors duration-200">
       <Navbar
         activeTab={selectedDetailCard ? 'explore' : activeTab}
         onTabChange={(tab) => {

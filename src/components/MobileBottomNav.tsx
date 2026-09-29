@@ -157,7 +157,8 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
     <nav
       role="navigation"
       aria-label="Mobile Navigation"
-      className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-surface/98 backdrop-blur-xl border-t border-hairline/80 shadow-[0_-4px_24px_rgba(0,0,0,0.08)] pb-[max(env(safe-area-inset-bottom,0px),10px)] pt-1"
+      className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-surface/98 backdrop-blur-xl border-t border-hairline/80 shadow-[0_-4px_24px_rgba(0,0,0,0.08)] pb-[max(env(safe-area-inset-bottom,0px),12px)] pt-1.5 transform-gpu"
+      style={{ transform: 'translateZ(0)', WebkitTransform: 'translateZ(0)' }}
     >
       <div className="flex items-center justify-around h-14 px-2 max-w-md mx-auto">
         {navItems.map((item) => {

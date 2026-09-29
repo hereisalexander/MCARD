@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Space_Mono } from "next/font/google";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { AuthProvider } from "@/context/AuthContext";
@@ -24,6 +24,17 @@ export const metadata: Metadata = {
   description: "Real-time market telemetry, luxury card archive, and high-performance portfolio tracking for Pokémon TCG cards.",
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  viewportFit: "cover",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#181818" },
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -34,7 +45,7 @@ export default function RootLayout({
       lang="zh-TW"
       className={`${interFont.variable} ${monoFont.variable} h-full antialiased light`}
     >
-      <body className="min-h-full flex flex-col font-sans bg-background text-foreground selection:bg-ferrari-red selection:text-white transition-colors duration-200">
+      <body className="min-h-full min-h-dvh flex flex-col font-sans bg-background text-foreground selection:bg-ferrari-red selection:text-white transition-colors duration-200">
         <ThemeProvider>
           <LanguageProvider>
             <AuthProvider>
