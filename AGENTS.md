@@ -30,17 +30,14 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Phase 2 進階重量級功能規劃 (Roadmap Future Features)：
 
-1. **卡牌對比與行情疊加分析 (Card Versus & Comparison Matrix)**：
-   - 支援同時勾選 2~4 張卡牌，疊加展示歷史價格走勢曲線對比、ROI 報酬率與數據矩陣。
+1. **消息與動態通知中心 (Inbox & Activity Alerts)**：
+   - 整合於行動端底欄（5 鍵佈局：探索 / 市場 / 消息 / 資產 / 帳戶），支援願望清單降價推送、市集買賣雙方私訊議價與未讀紅點角標。
 
-2. **願望清單與目標價預警 (Wishlist & Price Target Alerts)**：
-   - 支援加至 Wishlist，並提供目標降價預警（Price Drops Notification）。
-
-3. **封印盒/未拆箱資產管理 (Sealed Product Tracker)**：
+2. **封印盒/未拆箱資產管理 (Sealed Product Tracker)**：
    - 在 Portfolio 支援 `Sealed Products` 頁籤，追蹤 Booster Box / ETB 盒裝市價與成本。
 
-4. **虛擬拆包與抽卡體驗 (Booster Pack Opening Simulator)**：
+3. **虛擬拆包與抽卡體驗 (Booster Pack Opening Simulator)**：
    - 提供 151 / Evolving Skies 虛擬拆包撕開動畫與抽卡配率，抽中神卡可一鍵放入 Portfolio。
 
-5. **收藏庫資產分析報告導出 (Graphic Infographic Export)**：
+4. **收藏庫資產分析報告導出 (Graphic Infographic Export)**：
    - 一鍵生成炫酷的個人卡牌收藏資產報告海報，方便社群分享。
