@@ -23,9 +23,9 @@
 - **寶可夢 (Pokémon TCG)**：官方 API 即時對接，涵蓋初代無印、151、超電壓軸至最新系列。
 - **航海王 / 海賊王 (One Piece TCG)**：漫畫背景稀有卡（Manga Rare）、太陽神五檔魯夫等頂級行情。
 - **遊戲王 (Yu-Gi-Oh!)**：初代青眼白龍、黑魔導、紅碎等經典傳奇神卡收藏。
-- **體育球星卡 (Sports Cards)**：NBA 麥可·喬丹、柯比·布萊恩新秀卡及頂級評級資產追蹤。
-- **魔法風雲會 (Magic: The Gathering)**：黑蓮花（Black Lotus）、力量九人（Power 9）古典逸品。
-- **迪士尼洛卡納 (Disney Lorcana)**：魔法附魔（Enchanted）罕見卡即時行情。
+- **七龍珠 (Dragon Ball Super)**：經典超級賽亞人、自在極意功等傳奇動漫卡牌行情。
+- **NBA 籃球球星卡 (NBA Cards)**：麥可·喬丹（Michael Jordan）、柯比·布萊恩（Kobe Bryant）新秀卡及頂級 PSA 10 評級資產追蹤。
+- **FIFA 足球球星卡 (FIFA Cards)**：梅西（Lionel Messi）、C 羅（Cristiano Ronaldo）新秀卡與世界杯紀念卡。
 
 ### 2. 📡 即時市場遙測儀表板 (Paddock Telemetry / Stream)
 - **大盤實時數據**：監控全球即時 24h 交易量（Tracked Volume）、流動性指數與 API 遙測連線率。
@@ -160,6 +160,8 @@ npm run build
 - **Pokémon**、寶可夢角色名稱、卡牌圖片及相關商標與圖像版權均屬於 **Nintendo**、**Creatures Inc.** 以及 **GAME FREAK inc.** 所有。
 - **One Piece** 相關商標與圖像版權屬於 **Eiichiro Oda / Shueisha, Toei Animation, Bandai** 所有。
 - **Yu-Gi-Oh!** 相關商標與圖像版權屬於 **Studio Dice / SHUEISHA, TV TOKYO, KONAMI** 所有。
+- **Dragon Ball** 相關商標與圖像版權屬於 **Bird Studio / Shueisha, Toei Animation, Bandai** 所有。
 - **NBA** 及球員相關標誌版權屬於 **National Basketball Association** 及各球團所有。
+- **FIFA** 及相關足球球員標誌版權屬於 **FIFA** 及相關聯賽與授權機構所有。
 - **獨立第三方工具聲明**：本平台為獨立開發之卡牌資產管理與行情數據分析工具，與各版權官方無任何官方附屬、贊助或背書關係。
 - 本專案所有卡牌資訊與圖片均取自公開第三方 API，僅基於**指稱性合理使用原則 (Nominative Fair Use)** 用於卡牌識別、行情追蹤與市場資訊整理，非官方授權商品。
