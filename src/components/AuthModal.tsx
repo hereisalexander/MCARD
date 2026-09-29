@@ -56,7 +56,7 @@ export const AuthModal: React.FC = () => {
         </div>
 
         {/* Fast Auth Providers */}
-        <div className="flex flex-col gap-2.5">
+        <div className="flex flex-col gap-3">
           <button
             onClick={loginWithGoogle}
             className="w-full h-11 rounded-xl bg-surface-hover border border-hairline font-sans text-xs font-semibold tracking-wide text-foreground hover:border-text-muted transition-all duration-150 flex items-center justify-center gap-3 cursor-pointer shadow-sm"
