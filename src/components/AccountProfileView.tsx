@@ -76,29 +76,6 @@ export const AccountProfileView: React.FC<AccountProfileViewProps> = ({
     onNavigateToTab('explore');
   };
 
-  if (!isLoggedIn || !user) {
-    return (
-      <div className="w-full max-w-xl mx-auto py-16 px-4 flex flex-col items-center justify-center text-center animate-fade-in">
-        <div className="w-20 h-20 rounded-full bg-surface-hover flex items-center justify-center border border-hairline mb-6">
-          <svg className="w-10 h-10 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-          </svg>
-        </div>
-        <h2 className="text-2xl font-bold tracking-tight mb-2">尚未登入帳戶</h2>
-        <p className="text-sm text-text-muted max-w-sm mb-6 leading-relaxed">
-          登入後即可在跨裝置同步您的個人卡牌收藏庫、追蹤心願清單降價動態與發布市集交易。
-        </p>
-        <button
-          type="button"
-          onClick={openAuthModal}
-          className="h-11 px-8 rounded-xl bg-ferrari-red text-white hover:bg-ferrari-red-hover active:bg-ferrari-red-active text-xs font-bold tracking-wide transition-all shadow-sm cursor-pointer"
-        >
-          {t('auth_login')}
-        </button>
-      </div>
-    );
-  }
-
   return (
     <div className="w-full max-w-4xl mx-auto py-6 flex flex-col gap-8 animate-fade-in">
       {/* Status Toast Banner */}
@@ -112,10 +89,14 @@ export const AccountProfileView: React.FC<AccountProfileViewProps> = ({
       {/* 1. Main Profile Card Header */}
       <div className="relative w-full rounded-2xl bg-surface border border-hairline/80 overflow-hidden shadow-xs">
         {/* Decorative Top Accent Bar */}
-        <div className="h-24 sm:h-32 w-full bg-gradient-to-r from-ferrari-red via-rose-600 to-amber-500 opacity-90 relative">
+        <div className={`h-24 sm:h-32 w-full relative ${
+          isLoggedIn
+            ? 'bg-gradient-to-r from-ferrari-red via-rose-600 to-amber-500 opacity-90'
+            : 'bg-gradient-to-r from-zinc-700 via-zinc-800 to-zinc-900 opacity-80'
+        }`}>
           <div className="absolute inset-0 bg-[radial-gradient(#ffffff15_1px,transparent_1px)] [background-size:16px_16px]" />
           <div className="absolute top-3 right-4 px-3 py-1 rounded-full bg-black/40 backdrop-blur-md text-[10px] font-mono font-bold text-white tracking-widest uppercase border border-white/20">
-            PRO COLLECTOR
+            {isLoggedIn ? 'PRO COLLECTOR' : 'GUEST MODE'}
           </div>
         </div>
 
@@ -123,41 +104,73 @@ export const AccountProfileView: React.FC<AccountProfileViewProps> = ({
         <div className="px-6 pb-6 pt-0 relative flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 -mt-12 sm:-mt-14">
           <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4">
             {/* Avatar with Status Pip */}
-            <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden bg-background border-4 border-surface shadow-md shrink-0">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
-              <span className="absolute bottom-1.5 right-1.5 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-surface" title="在線已同步" />
+            <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden bg-background border-4 border-surface shadow-md shrink-0 flex items-center justify-center">
+              {isLoggedIn && user ? (
+                <>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
+                  <span className="absolute bottom-1.5 right-1.5 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-surface" title="在線已同步" />
+                </>
+              ) : (
+                <div className="w-full h-full bg-surface-hover flex flex-col items-center justify-center text-text-muted">
+                  <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                  <span className="text-[9px] font-bold uppercase mt-1">GUEST</span>
+                </div>
+              )}
             </div>
 
             {/* Name & Credentials */}
             <div className="flex flex-col pb-1">
               <div className="flex items-center gap-2">
                 <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
-                  {user.name}
+                  {isLoggedIn && user ? user.name : t('auth_guest')}
                 </h1>
-                <span className="px-2 py-0.5 rounded-md bg-ferrari-red/10 border border-ferrari-red/20 text-ferrari-red text-[10px] font-bold uppercase tracking-wider font-mono">
-                  {user.provider === 'google' ? 'Google 認證' : 'Email 認證'}
+                <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider font-mono border ${
+                  isLoggedIn
+                    ? 'bg-ferrari-red/10 border-ferrari-red/20 text-ferrari-red'
+                    : 'bg-surface-hover border-hairline text-text-muted'
+                }`}>
+                  {isLoggedIn && user
+                    ? (user.provider === 'google' ? 'Google 認證' : 'Email 認證')
+                    : '訪客暫存身分'}
                 </span>
               </div>
-              <p className="text-xs text-text-muted mt-0.5">{user.email}</p>
+              <p className="text-xs text-text-muted mt-0.5">
+                {isLoggedIn && user ? user.email : '登入後可解鎖雲端同步、市集交易與跨設備數據恢復'}
+              </p>
               <p className="text-[11px] text-text-muted/70 mt-1 font-mono">
-                會員註冊日期：{user.joinedAt || '2026/01/01'}
+                {isLoggedIn && user ? `會員註冊日期：${user.joinedAt || '2026/01/01'}` : '尚未登入正式帳號'}
               </p>
             </div>
           </div>
 
-          {/* Action: Edit Profile Button */}
+          {/* Action Button: Edit Profile (Logged in) or Sign In Button (Guest) */}
           <div className="flex items-center gap-2 self-stretch sm:self-auto justify-end">
-            <button
-              type="button"
-              onClick={handleStartEdit}
-              className="h-9 px-4 rounded-xl border border-hairline/80 bg-surface-hover hover:border-text-muted/40 font-sans text-xs font-semibold text-foreground transition-all duration-150 cursor-pointer shadow-2xs flex items-center gap-1.5"
-            >
-              <svg className="w-3.5 h-3.5 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-              </svg>
-              <span>編輯個人資料</span>
-            </button>
+            {isLoggedIn ? (
+              <button
+                type="button"
+                onClick={handleStartEdit}
+                className="h-9 px-4 rounded-xl border border-hairline/80 bg-surface-hover hover:border-text-muted/40 font-sans text-xs font-semibold text-foreground transition-all duration-150 cursor-pointer shadow-2xs flex items-center gap-1.5"
+              >
+                <svg className="w-3.5 h-3.5 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
+                <span>編輯個人資料</span>
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={openAuthModal}
+                className="h-10 px-6 rounded-xl bg-ferrari-red text-white hover:bg-ferrari-red-hover active:bg-ferrari-red-active font-sans text-xs font-bold tracking-wide transition-all duration-150 cursor-pointer shadow-sm flex items-center gap-2"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                </svg>
+                <span>{t('auth_login')} / 註冊</span>
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -311,7 +324,7 @@ export const AccountProfileView: React.FC<AccountProfileViewProps> = ({
             type="button"
             onClick={() => handleSwitchDemo('ash')}
             className={`p-3 rounded-xl border text-left flex items-center gap-3 transition-all cursor-pointer ${
-              user.id === 'usr_ash_001' ? 'border-ferrari-red bg-ferrari-red/5' : 'border-hairline hover:bg-surface-hover'
+              user?.id === 'usr_ash_001' ? 'border-ferrari-red bg-ferrari-red/5' : 'border-hairline hover:bg-surface-hover'
             }`}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -326,7 +339,7 @@ export const AccountProfileView: React.FC<AccountProfileViewProps> = ({
             type="button"
             onClick={() => handleSwitchDemo('kaiba')}
             className={`p-3 rounded-xl border text-left flex items-center gap-3 transition-all cursor-pointer ${
-              user.id === 'usr_kaiba_002' ? 'border-ferrari-red bg-ferrari-red/5' : 'border-hairline hover:bg-surface-hover'
+              user?.id === 'usr_kaiba_002' ? 'border-ferrari-red bg-ferrari-red/5' : 'border-hairline hover:bg-surface-hover'
             }`}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -341,7 +354,7 @@ export const AccountProfileView: React.FC<AccountProfileViewProps> = ({
             type="button"
             onClick={() => handleSwitchDemo('red')}
             className={`p-3 rounded-xl border text-left flex items-center gap-3 transition-all cursor-pointer ${
-              user.id === 'usr_red_003' ? 'border-ferrari-red bg-ferrari-red/5' : 'border-hairline hover:bg-surface-hover'
+              user?.id === 'usr_red_003' ? 'border-ferrari-red bg-ferrari-red/5' : 'border-hairline hover:bg-surface-hover'
             }`}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -411,22 +424,35 @@ export const AccountProfileView: React.FC<AccountProfileViewProps> = ({
         </div>
       </div>
 
-      {/* 5. Logout & Account Exit */}
-      <div className="w-full flex items-center justify-between pt-2">
-        <span className="text-xs text-text-muted">
-          切換為訪客模式將隱藏個人帳戶頁面。
-        </span>
-        <button
-          type="button"
-          onClick={handleLogout}
-          className="h-10 px-5 rounded-xl border border-rose-500/30 text-rose-500 hover:bg-rose-500 hover:text-white text-xs font-bold tracking-wide transition-all cursor-pointer shadow-2xs flex items-center gap-2"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-          </svg>
-          <span>{t('auth_logout')}</span>
-        </button>
-      </div>
+      {/* 5. Logout & Account Exit (Only shown when logged in) */}
+      {isLoggedIn ? (
+        <div className="w-full flex items-center justify-between pt-2">
+          <span className="text-xs text-text-muted">
+            切換為訪客模式後，您隨時可再次登入恢復資產同步。
+          </span>
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="h-10 px-5 rounded-xl border border-rose-500/30 text-rose-500 hover:bg-rose-500 hover:text-white text-xs font-bold tracking-wide transition-all cursor-pointer shadow-2xs flex items-center gap-2"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            <span>{t('auth_logout')}</span>
+          </button>
+        </div>
+      ) : (
+        <div className="w-full flex items-center justify-between pt-2 text-xs text-text-muted">
+          <span>目前為訪客體驗模式，隨時點擊右上角或上方按鈕即可進行帳戶登入。</span>
+          <button
+            type="button"
+            onClick={openAuthModal}
+            className="text-ferrari-red font-bold hover:underline cursor-pointer"
+          >
+            立即登入 →
+          </button>
+        </div>
+      )}
     </div>
   );
 };

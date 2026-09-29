@@ -27,7 +27,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
   portfolioCount,
 }) => {
   const { t } = useLanguage();
-  const { user, isLoggedIn, openAuthModal } = useAuth();
+  const { user, isLoggedIn } = useAuth();
 
   const handleTabClick = (tabId: string) => {
     onTabChange(tabId);
@@ -124,12 +124,6 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
       id: 'account',
       labelKey: 'nav_account',
       fallbackLabel: '帳戶',
-      onClick: () => {
-        handleTabClick('account');
-        if (!isLoggedIn) {
-          openAuthModal();
-        }
-      },
       icon: (isActive: boolean) => (
         isLoggedIn && user?.avatarUrl ? (
           <div className={`relative w-5 h-5 rounded-full overflow-hidden transition-all duration-150 shrink-0 ${
