@@ -11,6 +11,7 @@ import { UserPortfolioItem } from '@/components/PortfolioDashboard';
 import { CreatePostModal } from '@/components/CreatePostModal';
 import { CommunityPostDetailModal } from '@/components/CommunityPostDetailModal';
 import { useLanguage } from '@/context/LanguageContext';
+import { communityRepository } from '@/services/communityRepository';
 
 export interface CommunityFeedViewProps {
   portfolio: UserPortfolioItem[];
@@ -41,21 +42,15 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
   const [visibleCount, setVisibleCount] = useState<number>(10);
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
 
-  // Load posts from localStorage on mount
+  // Load posts via communityRepository on mount
   useEffect(() => {
-    const timer = setTimeout(() => {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (!saved) return;
-      try {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setPosts(parsed);
-        }
-      } catch (err) {
-        console.error('Failed to parse community posts', err);
+    communityRepository.getFeed().then((loadedPosts) => {
+      if (loadedPosts && loadedPosts.length > 0) {
+        setPosts(loadedPosts as unknown as CommunityPost[]);
       }
-    }, 0);
-    return () => clearTimeout(timer);
+    }).catch((err) => {
+      console.error('Failed to load community feed via repository:', err);
+    });
   }, []);
 
   const savePosts = (updated: CommunityPost[]) => {

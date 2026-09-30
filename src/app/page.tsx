@@ -21,6 +21,8 @@ import { VersusFloatBar } from '@/components/VersusFloatBar';
 import { CardVersusModal } from '@/components/CardVersusModal';
 import { AccountProfileView } from '@/components/AccountProfileView';
 import { useLanguage } from '@/context/LanguageContext';
+import { portfolioRepository } from '@/services/portfolioRepository';
+import { marketplaceRepository } from '@/services/marketplaceRepository';
 
 interface ToastState {
   show: boolean;
@@ -52,45 +54,26 @@ export default function Home() {
   const [comparedCards, setComparedCards] = useState<UniversalCard[]>([]);
   const [isVersusModalOpen, setIsVersusModalOpen] = useState<boolean>(false);
 
-  // Load portfolio, marketplace & wishlist from localStorage on mount
+  // Load portfolio, marketplace & wishlist from repositories & localStorage on mount
   useEffect(() => {
     const timer = setTimeout(() => {
-      // 1. Load Portfolio
-      const savedPortfolio = localStorage.getItem('pokemon_portfolio');
-      if (savedPortfolio) {
-        try {
-          const parsed = JSON.parse(savedPortfolio);
-          if (Array.isArray(parsed)) {
-            const migrated: UserPortfolioItem[] = parsed.map((item: Partial<UserPortfolioItem>) => ({
-              id: item.id || `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-              name: item.name || 'Unknown Card',
-              category: item.category || 'pokemon',
-              price: item.price || 0,
-              buyPrice: item.buyPrice ?? item.price ?? 0,
-              quantity: item.quantity && item.quantity > 0 ? item.quantity : 1,
-              condition: item.condition || 'Ungraded',
-              imageUrl: item.imageUrl || 'https://images.pokemontcg.io/sv3pt5/199_hires.png',
-              addedAt: item.addedAt || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-            }));
-            setPortfolio(migrated);
-          }
-        } catch (e) {
-          console.error('Failed to parse portfolio from localStorage', e);
+      // 1. Load Portfolio via Repository (Zod validated)
+      portfolioRepository.getAll().then((assets) => {
+        if (assets && assets.length > 0) {
+          setPortfolio(assets as unknown as UserPortfolioItem[]);
         }
-      }
+      }).catch((e) => {
+        console.error('Failed to load portfolio via repository:', e);
+      });
 
-      // 2. Load Marketplace Listings
-      const savedListings = localStorage.getItem('mcard_marketplace_listings');
-      if (savedListings) {
-        try {
-          const parsedListings = JSON.parse(savedListings);
-          if (Array.isArray(parsedListings) && parsedListings.length > 0) {
-            setListings(parsedListings);
-          }
-        } catch (e) {
-          console.error('Failed to parse listings from localStorage', e);
+      // 2. Load Marketplace Listings via Repository (Zod validated)
+      marketplaceRepository.getAll().then((loadedListings) => {
+        if (loadedListings && loadedListings.length > 0) {
+          setListings(loadedListings as unknown as CardListing[]);
         }
-      }
+      }).catch((e) => {
+        console.error('Failed to load marketplace listings via repository:', e);
+      });
 
       // 3. Load Wishlist Items
       const savedWishlist = localStorage.getItem('mcard_wishlist_items');
@@ -115,16 +98,21 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Save portfolio to localStorage when changed
+  // Save portfolio to localStorage & repository when changed
   const savePortfolio = (updated: UserPortfolioItem[]) => {
     setPortfolio(updated);
-    localStorage.setItem('pokemon_portfolio', JSON.stringify(updated));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('pokemon_portfolio', JSON.stringify(updated));
+      localStorage.setItem('mcard_portfolio_assets', JSON.stringify(updated));
+    }
   };
 
-  // Save marketplace listings to localStorage
+  // Save marketplace listings to localStorage & repository
   const saveListings = (updated: CardListing[]) => {
     setListings(updated);
-    localStorage.setItem('mcard_marketplace_listings', JSON.stringify(updated));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('mcard_marketplace_listings', JSON.stringify(updated));
+    }
   };
 
   // Save wishlist to localStorage

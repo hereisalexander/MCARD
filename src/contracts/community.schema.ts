@@ -59,7 +59,7 @@ export const CommunityPostSchema = z.object({
   title: z.string().min(1, '貼文標題為必填').max(80, '標題上限 80 字'),
   content: z.string().min(1, '貼文內容為必填').max(2000, '貼文上限 2000 字'),
   imageUrl: z.string().url('首圖必須為有效 URL'),
-  additionalImages: z.array(z.string().url()).max(4, '最多上傳 4 張附圖').default([]),
+  additionalImages: z.array(z.string().url()).max(4, '最多上傳 4 張附圖').optional().default([]),
   tags: z.array(z.string()).default([]),
   likes: z.number().int().nonnegative().default(0),
   isLiked: z.boolean().default(false),
