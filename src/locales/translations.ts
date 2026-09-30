@@ -211,7 +211,7 @@ export type TranslationKey =
 export const translations: Record<Language, Record<TranslationKey, string>> = {
   en: {
     // Navigation & Header
-    nav_stream: 'Live',
+    nav_stream: 'Feed',
     nav_explore: 'Explore',
     nav_market: 'Market',
     nav_sets: 'Sets',
@@ -420,7 +420,7 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
   },
   'zh-TW': {
     // Navigation & Header
-    nav_stream: '即時',
+    nav_stream: '動態',
     nav_explore: '探索',
     nav_market: '市場',
     nav_sets: '擴充包',
@@ -629,7 +629,7 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
   },
   'zh-CN': {
     // Navigation & Header
-    nav_stream: '即时',
+    nav_stream: '动态',
     nav_explore: '探索',
     nav_market: '市场',
     nav_sets: '扩展包',

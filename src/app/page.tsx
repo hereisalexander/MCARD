@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Navbar } from '@/components/Navbar';
-import { PaddockTelemetry } from '@/components/PaddockTelemetry';
+import { CommunityFeedView } from '@/components/CommunityFeedView';
 import { CardGrid } from '@/components/CardGrid';
 import { SetsView } from '@/components/SetsView';
 import { PortfolioDashboard, UserPortfolioItem, CardCondition } from '@/components/PortfolioDashboard';
@@ -444,10 +444,13 @@ export default function Home() {
         ) : (
           <>
             {activeTab === 'stream' && (
-              <PaddockTelemetry
-                onAddCard={(name, price, img) => handleAddCard(name, price, img, 'Ungraded', 'pokemon')}
-                onExploreClick={() => setActiveTab('explore')}
-                onPortfolioClick={() => setActiveTab('portfolio')}
+              <CommunityFeedView
+                portfolio={portfolio}
+                onAddCardToPortfolio={(name, price, img) =>
+                  handleAddCard(name, price, img, 'Ungraded', 'pokemon')
+                }
+                onNavigateToMarket={() => setActiveTab('market')}
+                onNavigateToExplore={() => setActiveTab('explore')}
               />
             )}
             
