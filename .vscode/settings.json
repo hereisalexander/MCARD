@@ -1,0 +1,8 @@
+{
+    "markdown.preview.fontSize": 15,
+    "editor.fontSize": 12,
+    "editor.minimap.size": "proportional",
+    "debug.console.fontSize": 14,
+    "scm.inputFontSize": 12,
+    "terminal.integrated.fontSize": 12
+}

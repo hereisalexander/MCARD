@@ -157,4 +157,6 @@ export class LocalCommunityRepository implements ICommunityRepository {
   }
 }
 
-export const communityRepository = new LocalCommunityRepository();
+import { ApiCommunityRepository } from './api/apiCommunityRepository';
+
+export const communityRepository = new ApiCommunityRepository();

@@ -197,4 +197,7 @@ export class LocalPortfolioRepository implements IPortfolioRepository {
   }
 }
 
-export const portfolioRepository = new LocalPortfolioRepository();
+
+import { ApiPortfolioRepository } from './api/apiPortfolioRepository';
+
+export const portfolioRepository = new ApiPortfolioRepository();

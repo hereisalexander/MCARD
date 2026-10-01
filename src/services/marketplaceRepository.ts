@@ -127,4 +127,6 @@ export class LocalMarketplaceRepository implements IMarketplaceRepository {
   }
 }
 
-export const marketplaceRepository = new LocalMarketplaceRepository();
+import { ApiMarketplaceRepository } from './api/apiMarketplaceRepository';
+
+export const marketplaceRepository = new ApiMarketplaceRepository();
