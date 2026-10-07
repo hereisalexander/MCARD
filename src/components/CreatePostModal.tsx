@@ -3,8 +3,7 @@
 import React, { useState } from 'react';
 import { CommunityPost, CommunityPostType, CardTagInfo } from '@/types/community';
 import { UserPortfolioItem } from '@/components/PortfolioDashboard';
-import { CloseIcon, CameraIcon, TagIcon } from '@/components/icons/AppIcons';
-import { useLanguage } from '@/context/LanguageContext';
+import { CloseIcon } from '@/components/icons/AppIcons';
 
 export interface CreatePostModalProps {
   isOpen: boolean;
@@ -19,7 +18,6 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
   portfolio,
   onSubmitPost,
 }) => {
-  const { t } = useLanguage();
 
   const [postType, setPostType] = useState<CommunityPostType>('showcase');
   const [title, setTitle] = useState<string>('');

@@ -8,6 +8,7 @@ import { SetsView } from '@/components/SetsView';
 import { PortfolioDashboard, UserPortfolioItem, CardCondition } from '@/components/PortfolioDashboard';
 import { CardDetailView } from '@/components/CardDetailView';
 import { UniversalCard, CardCategory } from '@/services/multiCardService';
+import { CardGrade, CardCategory as ContractCardCategory } from '@/contracts/common.schema';
 import { FooterModals, FooterModalType } from '@/components/FooterModals';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { CardListing, INITIAL_MARKETPLACE_LISTINGS, ListingStatus } from '@/types/marketplace';
@@ -204,7 +205,7 @@ export default function Home() {
       await marketplaceRepository.create(
         {
           cardName: newListing.cardName,
-          category: (newListing.category as any) || 'pokemon',
+          category: (newListing.category as unknown as ContractCardCategory) || 'pokemon',
           setName: newListing.setName,
           officialPrice: newListing.officialPrice,
           askingPrice: newListing.askingPrice,
@@ -364,11 +365,11 @@ export default function Home() {
       portfolioRepository.add({
         cardId: newItem.id,
         name: newItem.name,
-        category: (newItem.category as any) || 'pokemon',
+        category: (newItem.category as unknown as ContractCardCategory) || 'pokemon',
         price: newItem.price,
         buyPrice: newItem.buyPrice,
         quantity: newItem.quantity,
-        condition: newItem.condition,
+        condition: newItem.condition as CardGrade,
         imageUrl: newItem.imageUrl,
       }).catch((e) => {
         console.error('新增資產至 D1 失敗:', e);
@@ -396,8 +397,8 @@ export default function Home() {
     portfolioRepository.update(updatedItem.id, {
       buyPrice: updatedItem.buyPrice,
       quantity: updatedItem.quantity,
-      condition: updatedItem.condition as any,
-      notes: (updatedItem as any).notes,
+      condition: updatedItem.condition as CardGrade,
+      notes: updatedItem.notes,
     }).catch((e) => {
       console.error('更新卡牌至 D1 失敗:', e);
     });

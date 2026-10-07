@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { CommunityPost, CommunityComment } from '@/types/community';
-import { CloseIcon, HeartIcon } from '@/components/icons/AppIcons';
+import { CommunityPost } from '@/types/community';
+import { CloseIcon } from '@/components/icons/AppIcons';
 import { HoloCard } from '@/components/HoloCard';
 
 export interface CommunityPostDetailModalProps {

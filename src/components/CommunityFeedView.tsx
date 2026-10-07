@@ -3,14 +3,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import {
   CommunityPost,
-  CommunityPostType,
   INITIAL_COMMUNITY_POSTS,
   CommunityComment,
 } from '@/types/community';
+import { CardTagInfo } from '@/contracts/community.schema';
 import { UserPortfolioItem } from '@/components/PortfolioDashboard';
 import { CreatePostModal } from '@/components/CreatePostModal';
 import { CommunityPostDetailModal } from '@/components/CommunityPostDetailModal';
-import { useLanguage } from '@/context/LanguageContext';
 import { communityRepository } from '@/services/communityRepository';
 
 export interface CommunityFeedViewProps {
@@ -26,17 +25,14 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
   portfolio,
   onAddCardToPortfolio,
   onNavigateToMarket,
-  onNavigateToExplore,
 }) => {
-  const { t } = useLanguage();
-
   const [posts, setPosts] = useState<CommunityPost[]>(INITIAL_COMMUNITY_POSTS);
   
 
   // Sub Level 2 Pills (Xiaohongshu style)
   const [subFilter, setSubFilter] = useState<string>('綜合');
   
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [searchQuery] = useState<string>('');
   const [selectedPost, setSelectedPost] = useState<CommunityPost | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
   const [visibleCount, setVisibleCount] = useState<number>(10);
@@ -163,7 +159,7 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
           type: newPost.type,
           imageUrl: newPost.imageUrl,
           tags: newPost.tags,
-          cardInfo: newPost.cardInfo as any,
+          cardInfo: newPost.cardInfo as unknown as CardTagInfo,
         },
         newPost.author
       );

@@ -18,6 +18,7 @@ export interface UserPortfolioItem {
   condition: CardCondition;
   imageUrl: string;
   addedAt: string;
+  notes?: string;
 }
 
 interface PortfolioDashboardProps {
