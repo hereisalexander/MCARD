@@ -1,4 +1,8 @@
 import type { NextConfig } from "next";
+import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
+
+// 讓本地 next dev 能直接調用本地 D1 SQLite 與 KV 資源
+initOpenNextCloudflareForDev();
 
 const nextConfig: NextConfig = {
   images: {

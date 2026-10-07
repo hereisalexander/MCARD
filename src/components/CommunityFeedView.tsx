@@ -115,10 +115,13 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
     return [left, right];
   }, [displayedPosts]);
 
-  const handleToggleLike = (postId: string) => {
+  const handleToggleLike = async (postId: string) => {
+    const postToToggle = posts.find((p) => p.id === postId);
+    if (!postToToggle) return;
+
+    const currentlyLiked = Boolean(postToToggle.isLiked);
     const updated = posts.map((post) => {
       if (post.id !== postId) return post;
-      const currentlyLiked = Boolean(post.isLiked);
       return {
         ...post,
         isLiked: !currentlyLiked,
@@ -128,22 +131,56 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
     savePosts(updated);
 
     if (selectedPost && selectedPost.id === postId) {
-      const currentlyLiked = Boolean(selectedPost.isLiked);
       setSelectedPost({
         ...selectedPost,
         isLiked: !currentlyLiked,
         likes: currentlyLiked ? Math.max(0, selectedPost.likes - 1) : selectedPost.likes + 1,
       });
     }
+
+    try {
+      const result = await communityRepository.toggleLike(postId);
+      if (result) {
+        setPosts((prev) =>
+          prev.map((p) => (p.id === postId ? { ...p, isLiked: result.isLiked, likes: result.newLikes } : p))
+        );
+      }
+    } catch (err) {
+      console.error('持久化按讚至 D1 失敗:', err);
+    }
   };
 
-  const handleCreatePost = (newPost: CommunityPost) => {
+  const handleCreatePost = async (newPost: CommunityPost) => {
+    // 樂觀更新前端畫面
     const updated = [newPost, ...posts];
     savePosts(updated);
+
+    try {
+      const created = await communityRepository.createPost(
+        {
+          title: newPost.title,
+          content: newPost.content,
+          type: newPost.type,
+          imageUrl: newPost.imageUrl,
+          tags: newPost.tags,
+          cardInfo: newPost.cardInfo as any,
+        },
+        newPost.author
+      );
+
+      if (created) {
+        // 以後端 D1 回傳之最新記錄 (含正式伺服器 ID) 更新列表
+        setPosts((prev) =>
+          prev.map((p) => (p.id === newPost.id ? (created as unknown as CommunityPost) : p))
+        );
+      }
+    } catch (err) {
+      console.error('發布貼文至 D1 失敗:', err);
+    }
   };
 
-  const handleAddComment = (postId: string, commentText: string) => {
-    const newComment: CommunityComment = {
+  const handleAddComment = async (postId: string, commentText: string) => {
+    const tempComment: CommunityComment = {
       id: `c-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
       authorName: '我 (VIP 藏家)',
       authorAvatar:
@@ -154,7 +191,7 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
 
     const updated = posts.map((post) => {
       if (post.id !== postId) return post;
-      const comments = post.comments ? [newComment, ...post.comments] : [newComment];
+      const comments = post.comments ? [tempComment, ...post.comments] : [tempComment];
       return {
         ...post,
         comments,
@@ -165,12 +202,34 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
     savePosts(updated);
 
     if (selectedPost && selectedPost.id === postId) {
-      const comments = selectedPost.comments ? [newComment, ...selectedPost.comments] : [newComment];
+      const comments = selectedPost.comments ? [tempComment, ...selectedPost.comments] : [tempComment];
       setSelectedPost({
         ...selectedPost,
         comments,
         commentsCount: comments.length,
       });
+    }
+
+    try {
+      const createdComment = await communityRepository.addComment(postId, commentText, {
+        name: tempComment.authorName,
+        avatar: tempComment.authorAvatar,
+      });
+      if (createdComment) {
+        setPosts((prev) =>
+          prev.map((post) => {
+            if (post.id !== postId) return post;
+            return {
+              ...post,
+              comments: post.comments?.map((c) =>
+                c.id === tempComment.id ? (createdComment as unknown as CommunityComment) : c
+              ),
+            };
+          })
+        );
+      }
+    } catch (err) {
+      console.error('新增留言至 D1 失敗:', err);
     }
   };
 

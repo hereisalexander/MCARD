@@ -28,6 +28,8 @@ export class LocalPortfolioRepository implements IPortfolioRepository {
         const result = CardAssetSchema.safeParse({
           ...item,
           // 向後相容舊資料欄位
+          cardId: item.cardId || item.id || `card-${Date.now()}`,
+          userId: item.userId || 'local-user',
           buyPrice: typeof item.buyPrice === 'number' ? item.buyPrice : 0,
           quantity: typeof item.quantity === 'number' && item.quantity > 0 ? item.quantity : 1,
           condition: item.condition || 'Ungraded',

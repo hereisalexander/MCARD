@@ -191,7 +191,7 @@ export default function Home() {
     }
   };
 
-  const handleCreateListing = (newListing: CardListing) => {
+  const handleCreateListing = async (newListing: CardListing) => {
     const updated = [newListing, ...listings];
     saveListings(updated);
     setToast({
@@ -199,9 +199,35 @@ export default function Home() {
       message: `已成功上架「${newListing.cardName}」到市場`,
     });
     setTimeout(() => setToast({ show: false, message: '' }), 4000);
+
+    try {
+      await marketplaceRepository.create(
+        {
+          cardName: newListing.cardName,
+          category: (newListing.category as any) || 'pokemon',
+          setName: newListing.setName,
+          officialPrice: newListing.officialPrice,
+          askingPrice: newListing.askingPrice,
+          condition: newListing.condition,
+          photos: newListing.photos,
+          notes: newListing.notes,
+          location: newListing.location,
+          contactPlatform: newListing.contactPlatform,
+          contactValue: newListing.contactValue,
+          buyInCost: newListing.buyInCost,
+          portfolioCardId: newListing.portfolioCardId,
+        },
+        {
+          name: newListing.sellerName,
+          avatar: newListing.sellerAvatar,
+        }
+      );
+    } catch (e) {
+      console.error('上架商品至 D1 失敗:', e);
+    }
   };
 
-  const handleUpdateListingStatus = (
+  const handleUpdateListingStatus = async (
     listingId: string,
     status: ListingStatus,
     soldPrice?: number,
@@ -251,6 +277,12 @@ export default function Home() {
       }
     }
 
+    try {
+      await marketplaceRepository.updateStatus(listingId, status, soldPrice);
+    } catch (e) {
+      console.error('更新掛單狀態至 D1 失敗:', e);
+    }
+
     setToast({
       show: true,
       message: `已成功結案！成交價 $${(soldPrice || targetListing?.askingPrice || 0).toLocaleString()} USD`,
@@ -270,12 +302,18 @@ export default function Home() {
     setTimeout(() => setToast({ show: false, message: '' }), 3000);
   };
 
-  const handleDeleteListing = (listingId: string) => {
+  const handleDeleteListing = async (listingId: string) => {
     const updated = listings.filter((item) => item.id !== listingId);
     saveListings(updated);
     setSelectedListing(null);
     setToast({ show: true, message: '卡牌商品已成功下架' });
     setTimeout(() => setToast({ show: false, message: '' }), 3000);
+
+    try {
+      await marketplaceRepository.delete(listingId);
+    } catch (e) {
+      console.error('刪除市集商品至 D1 失敗:', e);
+    }
   };
 
   const handleAddCard = (
@@ -294,12 +332,17 @@ export default function Home() {
     );
 
     if (existingIndex >= 0) {
+      const existing = portfolio[existingIndex];
+      const newQty = (existing.quantity || 1) + 1;
       const updated = [...portfolio];
       updated[existingIndex] = {
-        ...updated[existingIndex],
-        quantity: (updated[existingIndex].quantity || 1) + 1,
+        ...existing,
+        quantity: newQty,
       };
       savePortfolio(updated);
+      portfolioRepository.update(existing.id, { quantity: newQty }).catch((e) => {
+        console.error('更新資產數量至 D1 失敗:', e);
+      });
     } else {
       const newItem: UserPortfolioItem = {
         id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -318,6 +361,18 @@ export default function Home() {
       };
       const updated = [newItem, ...portfolio];
       savePortfolio(updated);
+      portfolioRepository.add({
+        cardId: newItem.id,
+        name: newItem.name,
+        category: (newItem.category as any) || 'pokemon',
+        price: newItem.price,
+        buyPrice: newItem.buyPrice,
+        quantity: newItem.quantity,
+        condition: newItem.condition,
+        imageUrl: newItem.imageUrl,
+      }).catch((e) => {
+        console.error('新增資產至 D1 失敗:', e);
+      });
     }
     
     // Show telemetry toast
@@ -330,11 +385,22 @@ export default function Home() {
   const handleRemoveCard = (id: string) => {
     const updated = portfolio.filter((item) => item.id !== id);
     savePortfolio(updated);
+    portfolioRepository.remove(id).catch((e) => {
+      console.error('從 D1 移除卡牌失敗:', e);
+    });
   };
 
   const handleUpdateCard = (updatedItem: UserPortfolioItem) => {
     const updated = portfolio.map((item) => (item.id === updatedItem.id ? updatedItem : item));
     savePortfolio(updated);
+    portfolioRepository.update(updatedItem.id, {
+      buyPrice: updatedItem.buyPrice,
+      quantity: updatedItem.quantity,
+      condition: updatedItem.condition as any,
+      notes: (updatedItem as any).notes,
+    }).catch((e) => {
+      console.error('更新卡牌至 D1 失敗:', e);
+    });
   };
 
   const handleImportPortfolio = (importedItems: UserPortfolioItem[]) => {
