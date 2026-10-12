@@ -19,30 +19,33 @@ export const LegalPageLayout: React.FC<LegalPageLayoutProps> = ({ activeTab }) =
   const [wishlistCount, setWishlistCount] = useState<number>(0);
 
   useEffect(() => {
-    try {
-      const savedPortfolio = localStorage.getItem('mcard_portfolio_assets');
-      if (savedPortfolio) {
-        const parsed = JSON.parse(savedPortfolio);
-        if (Array.isArray(parsed)) {
-          setPortfolioCount(parsed.length);
-          const totalVal = parsed.reduce(
-            (sum: number, item: { marketPrice?: number; quantity?: number }) =>
-              sum + (Number(item.marketPrice) || 0) * (Number(item.quantity) || 1),
-            0
-          );
-          setPortfolioValue(totalVal);
+    const timer = setTimeout(() => {
+      try {
+        const savedPortfolio = localStorage.getItem('mcard_portfolio_assets');
+        if (savedPortfolio) {
+          const parsed = JSON.parse(savedPortfolio);
+          if (Array.isArray(parsed)) {
+            setPortfolioCount(parsed.length);
+            const totalVal = parsed.reduce(
+              (sum: number, item: { marketPrice?: number; quantity?: number }) =>
+                sum + (Number(item.marketPrice) || 0) * (Number(item.quantity) || 1),
+              0
+            );
+            setPortfolioValue(totalVal);
+          }
         }
-      }
-      const savedWishlist = localStorage.getItem('mcard_wishlist_items');
-      if (savedWishlist) {
-        const parsedWishlist = JSON.parse(savedWishlist);
-        if (Array.isArray(parsedWishlist)) {
-          setWishlistCount(parsedWishlist.length);
+        const savedWishlist = localStorage.getItem('mcard_wishlist_items');
+        if (savedWishlist) {
+          const parsedWishlist = JSON.parse(savedWishlist);
+          if (Array.isArray(parsedWishlist)) {
+            setWishlistCount(parsedWishlist.length);
+          }
         }
+      } catch {
+        // ignore
       }
-    } catch {
-      // ignore
-    }
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleTabChange = (tab: string) => {

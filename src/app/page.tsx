@@ -56,16 +56,16 @@ export default function Home() {
 
   // Load portfolio, marketplace & wishlist from repositories & localStorage on mount
   useEffect(() => {
-    // 0. Check URL query param ?tab= (e.g., coming from /terms or /privacy navbar)
-    if (typeof window !== 'undefined') {
-      const urlParams = new URLSearchParams(window.location.search);
-      const targetTab = urlParams.get('tab');
-      if (targetTab && ['stream', 'explore', 'market', 'portfolio', 'account', 'watchlist'].includes(targetTab)) {
-        setActiveTab(targetTab);
-      }
-    }
-
     const timer = setTimeout(() => {
+      // 0. Check URL query param ?tab= (e.g., coming from /terms or /privacy navbar)
+      if (typeof window !== 'undefined') {
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetTab = urlParams.get('tab');
+        if (targetTab && ['stream', 'explore', 'market', 'portfolio', 'account', 'watchlist'].includes(targetTab)) {
+          setActiveTab(targetTab);
+        }
+      }
+
       // 1. Load Portfolio via Repository (Zod validated)
       portfolioRepository.getAll().then((assets) => {
         if (assets && assets.length > 0) {

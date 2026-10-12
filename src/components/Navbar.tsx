@@ -27,7 +27,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   activeTab,
   onTabChange,
   portfolioCount,
-  portfolioValue,
+  portfolioValue: _portfolioValue,
   selectedCategory,
   onCategoryChange,
   onSelectSet,
@@ -94,7 +94,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     }
   };
 
-  const handleSetSelect = (setName: string) => {
+  const _handleSetSelect = (setName: string) => {
     onCategoryChange('pokemon');
     if (onSelectSet) {
       onSelectSet(setName);
