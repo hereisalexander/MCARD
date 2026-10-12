@@ -9,7 +9,7 @@ import { PortfolioDashboard, UserPortfolioItem, CardCondition } from '@/componen
 import { CardDetailView } from '@/components/CardDetailView';
 import { UniversalCard, CardCategory } from '@/services/multiCardService';
 import { CardGrade, CardCategory as ContractCardCategory } from '@/contracts/common.schema';
-import { FooterModals, FooterModalType } from '@/components/FooterModals';
+import Link from 'next/link';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { CardListing, INITIAL_MARKETPLACE_LISTINGS, ListingStatus } from '@/types/marketplace';
 import { MarketplaceView } from '@/components/MarketplaceView';
@@ -37,7 +37,6 @@ export default function Home() {
   const [portfolio, setPortfolio] = useState<UserPortfolioItem[]>([]);
   const [selectedSetFilter, setSelectedSetFilter] = useState<string>('ALL');
   const [toast, setToast] = useState<ToastState>({ show: false, message: '' });
-  const [footerModal, setFooterModal] = useState<FooterModalType>(null);
   
   // State for Full-Page Card Detail View
   const [selectedDetailCard, setSelectedDetailCard] = useState<UniversalCard | null>(null);
@@ -57,6 +56,15 @@ export default function Home() {
 
   // Load portfolio, marketplace & wishlist from repositories & localStorage on mount
   useEffect(() => {
+    // 0. Check URL query param ?tab= (e.g., coming from /terms or /privacy navbar)
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const targetTab = urlParams.get('tab');
+      if (targetTab && ['stream', 'explore', 'market', 'portfolio', 'account', 'watchlist'].includes(targetTab)) {
+        setActiveTab(targetTab);
+      }
+    }
+
     const timer = setTimeout(() => {
       // 1. Load Portfolio via Repository (Zod validated)
       portfolioRepository.getAll().then((assets) => {
@@ -623,19 +631,19 @@ export default function Home() {
               </span>
             </div>
             <div className="flex items-center gap-4 font-sans text-[11px] tracking-[0.5px] text-text-muted">
-              <button
-                onClick={() => setFooterModal('terms')}
+              <Link
+                href="/terms"
                 className="hover:text-foreground transition-colors duration-150 cursor-pointer"
               >
                 Terms
-              </button>
+              </Link>
               <span>/</span>
-              <button
-                onClick={() => setFooterModal('privacy')}
+              <Link
+                href="/privacy"
                 className="hover:text-foreground transition-colors duration-150 cursor-pointer"
               >
                 Privacy
-              </button>
+              </Link>
             </div>
           </div>
 
@@ -647,9 +655,6 @@ export default function Home() {
           </div>
         </div>
       </footer>
-
-      {/* Footer Interactive Modals */}
-      <FooterModals activeModal={footerModal} onClose={() => setFooterModal(null)} />
 
       {/* Marketplace Create Listing Modal */}
       <CreateListingModal

@@ -130,15 +130,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                 />
               </div>
 
-              <div className="flex flex-col">
-                <div className="flex items-center gap-2">
-                  <span className="font-sans font-bold text-lg sm:text-xl tracking-wider text-foreground group-hover:text-ferrari-red transition-colors duration-150">
-                    MCARD
-                  </span>
-                  <span className="hidden sm:inline-block text-[10px] font-semibold tracking-wide px-2 py-0.5 rounded-full bg-surface-hover text-text-muted border border-hairline/60">
-                    Pro Vault
-                  </span>
-                </div>
+              <div className="flex items-center">
+                <span className="font-sans font-bold text-lg sm:text-xl tracking-wider text-foreground group-hover:text-ferrari-red transition-colors duration-150">
+                  MCARD
+                </span>
               </div>
             </div>
 
