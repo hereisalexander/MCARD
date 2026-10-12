@@ -109,72 +109,75 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* SINGLE CLEAN TIER NAVBAR (Height: 64px) */}
       <header className="w-full bg-surface border-b border-hairline/60 sticky top-0 z-40 backdrop-blur-md bg-surface/95 transition-colors duration-200 shadow-2xs">
         <div className="max-w-[1600px] mx-auto px-4 md:px-8">
-          <div className="h-16 flex items-center justify-between gap-3 sm:gap-6">
+          <div className="h-16 grid grid-cols-[auto_1fr_auto] items-center gap-3 sm:gap-6">
             
-            {/* 1. Left Brand Logo */}
-            <div
-              onClick={() => handleTabClick('stream')}
-              tabIndex={0}
-              role="button"
-              className="flex items-center gap-2.5 cursor-pointer select-none group shrink-0"
-              aria-label="Navigate to Home Telemetry"
-            >
-              <div className="relative w-8 h-8 sm:w-9 sm:h-9 shrink-0 group-hover:scale-105 transition-transform duration-200">
-                <Image
-                  src="/logo-144.png"
-                  alt="MCARD Official Logo"
-                  width={36}
-                  height={36}
-                  priority
-                  className="w-full h-full object-contain drop-shadow-2xs"
-                />
+            {/* 1. Left Section: Brand Logo & Desktop Navigation Links (鎖定固定間距，徹底消除動態推擠) */}
+            <div className="flex items-center gap-4 lg:gap-8 justify-self-start shrink-0">
+              {/* Brand Logo */}
+              <div
+                onClick={() => handleTabClick('stream')}
+                tabIndex={0}
+                role="button"
+                className="flex items-center gap-2.5 cursor-pointer select-none group shrink-0"
+                aria-label="Navigate to Home Telemetry"
+              >
+                <div className="relative w-8 h-8 sm:w-9 sm:h-9 shrink-0 group-hover:scale-105 transition-transform duration-200">
+                  <Image
+                    src="/logo-144.png"
+                    alt="MCARD Official Logo"
+                    width={36}
+                    height={36}
+                    priority
+                    className="w-full h-full object-contain drop-shadow-2xs"
+                  />
+                </div>
+
+                <div className="flex items-center">
+                  <span className="font-sans font-bold text-lg sm:text-xl tracking-wider text-foreground group-hover:text-ferrari-red transition-colors duration-150">
+                    MCARD
+                  </span>
+                </div>
               </div>
 
-              <div className="flex items-center">
-                <span className="font-sans font-bold text-lg sm:text-xl tracking-wider text-foreground group-hover:text-ferrari-red transition-colors duration-150">
-                  MCARD
-                </span>
-              </div>
+              {/* Desktop Web Navigation Links (桌面網頁版主要導航) */}
+              <nav className="hidden md:flex items-center gap-1.5 lg:gap-3 shrink-0" aria-label="主要網頁導航">
+                {[
+                  { id: 'stream', label: t('nav_stream') || '動態' },
+                  { id: 'explore', label: t('nav_explore') || '探索' },
+                  { id: 'market', label: t('nav_market') || '市場' },
+                ].map((item) => {
+                  const isActive = activeTab === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => handleTabClick(item.id)}
+                      className="group py-2 px-3 flex flex-col items-center justify-center font-sans text-xs tracking-wide cursor-pointer transition-colors"
+                    >
+                      <span
+                        className={`transition-colors duration-150 ${
+                          isActive
+                            ? 'text-foreground font-bold'
+                            : 'text-text-muted group-hover:text-foreground font-semibold'
+                        }`}
+                      >
+                        {item.label}
+                      </span>
+                      <span
+                        className={`mt-1.5 h-[2.5px] rounded-full transition-all duration-200 ${
+                          isActive
+                            ? 'w-full bg-ferrari-red opacity-100 shadow-[0_1px_6px_rgba(230,0,0,0.35)]'
+                            : 'w-0 bg-transparent opacity-0 group-hover:w-1/2 group-hover:bg-hairline group-hover:opacity-100'
+                        }`}
+                      />
+                    </button>
+                  );
+                })}
+              </nav>
             </div>
 
-            {/* Desktop Web Navigation Links (桌面網頁版主要導航 - 方案 2: 文字緊湊貼合下劃線) */}
-            <nav className="hidden md:flex items-center gap-1.5 lg:gap-3 shrink-0 ml-2 lg:ml-4" aria-label="主要網頁導航">
-              {[
-                { id: 'stream', label: t('nav_stream') || '動態' },
-                { id: 'explore', label: t('nav_explore') || '探索' },
-                { id: 'market', label: t('nav_market') || '市場' },
-              ].map((item) => {
-                const isActive = activeTab === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => handleTabClick(item.id)}
-                    className="group py-2 px-3 flex flex-col items-center justify-center font-sans text-xs tracking-wide cursor-pointer transition-colors"
-                  >
-                    <span
-                      className={`transition-colors duration-150 ${
-                        isActive
-                          ? 'text-foreground font-bold'
-                          : 'text-text-muted group-hover:text-foreground font-semibold'
-                      }`}
-                    >
-                      {item.label}
-                    </span>
-                    <span
-                      className={`mt-1.5 h-[2.5px] rounded-full transition-all duration-200 ${
-                        isActive
-                          ? 'w-full bg-ferrari-red opacity-100 shadow-[0_1px_6px_rgba(230,0,0,0.35)]'
-                          : 'w-0 bg-transparent opacity-0 group-hover:w-1/2 group-hover:bg-hairline group-hover:opacity-100'
-                      }`}
-                    />
-                  </button>
-                );
-              })}
-            </nav>
-
-            {/* 2. Center: Global Search Input */}
-            <div className="flex-1 max-w-xl mx-2 hidden sm:flex items-center">
+            {/* 2. Center: Global Search Input (精準居中於 1fr 空間內，寬度自適應但不推擠兩側) */}
+            <div className="w-full max-w-xl mx-auto px-2 hidden sm:flex items-center justify-center">
               <div className="flex items-center w-full bg-surface-hover/60 border border-hairline focus-within:border-ferrari-red focus-within:ring-2 focus-within:ring-ferrari-red/10 rounded-xl transition-all duration-150 h-9.5 overflow-hidden">
                 <div className="pl-3 pr-2 text-text-muted">
                   <SearchIcon className="w-3.5 h-3.5" />
@@ -199,14 +202,14 @@ export const Navbar: React.FC<NavbarProps> = ({
               </div>
             </div>
 
-            {/* 3. Right Utilities & Drawer Toggle Button */}
-            <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+            {/* 3. Right Utilities & Drawer Toggle Button (固定寬度，靠右對齊，0 像素形變) */}
+            <div className="flex items-center gap-2 sm:gap-2.5 justify-self-end shrink-0">
 
-              {/* Desktop Account Portal Pill (網頁版頂部帳戶入口，內含資產庫) */}
+              {/* Desktop Account Portal Pill (絕對角標佈局，水合前後按鈕內部圖標文字與寬度 100% 絕對靜止) */}
               <button
                 type="button"
                 onClick={() => onTabChange('account')}
-                className={`h-9 px-2.5 sm:px-3.5 rounded-xl border font-sans text-xs font-semibold tracking-wide transition-all duration-150 cursor-pointer flex items-center gap-2 shrink-0 ${
+                className={`relative h-9 px-3 rounded-xl border font-sans text-xs font-semibold tracking-wide transition-all duration-150 cursor-pointer flex items-center justify-center gap-2 shrink-0 w-[84px] sm:w-[96px] ${
                   activeTab === 'account'
                     ? 'border-ferrari-red text-foreground bg-surface-hover shadow-2xs ring-1 ring-ferrari-red/30 font-bold'
                     : 'bg-surface-hover/70 hover:bg-surface-hover border-hairline/80 text-foreground'
@@ -220,15 +223,15 @@ export const Navbar: React.FC<NavbarProps> = ({
                     <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
                   </div>
                 ) : (
-                  <svg className="w-4 h-4 text-inherit" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 text-inherit shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
                 )}
-                <span className="hidden sm:inline">
+                <span className="hidden sm:inline truncate">
                   {isLoggedIn && user ? user.name : (t('nav_account') || '帳戶')}
                 </span>
                 {portfolioCount > 0 && (
-                  <span className="px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold tabular-nums bg-ferrari-red text-white">
+                  <span className="absolute -top-1 -right-1 px-1.5 min-w-[18px] h-[18px] rounded-full text-[10px] font-mono font-bold tabular-nums bg-ferrari-red text-white flex items-center justify-center shadow-xs border border-surface">
                     {portfolioCount}
                   </span>
                 )}
@@ -238,7 +241,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <button
                 type="button"
                 onClick={() => setIsDrawerOpen((prev) => !prev)}
-                className={`h-9 px-3 rounded-xl border font-sans text-xs font-semibold tracking-wide transition-all duration-150 cursor-pointer flex items-center gap-2 shrink-0 ${
+                className={`h-9 px-3 rounded-xl border font-sans text-xs font-semibold tracking-wide transition-all duration-150 cursor-pointer flex items-center justify-center gap-2 shrink-0 sm:w-[104px] ${
                   isDrawerOpen
                     ? 'bg-ferrari-red text-white border-ferrari-red shadow-sm'
                     : 'bg-surface-hover/90 hover:bg-surface-hover border-hairline/90 text-foreground hover:border-text-muted'

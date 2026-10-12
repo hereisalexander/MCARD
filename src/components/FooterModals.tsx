@@ -79,7 +79,7 @@ export const FooterModals: React.FC<FooterModalsProps> = ({ activeModal, onClose
                 onClick={() => handleTabSelect('terms')}
                 className={`px-4 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition-all duration-150 cursor-pointer ${
                   currentTab === 'terms'
-                    ? 'bg-surface text-ferrari-red shadow-xs font-bold'
+                    ? 'bg-surface text-ferrari-red shadow-xs'
                     : 'text-text-muted hover:text-foreground'
                 }`}
                 aria-label="View Terms of Service"
@@ -90,7 +90,7 @@ export const FooterModals: React.FC<FooterModalsProps> = ({ activeModal, onClose
                 onClick={() => handleTabSelect('privacy')}
                 className={`px-4 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition-all duration-150 cursor-pointer ${
                   currentTab === 'privacy'
-                    ? 'bg-surface text-ferrari-red shadow-xs font-bold'
+                    ? 'bg-surface text-ferrari-red shadow-xs'
                     : 'text-text-muted hover:text-foreground'
                 }`}
                 aria-label="View Privacy Policy"
@@ -236,26 +236,6 @@ export const FooterModals: React.FC<FooterModalsProps> = ({ activeModal, onClose
                 </p>
               </div>
 
-              {/* Security Badge Highlight */}
-              <div className="p-4 rounded-xl bg-semantic-success/10 border border-semantic-success/30 flex items-start gap-3">
-                <div className="w-2.5 h-2.5 rounded-full bg-semantic-success shrink-0 mt-1 animate-pulse" />
-                <div className="flex flex-col">
-                  <span className="font-mono text-xs font-bold text-semantic-success tracking-wide uppercase">
-                    {language === 'zh-TW'
-                      ? '100% 本地優先隱私架構 (Local-First Architecture)'
-                      : language === 'zh-CN'
-                      ? '100% 本地优先隐私架构 (Local-First Architecture)'
-                      : '100% Local-First Architecture'}
-                  </span>
-                  <p className="text-text-muted text-xs mt-1">
-                    {language === 'zh-TW'
-                      ? '您的卡牌庫、購入成本、鑑定等級、自訂數量與介面偏好完全儲存於您的本機瀏覽器中，不建立任何遠端使用者追蹤檔案。'
-                      : language === 'zh-CN'
-                      ? '您的卡牌库、购入成本、鉴定等级、自订数量与界面偏好完全储存于您的本机浏览器中，不建立任何远端使用者追踪档案。'
-                      : 'All portfolio holdings, purchase valuations, grading tiers, and user preferences are retained locally inside your browser storage.'}
-                  </p>
-                </div>
-              </div>
 
               {/* Privacy Item 1 */}
               <div className="space-y-2">

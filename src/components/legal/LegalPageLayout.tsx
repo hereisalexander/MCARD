@@ -14,9 +14,31 @@ interface LegalPageLayoutProps {
 export const LegalPageLayout: React.FC<LegalPageLayoutProps> = ({ activeTab }) => {
   const router = useRouter();
   const { language, t } = useLanguage();
+  const [currentTab, setCurrentTab] = useState<'terms' | 'privacy'>(activeTab);
   const [portfolioCount, setPortfolioCount] = useState<number>(0);
   const [portfolioValue, setPortfolioValue] = useState<number>(0);
   const [wishlistCount, setWishlistCount] = useState<number>(0);
+
+  // Sync tab on browser back/forward buttons
+  useEffect(() => {
+    const handlePopState = () => {
+      const path = window.location.pathname;
+      if (path.includes('privacy')) {
+        setCurrentTab('privacy');
+      } else if (path.includes('terms')) {
+        setCurrentTab('terms');
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const handleLegalTabSwitch = (e: React.MouseEvent, targetTab: 'terms' | 'privacy') => {
+    e.preventDefault();
+    if (currentTab === targetTab) return;
+    setCurrentTab(targetTab);
+    window.history.pushState(null, '', `/${targetTab}`);
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -64,7 +86,7 @@ export const LegalPageLayout: React.FC<LegalPageLayoutProps> = ({ activeTab }) =
     <div className="min-h-screen bg-background text-foreground flex flex-col transition-colors duration-200">
       {/* 頂部導航欄（與首頁完全一致的 Navbar） */}
       <Navbar
-        activeTab={activeTab}
+        activeTab={currentTab}
         onTabChange={handleTabChange}
         portfolioCount={portfolioCount}
         portfolioValue={portfolioValue}
@@ -95,9 +117,11 @@ export const LegalPageLayout: React.FC<LegalPageLayoutProps> = ({ activeTab }) =
             <div className="flex items-center gap-2 self-start sm:self-auto">
               <Link
                 href="/terms"
+                scroll={false}
+                onClick={(e) => handleLegalTabSwitch(e, 'terms')}
                 className={`relative px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 ${
-                  activeTab === 'terms'
-                    ? 'bg-surface text-ferrari-red border border-hairline shadow-xs font-bold'
+                  currentTab === 'terms'
+                    ? 'bg-surface text-ferrari-red border border-hairline shadow-xs'
                     : 'text-text-muted hover:text-foreground hover:bg-surface-hover/60 border border-transparent'
                 }`}
               >
@@ -105,9 +129,11 @@ export const LegalPageLayout: React.FC<LegalPageLayoutProps> = ({ activeTab }) =
               </Link>
               <Link
                 href="/privacy"
+                scroll={false}
+                onClick={(e) => handleLegalTabSwitch(e, 'privacy')}
                 className={`relative px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 ${
-                  activeTab === 'privacy'
-                    ? 'bg-surface text-ferrari-red border border-hairline shadow-xs font-bold'
+                  currentTab === 'privacy'
+                    ? 'bg-surface text-ferrari-red border border-hairline shadow-xs'
                     : 'text-text-muted hover:text-foreground hover:bg-surface-hover/60 border border-transparent'
                 }`}
               >
@@ -116,7 +142,7 @@ export const LegalPageLayout: React.FC<LegalPageLayoutProps> = ({ activeTab }) =
             </div>
           </div>
         {/* ===================== TERMS OF SERVICE ===================== */}
-        {activeTab === 'terms' && (
+        {currentTab === 'terms' && (
           <article className="space-y-8">
             <header className="border-b border-hairline/60 pb-6">
               <div className="flex items-center gap-2 mb-2">
@@ -241,7 +267,7 @@ export const LegalPageLayout: React.FC<LegalPageLayoutProps> = ({ activeTab }) =
         )}
 
         {/* ===================== PRIVACY POLICY ===================== */}
-        {activeTab === 'privacy' && (
+        {currentTab === 'privacy' && (
           <article className="space-y-8">
             <header className="border-b border-hairline/60 pb-6">
               <div className="flex items-center gap-2 mb-2">
@@ -270,26 +296,6 @@ export const LegalPageLayout: React.FC<LegalPageLayoutProps> = ({ activeTab }) =
               </p>
             </header>
 
-            {/* Security Badge Highlight */}
-            <div className="p-5 rounded-2xl bg-semantic-success/10 border border-semantic-success/30 flex items-start gap-3.5">
-              <div className="w-2.5 h-2.5 rounded-full bg-semantic-success shrink-0 mt-1.5 animate-pulse" />
-              <div className="flex flex-col">
-                <span className="font-mono text-xs font-bold text-semantic-success tracking-wide uppercase">
-                  {language === 'zh-TW'
-                    ? '100% 本地優先隱私架構 (Local-First Architecture)'
-                    : language === 'zh-CN'
-                    ? '100% 本地优先隐私架构 (Local-First Architecture)'
-                    : '100% Local-First Architecture'}
-                </span>
-                <p className="text-text-muted text-sm mt-1 leading-relaxed">
-                  {language === 'zh-TW'
-                    ? '您的卡牌庫、購入成本、鑑定等級、自訂數量與介面偏好完全儲存於您的本機瀏覽器中，不建立任何遠端使用者追蹤檔案。'
-                    : language === 'zh-CN'
-                    ? '您的卡牌库、购入成本、鉴定等级、自订数量与界面偏好完全储存于您的本机浏览器中，不建立任何远端使用者追踪档案。'
-                    : 'All portfolio holdings, purchase valuations, grading tiers, and user preferences are retained locally inside your browser storage.'}
-                </p>
-              </div>
-            </div>
 
             {/* Privacy Item 1 */}
             <section className="space-y-3">
