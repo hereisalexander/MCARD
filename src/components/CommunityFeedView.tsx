@@ -27,26 +27,25 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
   onNavigateToMarket,
 }) => {
   const [posts, setPosts] = useState<CommunityPost[]>(INITIAL_COMMUNITY_POSTS);
-  
-
-  // Sub Level 2 Pills (Xiaohongshu style)
   const [subFilter, setSubFilter] = useState<string>('綜合');
-  
   const [searchQuery] = useState<string>('');
   const [selectedPost, setSelectedPost] = useState<CommunityPost | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
-  const [visibleCount, setVisibleCount] = useState<number>(10);
+  const [visibleCount, setVisibleCount] = useState<number>(12);
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
 
   // Load posts via communityRepository on mount
   useEffect(() => {
-    communityRepository.getFeed().then((loadedPosts) => {
-      if (loadedPosts && loadedPosts.length > 0) {
-        setPosts(loadedPosts as unknown as CommunityPost[]);
-      }
-    }).catch((err) => {
-      console.error('Failed to load community feed via repository:', err);
-    });
+    communityRepository
+      .getFeed()
+      .then((loadedPosts) => {
+        if (loadedPosts && loadedPosts.length > 0) {
+          setPosts(loadedPosts as unknown as CommunityPost[]);
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to load community feed via repository:', err);
+      });
   }, []);
 
   const savePosts = (updated: CommunityPost[]) => {
@@ -62,21 +61,24 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
   const filteredPosts = useMemo(() => {
     let list = posts;
 
-
     if (subFilter === '最新') {
       list = [...list].reverse();
     } else if (subFilter === '30周年') {
-      list = list.filter((p) =>
-        p.title.includes('30') || p.tags.some((t) => t.includes('30'))
+      list = list.filter(
+        (p) => p.title.includes('30') || p.tags.some((t) => t.includes('30'))
       );
     } else if (subFilter === '拆包') {
       list = list.filter((p) => p.isVideo || p.type === 'showcase');
     } else if (subFilter === '卡牌' || subFilter === '寶可夢') {
-      list = list.filter((p) => p.tags.some((t) => t.includes('寶可夢') || t.includes('Pokemon')));
+      list = list.filter((p) =>
+        p.tags.some((t) => t.includes('寶可夢') || t.includes('Pokemon'))
+      );
     } else if (subFilter === '出清撿漏') {
       list = list.filter((p) => p.type === 'marketplace');
     } else if (subFilter === '手繪卡') {
-      list = list.filter((p) => p.tags.some((t) => t.includes('手繪') || t.includes('拼圖')));
+      list = list.filter((p) =>
+        p.tags.some((t) => t.includes('手繪') || t.includes('拼圖'))
+      );
     }
 
     if (searchQuery.trim()) {
@@ -96,20 +98,6 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
   const displayedPosts = useMemo(() => {
     return filteredPosts.slice(0, visibleCount);
   }, [filteredPosts, visibleCount]);
-
-  // Dual-Column Masonry Split
-  const [leftColumn, rightColumn] = useMemo(() => {
-    const left: CommunityPost[] = [];
-    const right: CommunityPost[] = [];
-    displayedPosts.forEach((post, index) => {
-      if (index % 2 === 0) {
-        left.push(post);
-      } else {
-        right.push(post);
-      }
-    });
-    return [left, right];
-  }, [displayedPosts]);
 
   const handleToggleLike = async (postId: string) => {
     const postToToggle = posts.find((p) => p.id === postId);
@@ -138,7 +126,11 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
       const result = await communityRepository.toggleLike(postId);
       if (result) {
         setPosts((prev) =>
-          prev.map((p) => (p.id === postId ? { ...p, isLiked: result.isLiked, likes: result.newLikes } : p))
+          prev.map((p) =>
+            p.id === postId
+              ? { ...p, isLiked: result.isLiked, likes: result.newLikes }
+              : p
+          )
         );
       }
     } catch (err) {
@@ -147,7 +139,6 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
   };
 
   const handleCreatePost = async (newPost: CommunityPost) => {
-    // 樂觀更新前端畫面
     const updated = [newPost, ...posts];
     savePosts(updated);
 
@@ -165,9 +156,10 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
       );
 
       if (created) {
-        // 以後端 D1 回傳之最新記錄 (含正式伺服器 ID) 更新列表
         setPosts((prev) =>
-          prev.map((p) => (p.id === newPost.id ? (created as unknown as CommunityPost) : p))
+          prev.map((p) =>
+            p.id === newPost.id ? (created as unknown as CommunityPost) : p
+          )
         );
       }
     } catch (err) {
@@ -232,24 +224,14 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
   const handleLoadMore = () => {
     setIsLoadingMore(true);
     setTimeout(() => {
-      setVisibleCount((prev) => prev + 6);
+      setVisibleCount((prev) => prev + 8);
       setIsLoadingMore(false);
-    }, 400);
+    }, 300);
   };
 
   const renderPostCard = (post: CommunityPost) => {
-    // Dynamic aspect ratios for genuine Xiaohongshu staggered waterfall rhythm
-    const aspectClass =
-      post.aspectRatio === 'tall'
-        ? 'aspect-[3/4.4]'
-        : post.aspectRatio === 'wide'
-        ? 'aspect-[4/3]'
-        : post.aspectRatio === 'square'
-        ? 'aspect-square'
-        : 'aspect-[3/3.8]';
-
     return (
-      <div
+      <article
         key={post.id}
         tabIndex={0}
         role="button"
@@ -261,63 +243,68 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
             setSelectedPost(post);
           }
         }}
-        className="group mb-3 bg-surface rounded-2xl overflow-hidden border border-hairline/40 hover:border-hairline shadow-2xs hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col"
+        className="group bg-surface rounded-2xl overflow-hidden border border-hairline/60 hover:border-hairline shadow-2xs hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col focus:outline-hidden focus:ring-2 focus:ring-ferrari-red/40"
       >
-        {/* Card Visual / Video Area with true staggered aspect ratio */}
-        <div className={`relative w-full overflow-hidden bg-black/5 dark:bg-black/20 ${aspectClass}`}>
+        {/* Card Visual Container: collector slab frame with contained aspect */}
+        <div className="relative w-full aspect-[4/5] max-h-[300px] sm:max-h-[340px] bg-gradient-to-b from-hairline/20 to-hairline/50 dark:from-neutral-900/60 dark:to-neutral-950/80 p-3 flex items-center justify-center overflow-hidden">
           <img
             src={post.imageUrl}
             alt={post.title}
             loading="lazy"
-            className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300"
+            className="max-h-full max-w-full w-auto h-auto object-contain rounded-md drop-shadow-md group-hover:scale-104 transition-transform duration-300"
             onError={(e) => {
               (e.currentTarget as HTMLImageElement).src =
                 'https://images.pokemontcg.io/sv3pt5/199_hires.png';
             }}
           />
 
-          {/* Video indicator badges (like screenshot) */}
-          {post.isVideo && (
-            <>
-              {/* Play Icon Top Right */}
-              <div className="absolute top-2.5 right-2.5 w-6 h-6 rounded-full bg-black/50 backdrop-blur-xs flex items-center justify-center text-white">
-                <svg className="w-3 h-3 translate-x-0.5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              </div>
-
-              {/* Video Duration Bottom Right */}
-              {post.videoDuration && (
-                <div className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded bg-black/60 text-white text-[10px] font-mono leading-none backdrop-blur-xs">
-                  {post.videoDuration}
-                </div>
-              )}
-            </>
+          {/* Condition / Type Tag top left */}
+          {post.cardInfo?.condition && (
+            <div className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-full bg-surface/90 backdrop-blur-md text-foreground border border-hairline text-[10px] font-semibold tracking-wide shadow-xs">
+              {post.cardInfo.condition}
+            </div>
           )}
 
-          {/* Optional Marketplace badge */}
-          {post.type === 'marketplace' && post.cardInfo?.price && (
-            <div className="absolute bottom-2 left-2 px-2 py-0.5 rounded-md bg-amber-500/90 text-white text-[10px] font-bold shadow-sm">
+          {/* Floating Price Pill top right */}
+          {post.cardInfo?.price ? (
+            <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full bg-black/75 backdrop-blur-md text-accent-yellow border border-accent-yellow/30 text-[10px] font-mono font-bold shadow-xs">
               ${post.cardInfo.price} USD
+            </div>
+          ) : null}
+
+          {/* Video indicator badge */}
+          {post.isVideo && (
+            <div className="absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-xs text-white text-[10px] font-mono flex items-center gap-1 shadow-xs">
+              <svg className="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+              {post.videoDuration && <span>{post.videoDuration}</span>}
             </div>
           )}
         </div>
 
         {/* Text Details Area */}
-        <div className="p-2.5 sm:p-3 flex flex-col justify-between flex-1">
+        <div className="p-3 flex flex-col justify-between flex-1 gap-2">
           <div>
-            {/* Title with Xiaohongshu typography */}
-            <h3 className="text-xs sm:text-[13px] font-medium text-foreground line-clamp-2 leading-snug tracking-tight mb-1.5 group-hover:text-rose-500 transition-colors">
+            {/* Title with clean clamp */}
+            <h3 className="text-xs sm:text-[13px] font-semibold text-foreground line-clamp-2 leading-snug tracking-tight mb-1 group-hover:text-ferrari-red transition-colors">
               {post.title}
             </h3>
 
-            {/* Subtle Tag Pills to naturally enhance height variation */}
-            {post.tags && post.tags.length > 0 && post.aspectRatio !== 'wide' && (
-              <div className="flex flex-wrap gap-1 mb-2">
+            {/* Optional snippet preview */}
+            {post.content && (
+              <p className="text-[11px] text-text-muted line-clamp-1 mb-2 font-normal leading-normal">
+                {post.content}
+              </p>
+            )}
+
+            {/* Tags */}
+            {post.tags && post.tags.length > 0 && (
+              <div className="flex flex-wrap gap-1">
                 {post.tags.slice(0, 2).map((t, idx) => (
                   <span
                     key={idx}
-                    className="text-[10px] text-secondary/70 bg-hairline/30 px-1.5 py-0.5 rounded font-normal"
+                    className="text-[10px] text-text-muted bg-hairline/40 px-1.5 py-0.5 rounded font-normal hover:text-foreground transition-colors"
                   >
                     #{t}
                   </span>
@@ -326,8 +313,8 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
             )}
           </div>
 
-          {/* Bottom Bar: 2-Line Author Info (Left) + Heart Like (Right) */}
-          <div className="flex items-center justify-between pt-1 border-t border-hairline/30">
+          {/* Bottom Bar: Author info + Like Heart */}
+          <div className="flex items-center justify-between pt-2 border-t border-hairline/40">
             {/* Left: Author Avatar + Name + Date */}
             <div className="flex items-center gap-1.5 min-w-0 pr-1">
               <img
@@ -335,17 +322,17 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
                 alt={post.author.name}
                 className="w-5 h-5 rounded-full object-cover shrink-0 border border-hairline/60"
               />
-              <div className="flex flex-col min-w-0 leading-none">
-                <span className="text-[11px] font-normal text-foreground/90 truncate max-w-[85px] sm:max-w-[110px]">
+              <div className="flex flex-col min-w-0 leading-tight">
+                <span className="text-[11px] font-medium text-foreground truncate max-w-[90px] sm:max-w-[120px]">
                   {post.author.name}
                 </span>
-                <span className="text-[9px] text-secondary/60 mt-0.5 font-sans">
+                <span className="text-[9px] text-text-muted font-sans">
                   {post.date || '09-18'}
                 </span>
               </div>
             </div>
 
-            {/* Right: Heart Like Button with Count */}
+            {/* Right: Heart Like Button */}
             <button
               type="button"
               aria-label="點讚"
@@ -353,32 +340,32 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
                 e.stopPropagation();
                 handleToggleLike(post.id);
               }}
-              className="flex items-center gap-1 text-xs text-secondary hover:text-rose-500 transition-colors shrink-0 p-1"
+              className="flex items-center gap-1 text-xs text-text-muted hover:text-ferrari-red transition-colors shrink-0 p-1 cursor-pointer"
             >
               {post.isLiked ? (
-                <svg className="w-3.5 h-3.5 text-rose-500" fill="currentColor" viewBox="0 0 24 24">
+                <svg className="w-3.5 h-3.5 text-ferrari-red" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                 </svg>
               ) : (
-                <svg className="w-3.5 h-3.5 text-secondary/70 hover:text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-3.5 h-3.5 hover:text-ferrari-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
               )}
-              <span className={`text-[11px] font-mono leading-none ${post.isLiked ? 'text-rose-500 font-bold' : 'text-secondary/80'}`}>
+              <span className={`text-[11px] font-mono leading-none ${post.isLiked ? 'text-ferrari-red font-bold' : 'text-text-muted'}`}>
                 {post.likes}
               </span>
             </button>
           </div>
         </div>
-      </div>
+      </article>
     );
   };
 
   return (
-    <div className="max-w-[1100px] mx-auto space-y-3 animate-fade-in pb-12">
+    <div className="max-w-[1320px] mx-auto space-y-4 animate-fade-in pb-12 px-2 sm:px-4">
       {/* Filter Pills & Quick Post Action */}
-      <div className="flex items-center justify-between gap-2 py-1 px-1">
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar flex-1">
+      <div className="flex items-center justify-between gap-3 py-1">
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar flex-1 py-1">
           {['綜合', '最新', '寶可夢', '30周年', '拆包', '科普', '出清撿漏', '手繪卡'].map(
             (pill) => {
               const isSelected = subFilter === pill;
@@ -387,11 +374,10 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
                   key={pill}
                   type="button"
                   onClick={() => setSubFilter(pill)}
-                  className={`px-3.5 py-1 rounded-full text-xs transition-all whitespace-nowrap cursor-pointer ${
-                    isSelected
+                  className={`px-3.5 py-1.5 rounded-full text-xs transition-all whitespace-nowrap cursor-pointer ${isSelected
                       ? 'bg-foreground text-background font-bold shadow-2xs'
-                      : 'bg-surface hover:bg-hairline/50 text-secondary border border-hairline/40'
-                  }`}
+                      : 'bg-surface hover:bg-hairline/50 text-text-muted border border-hairline/60'
+                    }`}
                 >
                   {pill}
                 </button>
@@ -404,55 +390,45 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
         <button
           type="button"
           onClick={() => setIsCreateModalOpen(true)}
-          className="shrink-0 flex items-center gap-1 px-3.5 py-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded-full text-xs font-bold shadow-xs transition-transform active:scale-95 cursor-pointer"
+          className="shrink-0 px-4 py-1.5 bg-ferrari-red hover:bg-ferrari-red-hover text-white rounded-full text-xs font-semibold shadow-xs transition-all transform active:scale-95 cursor-pointer"
         >
-          <span>✏️</span>
-          <span>發文</span>
+          發布動態
         </button>
       </div>
 
-
-      {/* 3. Dual-Column Masonry Feed (Xiaohongshu Layout) */}
+      {/* Adaptive Responsive Multi-Column Feed */}
       {displayedPosts.length === 0 ? (
         <div className="py-20 text-center bg-surface rounded-2xl border border-hairline/60">
-          <p className="text-2xl mb-1">🔍</p>
+          <p className="text-3xl mb-2">🔍</p>
           <h3 className="text-sm font-bold text-foreground">暫無相關帖子</h3>
-          <p className="text-xs text-secondary mt-1">試試切換其他分類標籤</p>
+          <p className="text-xs text-text-muted mt-1">試試切換其他分類標籤</p>
           <button
             type="button"
             onClick={() => setSubFilter('綜合')}
-            className="mt-3 px-4 py-1.5 bg-hairline/60 text-foreground text-xs font-medium rounded-full"
+            className="mt-4 px-4 py-1.5 bg-hairline/60 text-foreground text-xs font-medium rounded-full cursor-pointer hover:bg-hairline transition-colors"
           >
             回到綜合
           </button>
         </div>
       ) : (
         <div>
-          {/* Dual-column split grid */}
-          <div className="grid grid-cols-2 gap-2.5 sm:gap-4 items-start">
-            {/* Left Column */}
-            <div className="flex flex-col">
-              {leftColumn.map(renderPostCard)}
-            </div>
-
-            {/* Right Column */}
-            <div className="flex flex-col">
-              {rightColumn.map(renderPostCard)}
-            </div>
+          {/* Responsive 4-Column on Desktop, 3 on Tablet, 2 on Mobile */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4.5 items-start">
+            {displayedPosts.map(renderPostCard)}
           </div>
 
           {/* Infinite Scroll / Load More Sentinel */}
           {visibleCount < filteredPosts.length && (
-            <div className="mt-6 flex justify-center">
+            <div className="mt-8 flex justify-center">
               <button
                 type="button"
                 onClick={handleLoadMore}
                 disabled={isLoadingMore}
-                className="px-5 py-2 bg-surface hover:bg-hairline/40 text-foreground border border-hairline/50 rounded-full text-xs font-medium shadow-2xs transition-all transform active:scale-95 flex items-center gap-1.5"
+                className="px-5 py-2 bg-surface hover:bg-hairline/40 text-foreground border border-hairline/60 rounded-full text-xs font-medium shadow-2xs transition-all transform active:scale-95 flex items-center gap-2 cursor-pointer"
               >
                 {isLoadingMore ? (
                   <>
-                    <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-ferrari-red animate-ping" />
                     <span>加載中...</span>
                   </>
                 ) : (

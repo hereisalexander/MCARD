@@ -15,6 +15,7 @@ import {
   SparklesIcon,
   StarIcon,
 } from '@/components/icons/AppIcons';
+import { getListingCardPhoto } from '@/utils/cardImages';
 
 export interface ListingDetailModalProps {
   listing: CardListing | null;
@@ -78,7 +79,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
             <div className="relative aspect-[2.5/3.5] w-full bg-surface-hover rounded-xl overflow-hidden border border-hairline/80 shadow-md">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={listing.photos[0] || 'https://images.pokemontcg.io/sv3pt5/199_hires.png'}
+                src={getListingCardPhoto(listing.cardName, listing.photos)}
                 alt={listing.cardName}
                 className="w-full h-full object-contain select-none"
               />

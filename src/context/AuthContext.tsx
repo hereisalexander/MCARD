@@ -39,7 +39,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       try {
         const savedSession = localStorage.getItem(AUTH_STORAGE_KEY) || localStorage.getItem(OLD_AUTH_STORAGE_KEY);
         if (savedSession) {
-          setUser(JSON.parse(savedSession));
+          const parsed = JSON.parse(savedSession);
+          // 淨化舊版殘留的 mock 測試帳號 (小智 / 海馬 / 赤紅 / palette-town)
+          const isMockUser =
+            parsed.id?.startsWith('usr_ash_') ||
+            parsed.id?.startsWith('usr_kaiba_') ||
+            parsed.id?.startsWith('usr_red_') ||
+            parsed.id === 'usr_google_151' ||
+            parsed.email?.includes('palette') ||
+            parsed.name?.includes('小智');
+
+          if (isMockUser) {
+            localStorage.removeItem(AUTH_STORAGE_KEY);
+            localStorage.removeItem(OLD_AUTH_STORAGE_KEY);
+            setUser(null);
+          } else {
+            setUser(parsed);
+          }
         }
       } catch (err) {
         console.error('Failed to load user session:', err);
@@ -59,12 +75,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const loginWithGoogle = () => {
     const googleUser: UserProfile = {
-      id: 'usr_google_151',
-      name: 'Ash Ketchum',
-      email: 'ash.ketchum@palette.town',
-      avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Ash',
+      id: `usr_google_${Date.now()}`,
+      name: 'Google 藏家',
+      email: 'collector@gmail.com',
+      avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=GoogleCollector',
       provider: 'google',
-      joinedAt: new Date().toLocaleDateString(),
+      joinedAt: new Date().toLocaleDateString('zh-TW'),
     };
     saveSession(googleUser);
   };

@@ -4,43 +4,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
-import { useTheme } from '@/context/ThemeContext';
 import { Language } from '@/locales/translations';
 import { CardCategory } from '@/services/multiCardService';
 import {
-  HeartIcon,
   MenuIcon,
   CloseIcon,
-  ChevronDownIcon,
-  ChevronRightIcon,
   SearchIcon,
 } from '@/components/icons/AppIcons';
-
-interface PokemonSetItem {
-  id: string;
-  name: string;
-  code: string;
-  jpName: string;
-  highlight: string;
-  badge?: 'HOT' | 'NEW';
-}
-
-const MEGA_POKEMON_SETS: PokemonSetItem[] = [
-  { id: 'm4-ninja-spinner', name: 'Ninja Spinner', code: 'M4', jpName: 'ニンジャスピナー', highlight: '超級甲賀忍蛙 ex', badge: 'HOT' },
-  { id: 'm3-nihil-zero', name: 'Nihil Zero', code: 'M3', jpName: 'ムニキスゼロ', highlight: '超級基格爾德 ex (Z神)', badge: 'NEW' },
-  { id: 'm2a-mega-dream-ex', name: 'MEGA Dream ex', code: 'M2a', jpName: 'MEGAドリームex', highlight: '年度壓軸高規格豪華包', badge: 'HOT' },
-  { id: 'm5-abyss-eye', name: 'Abyss Eye', code: 'M5', jpName: 'アビスアイ', highlight: '超級勾魂眼 / 暗影深淵系', badge: 'NEW' },
-  { id: 'm6-storm-emeralda', name: 'Storm Emeralda', code: 'M6', jpName: 'ストームエメラルダ', highlight: '超級烈空坐 ex (風暴翡翠)', badge: 'NEW' },
-];
-
-const CLASSIC_POKEMON_SETS: PokemonSetItem[] = [
-  { id: '151', name: '151', code: 'SV3.5', jpName: 'ポケモンカード151', highlight: '初代 151 全圖鑑 / 大師球閃', badge: 'HOT' },
-  { id: 'Surging Sparks', name: 'Surging Sparks', code: 'SV08', jpName: '超電ブレイカー', highlight: '星晶皮卡丘 ex', badge: 'HOT' },
-  { id: 'Crown Zenith', name: 'Crown Zenith', code: 'SWSH12.5', jpName: 'VSTARユニバース', highlight: '王者頂點金卡四神' },
-  { id: 'Evolving Skies', name: 'Evolving Skies', code: 'SWSH07', jpName: '蒼空烈流 / イーブイヒーローズ', highlight: '月亮伊布 / 烈空坐', badge: 'HOT' },
-  { id: 'Twilight Masquerade', name: 'Twilight Masquerade', code: 'SV06', jpName: '変幻の仮面', highlight: '厄鬼椪 ex 全面具' },
-  { id: 'Base Set', name: 'Base Set', code: 'Base', jpName: '第1弾拡張パック', highlight: '初代 1999 傳奇無印' },
-];
 
 interface NavbarProps {
   activeTab: string;
@@ -68,12 +38,9 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const { language, setLanguage, t } = useLanguage();
   const { user, isLoggedIn, openAuthModal, logout } = useAuth();
-  const { theme, toggleTheme } = useTheme();
 
   // Slide-over Drawer Menu State
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
-  const [drawerPokemonTab, setDrawerPokemonTab] = useState<'mega' | 'classic'>('mega');
-  const [isPokemonExpanded, setIsPokemonExpanded] = useState<boolean>(true);
 
   // Close drawer on ESC key
   useEffect(() => {
@@ -175,6 +142,42 @@ export const Navbar: React.FC<NavbarProps> = ({
               </div>
             </div>
 
+            {/* Desktop Web Navigation Links (桌面網頁版主要導航 - 方案 2: 文字緊湊貼合下劃線) */}
+            <nav className="hidden md:flex items-center gap-1.5 lg:gap-3 shrink-0 ml-2 lg:ml-4" aria-label="主要網頁導航">
+              {[
+                { id: 'stream', label: t('nav_stream') || '動態' },
+                { id: 'explore', label: t('nav_explore') || '探索' },
+                { id: 'market', label: t('nav_market') || '市場' },
+              ].map((item) => {
+                const isActive = activeTab === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => handleTabClick(item.id)}
+                    className="group py-2 px-3 flex flex-col items-center justify-center font-sans text-xs tracking-wide cursor-pointer transition-colors"
+                  >
+                    <span
+                      className={`transition-colors duration-150 ${
+                        isActive
+                          ? 'text-foreground font-bold'
+                          : 'text-text-muted group-hover:text-foreground font-semibold'
+                      }`}
+                    >
+                      {item.label}
+                    </span>
+                    <span
+                      className={`mt-1.5 h-[2.5px] rounded-full transition-all duration-200 ${
+                        isActive
+                          ? 'w-full bg-ferrari-red opacity-100 shadow-[0_1px_6px_rgba(230,0,0,0.35)]'
+                          : 'w-0 bg-transparent opacity-0 group-hover:w-1/2 group-hover:bg-hairline group-hover:opacity-100'
+                      }`}
+                    />
+                  </button>
+                );
+              })}
+            </nav>
+
             {/* 2. Center: Global Search Input */}
             <div className="flex-1 max-w-xl mx-2 hidden sm:flex items-center">
               <div className="flex items-center w-full bg-surface-hover/60 border border-hairline focus-within:border-ferrari-red focus-within:ring-2 focus-within:ring-ferrari-red/10 rounded-xl transition-all duration-150 h-9.5 overflow-hidden">
@@ -204,62 +207,36 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* 3. Right Utilities & Drawer Toggle Button */}
             <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
 
-              {/* Theme Toggle */}
+              {/* Desktop Account Portal Pill (網頁版頂部帳戶入口，內含資產庫) */}
               <button
                 type="button"
-                onClick={toggleTheme}
-                className="h-9 w-9 flex items-center justify-center rounded-xl bg-surface-hover/70 hover:bg-surface-hover border border-hairline/80 text-foreground transition-all duration-150 cursor-pointer shrink-0"
-                aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-                title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-              >
-                {theme === 'dark' ? (
-                  <svg className="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                  </svg>
-                ) : (
-                  <svg className="w-4 h-4 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                  </svg>
-                )}
-              </button>
-
-              {/* Wishlist Shortcut Pill */}
-              <button
-                type="button"
-                onClick={() => onTabChange('wishlist')}
-                className={`h-9 px-2.5 sm:px-3 rounded-xl border font-sans text-xs font-semibold tracking-wide transition-all duration-150 cursor-pointer flex items-center gap-1.5 shrink-0 ${
-                  activeTab === 'wishlist'
-                    ? 'bg-rose-500/15 border-rose-500/40 text-rose-500 shadow-2xs'
+                onClick={() => onTabChange('account')}
+                className={`h-9 px-2.5 sm:px-3.5 rounded-xl border font-sans text-xs font-semibold tracking-wide transition-all duration-150 cursor-pointer flex items-center gap-2 shrink-0 ${
+                  activeTab === 'account'
+                    ? 'border-ferrari-red text-foreground bg-surface-hover shadow-2xs ring-1 ring-ferrari-red/30 font-bold'
                     : 'bg-surface-hover/70 hover:bg-surface-hover border-hairline/80 text-foreground'
                 }`}
-                title="願望清單"
-                aria-label="願望清單"
+                aria-label="個人帳戶與資產庫"
+                title="個人帳戶與資產庫"
               >
-                <HeartIcon filled={activeTab === 'wishlist'} className="w-3.5 h-3.5" />
-                <span className="hidden md:inline">心願</span>
-                {wishlistCount > 0 && (
-                  <span className="px-1.5 py-0.2 rounded-full bg-rose-500 text-white text-[10px] font-mono font-bold tabular-nums">
-                    {wishlistCount}
+                {isLoggedIn && user?.avatarUrl && !user.avatarUrl.includes('dicebear') ? (
+                  <div className="relative w-5 h-5 rounded-full overflow-hidden shrink-0 border border-hairline">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
+                  </div>
+                ) : (
+                  <svg className="w-4 h-4 text-inherit" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                )}
+                <span className="hidden sm:inline">
+                  {isLoggedIn && user ? user.name : (t('nav_account') || '帳戶')}
+                </span>
+                {portfolioCount > 0 && (
+                  <span className="px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold tabular-nums bg-ferrari-red text-white">
+                    {portfolioCount}
                   </span>
                 )}
-              </button>
-
-              {/* Portfolio Vault Pill */}
-              <button
-                type="button"
-                onClick={() => onTabChange('portfolio')}
-                className="h-9 px-2.5 sm:px-3.5 rounded-xl bg-ferrari-red hover:bg-ferrari-red-hover active:bg-ferrari-red-active text-white font-sans text-xs font-semibold tracking-wide transition-all duration-150 cursor-pointer flex items-center gap-1.5 shrink-0 shadow-2xs"
-                aria-label="View My Portfolio Vault"
-              >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg>
-                <span className="font-mono font-bold">
-                  ${portfolioValue.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
-                </span>
-                <span className="px-1.5 py-0.2 rounded-full bg-black/30 text-white text-[10px] font-bold tabular-nums">
-                  {portfolioCount}
-                </span>
               </button>
 
               {/* MASTER EXPANDABLE MENU TOGGLE BUTTON (漢堡導航展開按鈕) */}
@@ -301,209 +278,35 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Slide-over Right Panel */}
           <div className="fixed inset-y-0 right-0 max-w-full flex pl-6 sm:pl-10">
-            <div className="w-screen max-w-md bg-surface/98 backdrop-blur-2xl border-l border-hairline/80 shadow-2xl flex flex-col overflow-y-auto animate-slide-left">
+            <div className="w-screen max-w-sm bg-surface/98 backdrop-blur-2xl border-l border-hairline/80 shadow-2xl flex flex-col justify-between overflow-y-auto animate-slide-left">
               
-              {/* Drawer Header */}
-              <div className="px-6 py-5 border-b border-hairline/60 flex items-center justify-between shrink-0">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-2 h-4 rounded-full bg-ferrari-red" />
-                  <span className="font-sans font-bold text-base text-foreground tracking-wide">
-                    {language === 'en' ? 'Navigation & Portals' : '系統導航與品類'}
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setIsDrawerOpen(false)}
-                  className="p-2 rounded-xl bg-surface-hover hover:bg-surface-hover/80 text-text-muted hover:text-foreground border border-hairline/60 transition-colors cursor-pointer"
-                  aria-label="關閉選單"
-                >
-                  <CloseIcon className="w-4 h-4" />
-                </button>
-              </div>
-
-              {/* Drawer Body Scrollable Content */}
-              <div className="p-6 flex flex-col gap-6 overflow-y-auto">
-                
-                {/* 1. Core Feature Portals */}
-                <div className="flex flex-col gap-2">
-                  <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-text-muted">
-                    {language === 'en' ? 'Core Portals' : '主要功能視圖'}
-                  </span>
-                  <div className="grid grid-cols-2 gap-2">
-                    {[
-                      { id: 'stream', label: t('nav_stream') },
-                      { id: 'explore', label: t('nav_explore') },
-                      { id: 'market', label: t('nav_market') },
-                      { id: 'wishlist', label: language === 'en' ? 'Wishlist' : '願望清單', badge: wishlistCount > 0 ? `${wishlistCount}` : undefined },
-                      { id: 'portfolio', label: t('nav_portfolio') },
-                    ].map((item) => {
-                      const isActive = activeTab === item.id;
-                      return (
-                        <button
-                          key={item.id}
-                          type="button"
-                          onClick={() => handleTabClick(item.id)}
-                          className={`p-3 rounded-xl border text-left font-sans text-xs font-semibold tracking-wide transition-all cursor-pointer flex items-center justify-between ${
-                            isActive
-                              ? 'bg-ferrari-red text-white border-ferrari-red shadow-2xs font-bold'
-                              : 'bg-surface-hover/60 hover:bg-surface-hover text-foreground border-hairline/60'
-                          }`}
-                        >
-                          <span className="flex items-center gap-2">
-                            <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-white' : 'bg-ferrari-red'}`} />
-                            <span>{item.label}</span>
-                          </span>
-                          {item.badge && (
-                            <span className="px-1.5 py-0.5 rounded-full text-[9px] font-mono font-bold bg-rose-500 text-white">
-                              {item.badge}
-                            </span>
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* 2. Card Category Selection */}
-                <div className="flex flex-col gap-2.5">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-text-muted">
-                      {language === 'en' ? 'Card Categories' : '探索卡牌品類'}
-                    </span>
-                    <span className="text-[10px] text-text-muted">
-                      {selectedCategory.toUpperCase()}
+              {/* Drawer Top Area */}
+              <div>
+                {/* Header */}
+                <div className="px-5 py-4 border-b border-hairline/60 flex items-center justify-between shrink-0">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-3.5 rounded-full bg-ferrari-red" />
+                    <span className="font-sans font-bold text-sm text-foreground tracking-wide">
+                      {language === 'en' ? 'Quick Menu & Settings' : '功能選單與偏好'}
                     </span>
                   </div>
-
-                  <div className="flex flex-wrap gap-1.5">
-                    {([
-                      { id: 'all', labelKey: 'cat_all' },
-                      { id: 'pokemon', labelKey: 'cat_pokemon' },
-                      { id: 'yugioh', labelKey: 'cat_yugioh' },
-                      { id: 'onepiece', labelKey: 'cat_onepiece' },
-                      { id: 'dragonball', labelKey: 'cat_dragonball' },
-                      { id: 'nba', labelKey: 'cat_nba' },
-                      { id: 'fifa', labelKey: 'cat_fifa' },
-                    ] as const).map((cat) => {
-                      const isCatSelected = selectedCategory === cat.id;
-                      return (
-                        <button
-                          key={cat.id}
-                          type="button"
-                          onClick={() => handleCategorySelect(cat.id)}
-                          className={`px-3 py-1.5 rounded-xl font-sans text-xs font-semibold tracking-wide transition-all cursor-pointer border ${
-                            isCatSelected
-                              ? 'bg-surface-hover border-ferrari-red text-ferrari-red font-bold shadow-2xs'
-                              : 'bg-surface-hover/40 hover:bg-surface-hover text-text-muted hover:text-foreground border-hairline/60'
-                          }`}
-                        >
-                          {t(cat.labelKey)}
-                        </button>
-                      );
-                    })}
-                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setIsDrawerOpen(false)}
+                    className="p-1.5 rounded-xl bg-surface-hover hover:bg-surface-hover/80 text-text-muted hover:text-foreground border border-hairline/60 transition-colors cursor-pointer"
+                    aria-label="關閉選單"
+                  >
+                    <CloseIcon className="w-4 h-4" />
+                  </button>
                 </div>
 
-                {/* 3. Pokémon Expansions Hub (展開系列快速直達) */}
-                <div className="flex flex-col gap-2.5 bg-surface-hover/30 border border-hairline/70 p-4 rounded-2xl">
-                  <div className="flex items-center justify-between">
-                    <button
-                      type="button"
-                      onClick={() => setIsPokemonExpanded((prev) => !prev)}
-                      className="flex items-center gap-2 cursor-pointer text-left"
-                    >
-                      <span className="w-1.5 h-1.5 rounded-full bg-ferrari-red" />
-                      <span className="text-xs font-bold text-foreground">
-                        {language === 'en' ? 'Pokémon Expansion Sets' : '寶可夢卡包系列庫'}
-                      </span>
-                      {isPokemonExpanded ? (
-                        <ChevronDownIcon className="w-3.5 h-3.5 text-text-muted" />
-                      ) : (
-                        <ChevronRightIcon className="w-3.5 h-3.5 text-text-muted" />
-                      )}
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => handleTabClick('sets')}
-                      className="text-[11px] font-bold text-ferrari-red hover:underline cursor-pointer"
-                    >
-                      {language === 'en' ? 'View 160+ Sets →' : '全圖鑑 160+ →'}
-                    </button>
-                  </div>
-
-                  {isPokemonExpanded && (
-                    <div className="flex flex-col gap-2 mt-1">
-                      {/* Segmented Tab */}
-                      <div className="flex items-center p-1 bg-surface-hover/70 rounded-xl border border-hairline/60">
-                        <button
-                          type="button"
-                          onClick={() => setDrawerPokemonTab('mega')}
-                          className={`flex-1 py-1 px-2 rounded-lg text-xs font-bold transition-all cursor-pointer text-center ${
-                            drawerPokemonTab === 'mega'
-                              ? 'bg-surface text-ferrari-red shadow-2xs'
-                              : 'text-text-muted hover:text-foreground'
-                          }`}
-                        >
-                          MEGA 世代 (M)
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setDrawerPokemonTab('classic')}
-                          className={`flex-1 py-1 px-2 rounded-lg text-xs font-bold transition-all cursor-pointer text-center ${
-                            drawerPokemonTab === 'classic'
-                              ? 'bg-surface text-foreground shadow-2xs'
-                              : 'text-text-muted hover:text-foreground'
-                          }`}
-                        >
-                          經典熱門
-                        </button>
-                      </div>
-
-                      {/* Sets List */}
-                      <div className="flex flex-col gap-1.5 max-h-48 overflow-y-auto pr-1 no-scrollbar">
-                        {(drawerPokemonTab === 'mega' ? MEGA_POKEMON_SETS : CLASSIC_POKEMON_SETS).map((set) => (
-                          <button
-                            key={set.id}
-                            type="button"
-                            onClick={() => handleSetSelect(set.name)}
-                            className="flex items-center justify-between p-2 rounded-xl text-left bg-surface hover:bg-ferrari-red/10 border border-hairline/50 hover:border-ferrari-red/40 transition-all cursor-pointer group"
-                          >
-                            <div className="flex items-center gap-2 min-w-0">
-                              <span className="font-mono text-[10px] font-bold px-1.5 py-0.5 rounded bg-surface-hover text-foreground shrink-0 border border-hairline/60">
-                                {set.code}
-                              </span>
-                              <div className="flex flex-col min-w-0">
-                                <span className="text-xs font-bold text-foreground group-hover:text-ferrari-red truncate">
-                                  {set.name}
-                                </span>
-                                <span className="text-[10px] text-text-muted truncate">
-                                  {set.highlight}
-                                </span>
-                              </div>
-                            </div>
-                            {set.badge && (
-                              <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-ferrari-red/15 text-ferrari-red">
-                                {set.badge}
-                              </span>
-                            )}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* 4. User Account & Preferences */}
-                <div className="flex flex-col gap-3 pt-2 border-t border-hairline/60">
-                  <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-text-muted">
-                    {language === 'en' ? 'Preferences & Account' : '個人偏好與帳號'}
-                  </span>
-
-                  {/* Member Login / Profile */}
-                  <div className="p-3 rounded-xl bg-surface-hover/50 border border-hairline/60 flex items-center justify-between">
+                {/* Drawer Body Content */}
+                <div className="p-5 flex flex-col gap-4.5">
+                  
+                  {/* 1. Member Profile / Login Card (頂部個人狀態) */}
+                  <div className="p-3 rounded-2xl bg-surface-hover/60 border border-hairline/80">
                     {isLoggedIn && user ? (
-                      <div className="flex items-center justify-between w-full">
+                      <div className="flex items-center justify-between">
                         <div
                           role="button"
                           tabIndex={0}
@@ -517,32 +320,36 @@ export const Navbar: React.FC<NavbarProps> = ({
                               setIsDrawerOpen(false);
                             }
                           }}
-                          className="flex items-center gap-2.5 cursor-pointer hover:opacity-80 transition-opacity"
+                          className="flex items-center gap-2.5 cursor-pointer hover:opacity-80 transition-opacity min-w-0"
                         >
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={user.avatarUrl}
-                            alt={user.name}
-                            className="w-7 h-7 rounded-full bg-background border border-hairline object-cover"
-                          />
-                          <div className="flex flex-col">
-                            <span className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                          <div className="w-8 h-8 rounded-full bg-background border border-hairline flex items-center justify-center shrink-0 overflow-hidden text-text-muted">
+                            {user.avatarUrl && !user.avatarUrl.includes('dicebear') ? (
+                              /* eslint-disable-next-line @next/next/no-img-element */
+                              <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
+                            ) : (
+                              <svg className="w-4 h-4 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                              </svg>
+                            )}
+                          </div>
+                          <div className="flex flex-col min-w-0">
+                            <span className="text-xs font-bold text-foreground truncate flex items-center gap-1">
                               {user.name}
-                              <span className="text-[9px] text-ferrari-red font-mono font-semibold">→</span>
+                              <span className="text-[10px] text-ferrari-red font-mono font-semibold">→</span>
                             </span>
-                            <span className="text-[10px] text-text-muted">{user.email}</span>
+                            <span className="text-[10px] text-text-muted truncate">{user.email}</span>
                           </div>
                         </div>
                         <button
                           type="button"
                           onClick={logout}
-                          className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-surface hover:bg-surface-hover text-rose-500 border border-hairline/60 cursor-pointer"
+                          className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-surface hover:bg-surface-hover text-rose-500 border border-hairline/60 cursor-pointer shrink-0"
                         >
                           {t('auth_logout')}
                         </button>
                       </div>
                     ) : (
-                      <div className="flex items-center justify-between w-full">
+                      <div className="flex items-center justify-between">
                         <div className="flex flex-col">
                           <span className="text-xs font-bold text-foreground">{t('auth_guest')}</span>
                           <span className="text-[10px] text-text-muted">登入以跨裝置同步資產庫</span>
@@ -553,7 +360,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                             setIsDrawerOpen(false);
                             openAuthModal();
                           }}
-                          className="px-3 py-1.5 rounded-lg text-xs font-bold bg-ferrari-red text-white hover:bg-ferrari-red-hover cursor-pointer shadow-2xs"
+                          className="px-3 py-1.5 rounded-xl text-xs font-bold bg-ferrari-red text-white hover:bg-ferrari-red-hover cursor-pointer shadow-2xs"
                         >
                           {t('auth_login')}
                         </button>
@@ -561,9 +368,87 @@ export const Navbar: React.FC<NavbarProps> = ({
                     )}
                   </div>
 
-                  {/* Language Selector */}
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-surface-hover/50 border border-hairline/60">
-                    <span className="text-xs font-semibold text-foreground">
+                  {/* 2. Core Portals (六宮格快速直達，對齊平衡) */}
+                  <div className="flex flex-col gap-1.5">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-text-muted">
+                      {language === 'en' ? 'Core Portals' : '快速功能直達'}
+                    </span>
+                    <div className="grid grid-cols-2 gap-2">
+                      {[
+                        { id: 'explore', label: t('nav_explore') || '探索' },
+                        { id: 'account', label: t('nav_account') || '個人帳戶', badge: portfolioCount > 0 ? `${portfolioCount}` : undefined },
+                        { id: 'wishlist', label: language === 'en' ? 'Wishlist' : '願望清單', badge: wishlistCount > 0 ? `${wishlistCount}` : undefined },
+                        { id: 'sets', label: language === 'en' ? 'Card Sets' : '卡包全集 (160+)' },
+                        { id: 'market', label: t('nav_market') || '市場' },
+                        { id: 'stream', label: t('nav_stream') || '動態' },
+                      ].map((item) => {
+                        const isActive = activeTab === item.id;
+                        return (
+                          <button
+                            key={item.id}
+                            type="button"
+                            onClick={() => handleTabClick(item.id)}
+                            className={`px-3.5 py-2.5 rounded-xl border text-xs font-semibold tracking-wide transition-all cursor-pointer flex items-center justify-between ${
+                              isActive
+                                ? 'bg-ferrari-red text-white border-ferrari-red shadow-xs font-bold'
+                                : 'bg-surface-hover/50 hover:bg-surface-hover text-foreground border-hairline/60'
+                            }`}
+                          >
+                            <span className="truncate">{item.label}</span>
+                            {item.badge && (
+                              <span className="px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold bg-rose-500 text-white shrink-0">
+                                {item.badge}
+                              </span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* 3. Card Category Pills (輕量小膠囊) */}
+                  <div className="flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-text-muted">
+                        {language === 'en' ? 'Categories' : '卡牌品類過濾'}
+                      </span>
+                      <span className="text-[10px] text-text-muted font-mono font-semibold">
+                        {selectedCategory.toUpperCase()}
+                      </span>
+                    </div>
+
+                    <div className="flex flex-wrap gap-1.5">
+                      {([
+                        { id: 'all', labelKey: 'cat_all' },
+                        { id: 'pokemon', labelKey: 'cat_pokemon' },
+                        { id: 'yugioh', labelKey: 'cat_yugioh' },
+                        { id: 'onepiece', labelKey: 'cat_onepiece' },
+                        { id: 'dragonball', labelKey: 'cat_dragonball' },
+                        { id: 'nba', labelKey: 'cat_nba' },
+                        { id: 'fifa', labelKey: 'cat_fifa' },
+                      ] as const).map((cat) => {
+                        const isCatSelected = selectedCategory === cat.id;
+                        return (
+                          <button
+                            key={cat.id}
+                            type="button"
+                            onClick={() => handleCategorySelect(cat.id)}
+                            className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer border ${
+                              isCatSelected
+                                ? 'bg-surface-hover border-ferrari-red text-ferrari-red font-bold shadow-2xs'
+                                : 'bg-surface text-text-muted hover:text-foreground border-hairline/60'
+                            }`}
+                          >
+                            {t(cat.labelKey)}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* 4. Language Selector */}
+                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-surface-hover/40 border border-hairline/60">
+                    <span className="text-xs font-semibold text-text-muted">
                       {t('nav_select_language')}
                     </span>
                     <div className="flex items-center gap-1">
@@ -572,7 +457,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                           key={lang}
                           type="button"
                           onClick={() => handleLanguageChange(lang)}
-                          className={`px-2 py-1 rounded-lg text-xs font-mono font-bold cursor-pointer transition-all ${
+                          className={`px-2 py-0.5 rounded-md text-xs font-mono font-bold cursor-pointer transition-all ${
                             language === lang
                               ? 'bg-ferrari-red text-white'
                               : 'bg-surface text-text-muted hover:text-foreground border border-hairline/60'
@@ -585,11 +470,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </div>
 
                 </div>
-
               </div>
 
               {/* Drawer Footer */}
-              <div className="p-4 border-t border-hairline/60 shrink-0 text-center bg-surface-hover/20">
+              <div className="p-3 border-t border-hairline/60 shrink-0 text-center bg-surface-hover/20">
                 <span className="text-[10px] font-sans text-text-muted">
                   MCARD Pro Telemetry Edition • All rights reserved
                 </span>

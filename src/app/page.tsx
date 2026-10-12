@@ -70,7 +70,16 @@ export default function Home() {
       // 2. Load Marketplace Listings via Repository (Zod validated)
       marketplaceRepository.getAll().then((loadedListings) => {
         if (loadedListings && loadedListings.length > 0) {
-          setListings(loadedListings as unknown as CardListing[]);
+          const corrected = (loadedListings as unknown as CardListing[]).map((item) => {
+            if (item.id === 'listing-blue-eyes' && (item.photos?.[0]?.includes('unsplash') || !item.photos?.[0]?.includes('89631139'))) {
+              return { ...item, photos: ['https://images.ygoprodeck.com/images/cards/89631139.jpg'] };
+            }
+            if (item.id === 'listing-jordan-fleer' && (item.photos?.[0]?.includes('unsplash') || !item.photos?.[0]?.includes('nba-jordan'))) {
+              return { ...item, photos: ['/images/cards/nba-jordan.jpg'] };
+            }
+            return item;
+          });
+          setListings(corrected);
         }
       }).catch((e) => {
         console.error('Failed to load marketplace listings via repository:', e);
@@ -595,7 +604,7 @@ export default function Home() {
 
       {/* Telemetry Toast Notification */}
       {toast.show && (
-        <div className="fixed bottom-20 md:bottom-6 right-6 z-50 bg-surface text-foreground border border-hairline/80 px-5 py-3.5 rounded-2xl shadow-xl flex items-center gap-3 animate-slide-in">
+        <div className="fixed bottom-20 md:bottom-24 right-6 z-50 bg-surface text-foreground border border-hairline/80 px-5 py-3.5 rounded-2xl shadow-xl flex items-center gap-3 animate-slide-in">
           <span className="w-2 h-2 rounded-full bg-ferrari-red animate-ping" />
           <span className="font-sans text-xs font-semibold tracking-wide text-foreground">
             {toast.message}
@@ -604,7 +613,7 @@ export default function Home() {
       )}
 
       {/* Modern footer with Affiliate Disclosure */}
-      <footer className="w-full border-t border-hairline/60 py-10 px-4 md:px-10 mt-16 mb-16 md:mb-0 bg-surface text-center transition-colors duration-200">
+      <footer className="w-full border-t border-hairline/60 py-10 px-4 md:px-10 mt-16 mb-20 md:mb-24 bg-surface text-center transition-colors duration-200">
         <div className="max-w-[1600px] mx-auto flex flex-col gap-6">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2.5">

@@ -104,7 +104,7 @@ export const AuthModal: React.FC = () => {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Ash Ketchum"
+                placeholder="Alex / TCG 藏家"
                 className="h-11 bg-surface-hover border border-hairline rounded-xl px-4 text-xs text-foreground focus:outline-none focus:border-ferrari-red focus:ring-2 focus:ring-ferrari-red/10"
               />
             </div>

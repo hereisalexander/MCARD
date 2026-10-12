@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { CardListing } from '@/types/marketplace';
 import { UserPortfolioItem } from '@/components/PortfolioDashboard';
+import { getListingCardPhoto } from '@/utils/cardImages';
 
 export interface MarkSoldModalProps {
   listing: CardListing | null;
@@ -73,7 +74,7 @@ export const MarkSoldModal: React.FC<MarkSoldModalProps> = ({
         <div className="flex items-center gap-3 py-3 mt-1 bg-surface-hover/50 rounded-xl px-3 border border-hairline/60">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={listing.photos[0] || 'https://images.pokemontcg.io/sv3pt5/199_hires.png'}
+            src={getListingCardPhoto(listing.cardName, listing.photos)}
             alt={listing.cardName}
             className="w-12 h-16 object-contain rounded-md bg-background shrink-0 border border-hairline"
           />

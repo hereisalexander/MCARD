@@ -45,7 +45,12 @@ export class D1MarketplaceRepository implements IMarketplaceRepository {
       portfolioCardId: row.portfolioCardId ?? undefined,
       buyInCost: row.buyInCost ?? undefined,
       condition: row.condition,
-      photos: row.photos,
+      photos:
+        row.cardName?.includes('青眼白龍') || row.photos?.[0]?.includes('1607604276583')
+          ? ['https://images.ygoprodeck.com/images/cards/89631139.jpg']
+          : row.cardName?.includes('Jordan') || row.cardName?.includes('1986 Fleer') || row.photos?.[0]?.includes('1546519638')
+          ? ['/images/cards/nba-jordan.jpg']
+          : row.photos,
       notes: row.notes,
       location: row.location,
       createdAt: row.createdAt,

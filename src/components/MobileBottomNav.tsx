@@ -99,31 +99,10 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
       ),
     },
     {
-      id: 'portfolio',
-      labelKey: 'nav_portfolio',
-      fallbackLabel: '資產',
-      showBadge: true,
-      icon: (isActive: boolean) => (
-        <svg
-          className={`w-5 h-5 transition-transform duration-150 ${isActive ? 'scale-110' : ''}`}
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          aria-hidden="true"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={isActive ? '2.5' : '1.8'}
-            d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-          />
-        </svg>
-      ),
-    },
-    {
       id: 'account',
       labelKey: 'nav_account',
       fallbackLabel: '帳戶',
+      showBadge: true,
       icon: (isActive: boolean) => (
         isLoggedIn && user?.avatarUrl ? (
           <div className={`relative w-5 h-5 rounded-full overflow-hidden transition-all duration-150 shrink-0 ${
@@ -156,9 +135,8 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
   return (
     <nav
       role="navigation"
-      aria-label="Mobile Navigation"
-      className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-surface/98 backdrop-blur-xl border-t border-hairline/80 shadow-[0_-4px_24px_rgba(0,0,0,0.08)] pb-[max(env(safe-area-inset-bottom,0px),12px)] pt-1.5 transform-gpu"
-      style={{ transform: 'translateZ(0)', WebkitTransform: 'translateZ(0)' }}
+      aria-label="Application Navigation"
+      className="md:hidden fixed z-50 transition-all duration-200 bottom-0 left-0 right-0 bg-surface/98 backdrop-blur-xl border-t border-hairline/80 shadow-[0_-4px_24px_rgba(0,0,0,0.08)] pb-[max(env(safe-area-inset-bottom,0px),12px)] pt-1.5"
     >
       <div className="flex items-center justify-around h-14 px-2 max-w-md mx-auto">
         {navItems.map((item) => {
@@ -188,7 +166,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
               tabIndex={0}
               onClick={handleClick}
               onKeyDown={handleKeyDown}
-              className={`relative flex flex-col items-center justify-center flex-1 h-full py-1 cursor-pointer transition-all duration-150 select-none touch-manipulation active:scale-95 ${
+              className={`relative flex flex-col items-center justify-center flex-1 h-full py-1 cursor-pointer transition-all duration-150 select-none touch-manipulation active:scale-95 md:hover:scale-105 md:rounded-xl md:px-3 md:py-1 ${
                 isActive
                   ? 'text-ferrari-red font-bold'
                   : 'text-text-muted hover:text-foreground font-medium'
@@ -196,7 +174,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
             >
               {/* Active Indicator Top Pill */}
               {isActive && (
-                <span className="absolute top-0 w-8 h-0.75 bg-ferrari-red rounded-full" />
+                <span className="absolute top-0 w-8 md:w-6 h-0.75 bg-ferrari-red rounded-full" />
               )}
 
               {/* Icon Container with optional Badge */}
@@ -211,7 +189,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
               </div>
 
               {/* Label */}
-              <span className="text-[10px] tracking-wide mt-1 leading-none">
+              <span className="text-[10px] md:text-[11px] tracking-wide mt-1 leading-none">
                 {label}
               </span>
             </button>

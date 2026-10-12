@@ -22,7 +22,26 @@ export class ApiMarketplaceRepository implements IMarketplaceRepository {
       if (!raw) return [];
       const parsed = JSON.parse(raw);
       if (!Array.isArray(parsed)) return [];
-      return parsed;
+      let hasCorrections = false;
+      const normalized = parsed.map((item: MarketListing) => {
+        if (item.cardName?.includes('青眼白龍') || item.photos?.[0]?.includes('1607604276583')) {
+          hasCorrections = true;
+          return { ...item, photos: ['https://images.ygoprodeck.com/images/cards/89631139.jpg'] };
+        }
+        if (
+          item.cardName?.includes('Jordan') ||
+          item.cardName?.includes('1986 Fleer') ||
+          item.photos?.[0]?.includes('1546519638')
+        ) {
+          hasCorrections = true;
+          return { ...item, photos: ['/images/cards/nba-jordan.jpg'] };
+        }
+        return item;
+      });
+      if (hasCorrections) {
+        this.setCachedData(normalized);
+      }
+      return normalized;
     } catch {
       return [];
     }

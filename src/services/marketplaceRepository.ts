@@ -25,8 +25,19 @@ export class LocalMarketplaceRepository implements IMarketplaceRepository {
       const parsed = JSON.parse(raw);
       if (!Array.isArray(parsed)) return [];
 
+      let hasCorrections = false;
       const validListings: MarketListing[] = [];
       for (const item of parsed) {
+        // 校正舊版圖片不對文問題
+        if (item.id === 'listing-blue-eyes' && (item.photos?.[0]?.includes('unsplash') || !item.photos?.[0]?.includes('89631139'))) {
+          item.photos = ['https://images.ygoprodeck.com/images/cards/89631139.jpg'];
+          hasCorrections = true;
+        }
+        if (item.id === 'listing-jordan-fleer' && (item.photos?.[0]?.includes('unsplash') || !item.photos?.[0]?.includes('nba-jordan'))) {
+          item.photos = ['/images/cards/nba-jordan.jpg'];
+          hasCorrections = true;
+        }
+
         const result = MarketListingSchema.safeParse(item);
         if (result.success) {
           validListings.push(result.data);
@@ -34,6 +45,10 @@ export class LocalMarketplaceRepository implements IMarketplaceRepository {
           // 容錯讀取（若稍有微小不合規，仍嘗試保底顯示）
           validListings.push(item as MarketListing);
         }
+      }
+
+      if (hasCorrections) {
+        this.setStorageData(validListings);
       }
 
       return validListings;

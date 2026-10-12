@@ -13,6 +13,7 @@ import {
   TrashIcon,
   TrendingDownIcon,
 } from '@/components/icons/AppIcons';
+import { getListingCardPhoto } from '@/utils/cardImages';
 
 export interface MarketplaceViewProps {
   listings: CardListing[];
@@ -335,7 +336,7 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({
                   <div className="relative aspect-[2.5/3.5] w-full rounded-xl overflow-hidden mb-2.5 bg-surface-hover border border-hairline/60">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={item.photos[0] || 'https://images.pokemontcg.io/sv3pt5/199_hires.png'}
+                      src={getListingCardPhoto(item.cardName, item.photos)}
                       alt={item.cardName}
                       className="w-full h-full object-contain select-none group-hover:scale-102 transition-transform duration-200"
                       loading="lazy"

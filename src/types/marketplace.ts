@@ -97,7 +97,7 @@ export const INITIAL_MARKETPLACE_LISTINGS: CardListing[] = [
     askingPrice: 3950,
     condition: 'PSA 9',
     photos: [
-      'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=600&auto=format&fit=crop&q=80',
+      '/images/cards/nba-jordan.jpg',
     ],
     notes: '籃球之神喬丹傳奇新秀卡！PSA 9 Mint 品相，居中率完美，附鑑定編號官網可查驗，高價卡建議台北面交驗卡。',
     location: '台灣台北 (限面交)',
@@ -119,7 +119,7 @@ export const INITIAL_MARKETPLACE_LISTINGS: CardListing[] = [
     askingPrice: 165,
     condition: 'BGS 9.5',
     photos: [
-      'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop&q=80',
+      'https://images.ygoprodeck.com/images/cards/89631139.jpg',
     ],
     notes: 'BGS 9.5 金標，全品項角邊面均在 9.5 以上，經典收藏必備，可店到店寄送免運。',
     location: '台灣台中 / 全家店到店',

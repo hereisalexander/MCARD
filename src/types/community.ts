@@ -180,9 +180,9 @@ export const INITIAL_COMMUNITY_POSTS: CommunityPost[] = [
     id: 'post-1',
     author: {
       id: 'user-ash',
-      name: 'Ash Ketchum',
+      name: 'TCG 頂級藏家',
       avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
-      handle: '@pallet_champ',
+      handle: '@tcg_collector',
       badge: '認證藏家',
       isVerified: true,
     },
