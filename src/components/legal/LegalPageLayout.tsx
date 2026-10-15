@@ -400,7 +400,7 @@ export const LegalPageLayout: React.FC<LegalPageLayoutProps> = ({ activeTab }) =
             <div className="flex items-center gap-2.5">
               <div className="w-1 h-3.5 bg-ferrari-red" />
               <span className="font-sans text-[11px] tracking-[0.5px] text-text-muted">
-                © 2026 MCARD. Multi-TCG & Sports Cards Telemetry Edition. All rights reserved.
+                © 2026 MCARD. All rights reserved.
               </span>
             </div>
             <div className="flex items-center gap-4 font-sans text-[11px] tracking-[0.5px] text-text-muted">
