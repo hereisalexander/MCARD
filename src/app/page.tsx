@@ -42,7 +42,7 @@ export default function Home() {
   const [selectedDetailCard, setSelectedDetailCard] = useState<UniversalCard | null>(null);
 
   // Marketplace State & Modal Controls
-  const [listings, setListings] = useState<CardListing[]>(INITIAL_MARKETPLACE_LISTINGS);
+  const [listings, setListings] = useState<CardListing[]>([]);
   const [isCreateListingOpen, setIsCreateListingOpen] = useState<boolean>(false);
   const [selectedListing, setSelectedListing] = useState<CardListing | null>(null);
 
