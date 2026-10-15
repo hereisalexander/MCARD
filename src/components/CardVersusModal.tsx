@@ -52,7 +52,7 @@ export const CardVersusModal: React.FC<CardVersusModalProps> = ({
 
       // Generate 365 days points backwards
       const points: { date: string; fullDate: string; price: number; roi: number }[] = [];
-      const basePrice = card.price;
+      const basePrice = card.price ?? 0;
       const volatility = 0.08 + (seed % 10) * 0.01;
       const trendSlope = ((seed % 7) - 3) * 0.0008;
 
@@ -92,8 +92,8 @@ export const CardVersusModal: React.FC<CardVersusModalProps> = ({
         color: CARD_COLORS[cardIndex % CARD_COLORS.length],
         points: withRoi,
         startPrice,
-        endPrice: card.price,
-        periodRoi: startPrice > 0 ? ((card.price - startPrice) / startPrice) * 100 : 0,
+        endPrice: card.price ?? 0,
+        periodRoi: card.price !== null && startPrice > 0 ? ((card.price - startPrice) / startPrice) * 100 : 0,
         highestPrice: Math.max(...withRoi.map((p) => p.price)),
         lowestPrice: Math.min(...withRoi.map((p) => p.price)),
       };
@@ -418,13 +418,21 @@ export const CardVersusModal: React.FC<CardVersusModalProps> = ({
                     </div>
                   </td>
                   <td className="py-3 px-3 text-text-muted">{d.card.set}</td>
-                  <td className="py-3 px-3 font-bold text-foreground">${d.endPrice.toLocaleString('en-US')}</td>
-                  <td className="py-3 px-3 font-bold">
-                    <span className={d.periodRoi >= 0 ? 'text-emerald-500' : 'text-ferrari-red'}>
-                      {d.periodRoi >= 0 ? `+${d.periodRoi.toFixed(1)}%` : `${d.periodRoi.toFixed(1)}%`}
-                    </span>
+                  <td className="py-3 px-3 font-bold text-foreground">
+                    {d.card.price !== null && d.card.price > 0 ? `$${d.endPrice.toLocaleString('en-US')}` : '--'}
                   </td>
-                  <td className="py-3 px-3 text-text-muted">${d.highestPrice.toFixed(1)}</td>
+                  <td className="py-3 px-3 font-bold">
+                    {d.card.price !== null && d.card.price > 0 ? (
+                      <span className={d.periodRoi >= 0 ? 'text-emerald-500' : 'text-ferrari-red'}>
+                        {d.periodRoi >= 0 ? `+${d.periodRoi.toFixed(1)}%` : `${d.periodRoi.toFixed(1)}%`}
+                      </span>
+                    ) : (
+                      <span className="text-text-muted">--</span>
+                    )}
+                  </td>
+                  <td className="py-3 px-3 text-text-muted">
+                    {d.card.price !== null && d.card.price > 0 ? `$${d.highestPrice.toFixed(1)}` : '--'}
+                  </td>
                   <td className="py-3 px-3 text-text-muted font-bold text-amber-500">2.8x</td>
                   <td className="py-3 px-3 text-right">
                     {onAddCardToPortfolio && (

@@ -7,7 +7,7 @@ import {
 } from '@/contracts/marketplace.schema';
 import { CardCategory } from '@/contracts/common.schema';
 import { IMarketplaceRepository } from './repository.types';
-import { INITIAL_MARKETPLACE_LISTINGS } from '@/types/marketplace';
+import { isDemoListing } from '@/types/marketplace';
 
 const STORAGE_KEY = 'mcard_marketplace_listings';
 
@@ -17,9 +17,7 @@ export class LocalMarketplaceRepository implements IMarketplaceRepository {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) {
-        // 初次訪問，載入預設初始掛單資料
-        this.setStorageData(INITIAL_MARKETPLACE_LISTINGS as unknown as MarketListing[]);
-        return INITIAL_MARKETPLACE_LISTINGS as unknown as MarketListing[];
+        return [];
       }
 
       const parsed = JSON.parse(raw);
@@ -28,14 +26,10 @@ export class LocalMarketplaceRepository implements IMarketplaceRepository {
       let hasCorrections = false;
       const validListings: MarketListing[] = [];
       for (const item of parsed) {
-        // 校正舊版圖片不對文問題
-        if (item.id === 'listing-blue-eyes' && (item.photos?.[0]?.includes('unsplash') || !item.photos?.[0]?.includes('89631139'))) {
-          item.photos = ['https://images.ygoprodeck.com/images/cards/89631139.jpg'];
+        // 自動剔除歷史殘留的虛擬示範掛單
+        if (isDemoListing(item)) {
           hasCorrections = true;
-        }
-        if (item.id === 'listing-jordan-fleer' && (item.photos?.[0]?.includes('unsplash') || !item.photos?.[0]?.includes('nba-jordan'))) {
-          item.photos = ['/images/cards/nba-jordan.jpg'];
-          hasCorrections = true;
+          continue;
         }
 
         const result = MarketListingSchema.safeParse(item);
@@ -52,6 +46,7 @@ export class LocalMarketplaceRepository implements IMarketplaceRepository {
       }
 
       return validListings;
+
     } catch (err) {
       console.error('[MarketplaceRepository] 讀取市集資料失敗:', err);
       return [];

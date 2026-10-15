@@ -8,6 +8,7 @@ import {
 import { CardCategory } from '@/contracts/common.schema';
 import { IMarketplaceRepository } from '../repository.types';
 import { LocalMarketplaceRepository } from '../marketplaceRepository';
+import { isDemoListing } from '@/types/marketplace';
 
 const STORAGE_KEY = 'mcard_marketplace_listings';
 
@@ -23,29 +24,22 @@ export class ApiMarketplaceRepository implements IMarketplaceRepository {
       const parsed = JSON.parse(raw);
       if (!Array.isArray(parsed)) return [];
       let hasCorrections = false;
-      const normalized = parsed.map((item: MarketListing) => {
-        if (item.cardName?.includes('青眼白龍') || item.photos?.[0]?.includes('1607604276583')) {
+      const filtered = parsed.filter((item: MarketListing) => {
+        if (isDemoListing(item)) {
           hasCorrections = true;
-          return { ...item, photos: ['https://images.ygoprodeck.com/images/cards/89631139.jpg'] };
+          return false;
         }
-        if (
-          item.cardName?.includes('Jordan') ||
-          item.cardName?.includes('1986 Fleer') ||
-          item.photos?.[0]?.includes('1546519638')
-        ) {
-          hasCorrections = true;
-          return { ...item, photos: ['/images/cards/nba-jordan.jpg'] };
-        }
-        return item;
+        return true;
       });
       if (hasCorrections) {
-        this.setCachedData(normalized);
+        this.setCachedData(filtered);
       }
-      return normalized;
+      return filtered;
     } catch {
       return [];
     }
   }
+
 
   private setCachedData(data: MarketListing[]): void {
     if (typeof window === 'undefined') return;
@@ -67,6 +61,7 @@ export class ApiMarketplaceRepository implements IMarketplaceRepository {
       console.log(`[Cloudflare D1] 正在將 ${localData.length} 筆本機市集掛單同步至 D1...`);
       const migrated: MarketListing[] = [];
       for (const item of localData) {
+        if (isDemoListing(item)) continue;
         try {
           const res = await fetch('/api/v1/marketplace/listings', {
             method: 'POST',
@@ -121,6 +116,7 @@ export class ApiMarketplaceRepository implements IMarketplaceRepository {
         if (json.success && Array.isArray(json.data)) {
           const validListings: MarketListing[] = [];
           for (const item of json.data) {
+            if (isDemoListing(item)) continue;
             const parsed = MarketListingSchema.safeParse(item);
             if (parsed.success) {
               validListings.push(parsed.data);

@@ -5,7 +5,7 @@ export interface ApiPokemonCard {
   set: string;
   type: string;
   rarity: string;
-  price: number;
+  price: number | null;
   imageUrl: string;
   artist?: string;
   tcgplayerUrl?: string;
@@ -19,7 +19,7 @@ interface RawTcgPlayerPrices {
   unlimitedHolofoil?: { market?: number };
 }
 
-interface RawTcgCard {
+export interface RawTcgCard {
   id: string;
   name: string;
   number: string;
@@ -50,14 +50,6 @@ interface RawTcgCard {
   };
 }
 
-interface TcgApiResponse {
-  data: RawTcgCard[];
-  page: number;
-  pageSize: number;
-  count: number;
-  totalCount: number;
-}
-
 export interface FetchCardsParams {
   page?: number;
   pageSize?: number;
@@ -72,8 +64,8 @@ export interface FetchCardsResult {
   hasMore: boolean;
 }
 
-// Extract real dynamic price from API raw response
-const extractCardPrice = (card: RawTcgCard): number => {
+// Extract real dynamic price from card raw response without fake 4.99 fallback
+export const extractCardPrice = (card: RawTcgCard): number | null => {
   const tcgPrices = card.tcgplayer?.prices;
   if (tcgPrices) {
     const market =
@@ -87,21 +79,21 @@ const extractCardPrice = (card: RawTcgCard): number => {
       tcgPrices.holofoil?.low ??
       tcgPrices.normal?.low;
       
-    if (market && market > 0) return Number(market.toFixed(2));
+    if (typeof market === 'number' && market > 0) return Number(market.toFixed(2));
   }
 
   const cmPrices = card.cardmarket?.prices;
   if (cmPrices) {
     const cmPrice = cmPrices.averageSellPrice ?? cmPrices.trendPrice ?? cmPrices.reverseHoloSell;
-    if (cmPrice && cmPrice > 0) return Number(cmPrice.toFixed(2));
+    if (typeof cmPrice === 'number' && cmPrice > 0) return Number(cmPrice.toFixed(2));
   }
 
-  // Fallback nominal value if card has no public market listings
-  return 4.99;
+  // 徹底移除 4.99 假數值，若無公開市場成交報價即標記為 null
+  return null;
 };
 
 // Map raw card response to internal card format
-const mapRawCardToApiPokemonCard = (card: RawTcgCard): ApiPokemonCard => {
+export const mapRawCardToApiPokemonCard = (card: RawTcgCard): ApiPokemonCard => {
   return {
     id: card.id,
     name: card.name,
@@ -110,79 +102,22 @@ const mapRawCardToApiPokemonCard = (card: RawTcgCard): ApiPokemonCard => {
     type: card.types && card.types.length > 0 ? card.types[0] : 'Normal',
     rarity: card.rarity || 'Common',
     price: extractCardPrice(card),
-    imageUrl: card.images?.large || card.images?.small || 'https://images.pokemontcg.io/sv3pt5/199_hires.png',
+    imageUrl: card.images?.large || card.images?.small || '',
     artist: card.artist || 'Unknown',
     tcgplayerUrl: card.tcgplayer?.url,
   };
 };
 
-export const fetchPokemonCardsFromApi = async ({
-  page = 1,
-  pageSize = 20,
-  searchQuery = '',
-  setName = 'ALL',
-  cardType = 'ALL',
-}: FetchCardsParams): Promise<FetchCardsResult> => {
-  try {
-    const queryParts: string[] = [];
-
-    if (searchQuery.trim()) {
-      const sanitized = searchQuery.trim().replace(/["']/g, '');
-      queryParts.push(`name:"*${sanitized}*"`);
-    }
-
-    if (setName && setName !== 'ALL') {
-      queryParts.push(`set.name:"${setName}"`);
-    }
-
-    if (cardType && cardType !== 'ALL') {
-      queryParts.push(`types:"${cardType}"`);
-    }
-
-    const qParam = queryParts.length > 0 ? queryParts.join(' ') : '';
-    
-    const directUrl = `https://api.pokemontcg.io/v2/cards?page=${page}&pageSize=${pageSize}${qParam ? `&q=${encodeURIComponent(qParam)}` : ''}`;
-
-    let response: Response;
-    try {
-      response = await fetch(directUrl, {
-        headers: {
-          'Accept': 'application/json',
-        },
-      });
-      if (!response.ok) {
-        throw new Error(`Direct API status: ${response.status}`);
-      }
-    } catch {
-      // Fallback to internal proxy route if available
-      const proxyUrl = `/api/pokemon/cards?page=${page}&pageSize=${pageSize}${qParam ? `&q=${encodeURIComponent(qParam)}` : ''}`;
-      response = await fetch(proxyUrl);
-    }
-
-    if (!response.ok) {
-      console.warn(`[Pokemon TCG API] Both proxy & direct requests failed with status ${response.status}.`);
-      return { cards: [], totalCount: 0, hasMore: false };
-    }
-
-    const json: TcgApiResponse = await response.json();
-
-    if (!json || !Array.isArray(json.data)) {
-      return { cards: [], totalCount: 0, hasMore: false };
-    }
-
-    const cards = json.data.map(mapRawCardToApiPokemonCard);
-    const totalCount = json.totalCount || cards.length;
-    const hasMore = page * pageSize < totalCount;
-
-    return {
-      cards,
-      totalCount,
-      hasMore,
-    };
-  } catch (error) {
-    console.error('[Pokemon TCG API] Error fetching cards:', error);
-    return { cards: [], totalCount: 0, hasMore: false };
-  }
+// 移除 pokemontcg.io 外部請求，作為解耦的統一介面入口
+export const fetchPokemonCardsFromApi = async (
+  _params: FetchCardsParams = {}
+): Promise<FetchCardsResult> => {
+  // 徹底移除 api.pokemontcg.io 請求，預留給即將接入的新價格 API
+  return {
+    cards: [],
+    totalCount: 0,
+    hasMore: false,
+  };
 };
 
 export interface ApiPokemonSet {
@@ -198,10 +133,6 @@ export interface ApiPokemonSet {
     symbol: string;
     logo: string;
   };
-}
-
-interface TcgSetApiResponse {
-  data: ApiPokemonSet[];
 }
 
 export const FALLBACK_POKEMON_SETS: ApiPokemonSet[] = [
@@ -324,35 +255,7 @@ export const FALLBACK_POKEMON_SETS: ApiPokemonSet[] = [
   },
 ];
 
+// 移除 pokemontcg.io 外部請求，直接返回精選擴充包系列歸檔
 export const fetchPokemonSets = async (): Promise<ApiPokemonSet[]> => {
-  try {
-    const directUrl = 'https://api.pokemontcg.io/v2/sets?orderBy=-releaseDate&pageSize=36';
-    let response: Response;
-    try {
-      response = await fetch(directUrl, {
-        headers: {
-          'Accept': 'application/json',
-        },
-      });
-      if (!response.ok) {
-        throw new Error(`Direct sets API status: ${response.status}`);
-      }
-    } catch {
-      response = await fetch('/api/pokemon/sets');
-    }
-
-    if (!response.ok) {
-      console.warn('[Pokemon TCG API] Sets API returned non-OK status, using fallback sets.');
-      return FALLBACK_POKEMON_SETS;
-    }
-
-    const json: TcgSetApiResponse = await response.json();
-    if (json && Array.isArray(json.data) && json.data.length > 0) {
-      return json.data;
-    }
-    return FALLBACK_POKEMON_SETS;
-  } catch (error) {
-    console.warn('[Pokemon TCG API] Sets API failed, using fallback sets:', error);
-    return FALLBACK_POKEMON_SETS;
-  }
+  return FALLBACK_POKEMON_SETS;
 };

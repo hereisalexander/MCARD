@@ -87,7 +87,7 @@ export const AddToWishlistModal: React.FC<AddToWishlistModalProps> = ({
             <span className="font-sans font-bold text-xs text-foreground truncate">{card.name}</span>
             <span className="text-[10px] text-text-muted font-mono">{card.set}</span>
             <span className="text-[10px] text-foreground font-mono font-bold mt-0.5">
-              當前官方參考價: ${currentPrice.toLocaleString('en-US')} USD
+              當前官方參考價: {card.price !== null && card.price > 0 ? `$${card.price.toLocaleString('en-US')} USD` : '-- (無公開報價)'}
             </span>
           </div>
         </div>

@@ -53,7 +53,9 @@ export const VersusFloatBar: React.FC<VersusFloatBarProps> = ({
                   {card.name}
                 </span>
                 <span className="text-[9px] font-mono font-semibold text-text-muted">
-                  ${card.price.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                  {card.price !== null && card.price > 0
+                    ? `$${card.price.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
+                    : '--'}
                 </span>
               </div>
               <button

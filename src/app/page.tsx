@@ -11,7 +11,7 @@ import { UniversalCard, CardCategory } from '@/services/multiCardService';
 import { CardGrade, CardCategory as ContractCardCategory } from '@/contracts/common.schema';
 import Link from 'next/link';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
-import { CardListing, INITIAL_MARKETPLACE_LISTINGS, ListingStatus } from '@/types/marketplace';
+import { CardListing, isDemoListing, ListingStatus } from '@/types/marketplace';
 import { MarketplaceView } from '@/components/MarketplaceView';
 import { CreateListingModal } from '@/components/CreateListingModal';
 import { ListingDetailModal } from '@/components/ListingDetailModal';
@@ -77,17 +77,11 @@ export default function Home() {
 
       // 2. Load Marketplace Listings via Repository (Zod validated)
       marketplaceRepository.getAll().then((loadedListings) => {
-        if (loadedListings && loadedListings.length > 0) {
-          const corrected = (loadedListings as unknown as CardListing[]).map((item) => {
-            if (item.id === 'listing-blue-eyes' && (item.photos?.[0]?.includes('unsplash') || !item.photos?.[0]?.includes('89631139'))) {
-              return { ...item, photos: ['https://images.ygoprodeck.com/images/cards/89631139.jpg'] };
-            }
-            if (item.id === 'listing-jordan-fleer' && (item.photos?.[0]?.includes('unsplash') || !item.photos?.[0]?.includes('nba-jordan'))) {
-              return { ...item, photos: ['/images/cards/nba-jordan.jpg'] };
-            }
-            return item;
-          });
-          setListings(corrected);
+        if (loadedListings) {
+          const cleaned = (loadedListings as unknown as CardListing[]).filter(
+            (item) => !isDemoListing(item)
+          );
+          setListings(cleaned);
         }
       }).catch((e) => {
         console.error('Failed to load marketplace listings via repository:', e);
@@ -695,7 +689,7 @@ export default function Home() {
         isOpen={isVersusModalOpen}
         onClose={() => setIsVersusModalOpen(false)}
         onAddCardToPortfolio={(card) =>
-          handleAddCard(card.name, card.price, card.imageUrl, 'Ungraded', card.category)
+          handleAddCard(card.name, card.price ?? 0, card.imageUrl, 'Ungraded', card.category)
         }
       />
 

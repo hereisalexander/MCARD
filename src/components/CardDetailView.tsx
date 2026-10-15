@@ -72,8 +72,11 @@ export const CardDetailView: React.FC<CardDetailViewProps> = ({
     }
   }, [timeRange]);
 
+  const hasPriceData = typeof card.price === 'number' && card.price > 0;
+
   // Generate a 365-day consistent historical price timeline (Time-Invariant Market Model)
   const fullYearHistory = useMemo(() => {
+    if (!hasPriceData || !card.price) return [];
     const basePrice = card.price;
     let seed = 0;
     for (let i = 0; i < card.id.length; i++) {
@@ -117,17 +120,17 @@ export const CardDetailView: React.FC<CardDetailViewProps> = ({
     }
 
     return history;
-  }, [card, selectedCondition]);
+  }, [card, selectedCondition, hasPriceData]);
 
   // Slice history corresponding to selected time range (1M: last 30 days, 3M: last 90 days, 6M: last 180 days, 1Y: last 365 days)
   const priceHistoryData = useMemo(() => {
     return fullYearHistory.slice(-daysCount);
   }, [fullYearHistory, daysCount]);
 
-  const currentPrice = priceHistoryData[priceHistoryData.length - 1]?.price || card.price;
+  const currentPrice = hasPriceData ? (priceHistoryData[priceHistoryData.length - 1]?.price || card.price || 0) : 0;
   const pricesArr = priceHistoryData.map((d) => d.price);
-  const rawMinPrice = Math.min(...pricesArr);
-  const rawMaxPrice = Math.max(...pricesArr);
+  const rawMinPrice = pricesArr.length > 0 ? Math.min(...pricesArr) : 0;
+  const rawMaxPrice = pricesArr.length > 0 ? Math.max(...pricesArr) : 0;
 
   // Dynamic Y Min and Y Max with smart padding to zoom and fit the curve gracefully
   const yRangeDelta = rawMaxPrice - rawMinPrice;
@@ -351,20 +354,31 @@ export const CardDetailView: React.FC<CardDetailViewProps> = ({
                 {selectedCondition} {t('est_market_price')}
               </span>
               <span className="font-sans font-medium text-2xl md:text-3xl text-foreground tracking-tight mt-1">
-                ${currentPrice.toFixed(2)}
+                {hasPriceData ? `$${currentPrice.toFixed(2)}` : '--'}
               </span>
+              {!hasPriceData && (
+                <span className="text-[10px] text-text-muted font-mono mt-0.5">(公開市場無報價)</span>
+              )}
             </div>
 
             <div className="bg-surface p-5 rounded-2xl border border-hairline/70 shadow-sm flex flex-col">
               <span className="text-[9px] text-text-muted tracking-wider uppercase font-semibold">
                 {timeRange} {t('price_change_3m')}
               </span>
-              <span className={`font-sans font-medium text-xl md:text-2xl tracking-tight mt-1 ${isPositive ? 'text-semantic-success' : 'text-ferrari-red'}`}>
-                {isPositive ? '+' : ''}${priceChange.toFixed(2)}
-              </span>
-              <span className={`font-mono text-xs ${isPositive ? 'text-semantic-success' : 'text-ferrari-red'}`}>
-                ({isPositive ? '+' : ''}{priceChangePct.toFixed(1)}%)
-              </span>
+              {hasPriceData ? (
+                <>
+                  <span className={`font-sans font-medium text-xl md:text-2xl tracking-tight mt-1 ${isPositive ? 'text-semantic-success' : 'text-ferrari-red'}`}>
+                    {isPositive ? '+' : ''}${priceChange.toFixed(2)}
+                  </span>
+                  <span className={`font-mono text-xs ${isPositive ? 'text-semantic-success' : 'text-ferrari-red'}`}>
+                    ({isPositive ? '+' : ''}{priceChangePct.toFixed(1)}%)
+                  </span>
+                </>
+              ) : (
+                <span className="font-sans font-medium text-xl md:text-2xl text-text-muted tracking-tight mt-1">
+                  --
+                </span>
+              )}
             </div>
 
             <div className="bg-surface p-5 rounded-2xl border border-hairline/70 shadow-sm flex flex-col">
@@ -372,7 +386,7 @@ export const CardDetailView: React.FC<CardDetailViewProps> = ({
                 {timeRange} {t('high_low_range')}
               </span>
               <span className="font-sans font-medium text-lg text-foreground mt-1">
-                ${rawMinPrice.toFixed(2)} - ${rawMaxPrice.toFixed(2)}
+                {hasPriceData ? `$${rawMinPrice.toFixed(2)} - $${rawMaxPrice.toFixed(2)}` : '--'}
               </span>
             </div>
           </div>
@@ -390,28 +404,45 @@ export const CardDetailView: React.FC<CardDetailViewProps> = ({
               </div>
 
               {/* Time Range Selector Tabs */}
-              <div className="flex items-center border border-hairline/80 bg-surface-hover p-1 rounded-xl self-start sm:self-auto">
-                {(['1M', '3M', '6M', '1Y'] as TimeRange[]).map((range) => {
-                  const isActive = timeRange === range;
-                  return (
-                    <button
-                      key={range}
-                      onClick={() => setTimeRange(range)}
-                      className={`px-3.5 py-1 rounded-lg font-sans text-xs font-semibold tracking-wide transition-all duration-150 cursor-pointer ${
-                        isActive
-                          ? 'bg-ferrari-red text-white font-bold shadow-sm'
-                          : 'text-text-muted hover:text-foreground'
-                      }`}
-                    >
-                      {range}
-                    </button>
-                  );
-                })}
-              </div>
+              {hasPriceData && (
+                <div className="flex items-center border border-hairline/80 bg-surface-hover p-1 rounded-xl self-start sm:self-auto">
+                  {(['1M', '3M', '6M', '1Y'] as TimeRange[]).map((range) => {
+                    const isActive = timeRange === range;
+                    return (
+                      <button
+                        key={range}
+                        onClick={() => setTimeRange(range)}
+                        className={`px-3.5 py-1 rounded-lg font-sans text-xs font-semibold tracking-wide transition-all duration-150 cursor-pointer ${
+                          isActive
+                            ? 'bg-ferrari-red text-white font-bold shadow-sm'
+                            : 'text-text-muted hover:text-foreground'
+                        }`}
+                      >
+                        {range}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
-            {/* High Precision SVG Line Chart */}
-            <div className="relative w-full bg-surface-hover/50 rounded-xl p-4 border border-hairline/60">
+            {!hasPriceData ? (
+              <div className="relative w-full bg-surface-hover/30 rounded-xl p-10 border border-dashed border-hairline/80 flex flex-col items-center justify-center text-center min-h-[260px]">
+                <div className="w-12 h-12 rounded-full bg-surface-hover flex items-center justify-center text-text-muted mb-3 border border-hairline">
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                </div>
+                <p className="font-sans font-medium text-base text-foreground mb-1">
+                  暫無此卡牌的公開歷史成交行情
+                </p>
+                <span className="font-mono text-xs text-text-muted max-w-sm">
+                  此卡牌在公開二級市場（TCGPlayer / eBay）尚無即時流通成交記錄，故無法繪製歷史走勢圖
+                </span>
+              </div>
+            ) : (
+              /* High Precision SVG Line Chart */
+              <div className="relative w-full bg-surface-hover/50 rounded-xl p-4 border border-hairline/60">
               <svg
                 viewBox={`0 0 ${svgWidth} ${svgHeight}`}
                 className="w-full h-auto overflow-visible select-none"
@@ -553,6 +584,7 @@ export const CardDetailView: React.FC<CardDetailViewProps> = ({
                 </div>
               )}
             </div>
+            )}
           </div>
 
           {/* Condition Picker & Add to Portfolio Bar */}
@@ -606,7 +638,7 @@ export const CardDetailView: React.FC<CardDetailViewProps> = ({
                 onClick={handleAddClick}
                 className="flex-1 sm:flex-none h-11 px-8 rounded-xl bg-ferrari-red text-white hover:bg-ferrari-red-hover active:bg-ferrari-red-active font-sans text-xs font-semibold tracking-wide transition-colors cursor-pointer shadow-sm text-center"
               >
-                {t('add_to_portfolio')} (${currentPrice.toFixed(2)})
+                {hasPriceData ? `${t('add_to_portfolio')} ($${currentPrice.toFixed(2)})` : t('add_to_portfolio')}
               </button>
             </div>
           </div>

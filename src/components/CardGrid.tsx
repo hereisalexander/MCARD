@@ -178,6 +178,7 @@ export const CardGrid: React.FC<CardGridProps> = ({
 
     if (priceRange !== 'ALL') {
       result = result.filter((card) => {
+        if (card.price === null || card.price <= 0) return false;
         if (priceRange === 'UNDER_25') return card.price < 25;
         if (priceRange === '25_100') return card.price >= 25 && card.price <= 100;
         if (priceRange === '100_300') return card.price > 100 && card.price <= 300;
@@ -446,9 +447,15 @@ export const CardGrid: React.FC<CardGridProps> = ({
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-t border-hairline/60 pt-2 sm:pt-3 mt-auto">
                     <div className="flex flex-col">
                       <span className="text-[8px] sm:text-[9px] tracking-wide text-text-muted font-semibold">{t('est_market_price')}</span>
-                      <span className="font-mono font-bold text-xs sm:text-base text-foreground">
-                        ${card.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                      </span>
+                      {card.price !== null && card.price > 0 ? (
+                        <span className="font-mono font-bold text-xs sm:text-base text-foreground">
+                          ${card.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </span>
+                      ) : (
+                        <span className="font-mono font-bold text-xs sm:text-sm text-text-muted flex items-center gap-1">
+                          -- <span className="text-[9px] font-sans font-normal text-text-muted/80">(無報價)</span>
+                        </span>
+                      )}
                     </div>
 
                     <div className="flex items-center gap-1.5 w-full sm:w-auto">
@@ -470,7 +477,7 @@ export const CardGrid: React.FC<CardGridProps> = ({
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          onAddCard(card.name, card.price, card.imageUrl, 'Ungraded', card.category);
+                          onAddCard(card.name, card.price ?? 0, card.imageUrl, 'Ungraded', card.category);
                         }}
                         className="flex-1 sm:flex-none px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg bg-surface-hover hover:bg-ferrari-red hover:text-white border border-hairline/70 text-text-muted font-mono text-[10px] sm:text-xs font-semibold tracking-wide transition-all cursor-pointer shadow-xs active:scale-95 text-center"
                       >
