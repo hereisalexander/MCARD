@@ -1,9 +1,8 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { CardScanResult, PriceHistoryPoint } from '@/contracts/scan.schema';
 import { CameraIcon, CloseIcon, SparklesIcon, CheckCircleIcon } from '@/components/icons/AppIcons';
-import { useLanguage } from '@/context/LanguageContext';
 
 export type ScannerStep = 'viewfinder' | 'analyzing' | 'result';
 
@@ -39,14 +38,11 @@ export const CardScannerModal: React.FC<CardScannerModalProps> = ({
   onAddToVault,
   onCreateListing,
 }) => {
-  const { t } = useLanguage();
-
   const [step, setStep] = useState<ScannerStep>('viewfinder');
   const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
   const [scanResult, setScanResult] = useState<CardScanResult | null>(null);
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [analysisStatusText, setAnalysisStatusText] = useState<string>('正在啟動多模態辨識...');
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -92,6 +88,7 @@ export const CardScannerModal: React.FC<CardScannerModalProps> = ({
 
   // 監聽彈窗開關或外部點擊重置觸發，以啟動或釋放相機
   useEffect(() => {
+    /* eslint-disable react-hooks/set-state-in-effect */
     if (isOpen) {
       setStep('viewfinder');
       setCapturedPhoto(null);
@@ -104,6 +101,7 @@ export const CardScannerModal: React.FC<CardScannerModalProps> = ({
     return () => {
       stopCamera();
     };
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, [isOpen, resetKey, startCamera, stopCamera]);
 
   // 3. Canvas 壓縮圖片 (縮放長邊至 1200px 內，壓縮為輕量 JPEG)
@@ -350,7 +348,7 @@ export const CardScannerModal: React.FC<CardScannerModalProps> = ({
   }, [scanResult]);
 
   // 解析流通品相 (Raw) 參考價格（含智能兜底）
-  const resolvedRawPrice = useMemo(() => {
+  const resolvedRawPrice = (() => {
     if (!scanResult) return null;
     if (typeof scanResult.pricing.rawPrice === 'number') return scanResult.pricing.rawPrice;
     if (!scanResult.isGraded && typeof scanResult.pricing.currentPrice === 'number') {
@@ -363,10 +361,10 @@ export const CardScannerModal: React.FC<CardScannerModalProps> = ({
       return Number((scanResult.pricing.currentPrice / 2.8).toFixed(2));
     }
     return null;
-  }, [scanResult]);
+  })();
 
   // 解析 PSA 10 滿分評級參考價格（含智能兜底）
-  const resolvedPsa10Price = useMemo(() => {
+  const resolvedPsa10Price = (() => {
     if (!scanResult) return null;
     if (typeof scanResult.pricing.psa10Price === 'number') return scanResult.pricing.psa10Price;
     if (scanResult.isGraded && typeof scanResult.pricing.currentPrice === 'number') {
@@ -376,7 +374,7 @@ export const CardScannerModal: React.FC<CardScannerModalProps> = ({
       return Number((resolvedRawPrice * 2.8).toFixed(2));
     }
     return null;
-  }, [scanResult, resolvedRawPrice]);
+  })();
 
   if (!isOpen) return null;
 

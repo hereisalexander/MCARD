@@ -42,7 +42,7 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
         (key) => {
           try {
             localStorage.removeItem(key);
-          } catch (e) {}
+          } catch {}
         }
       );
     }

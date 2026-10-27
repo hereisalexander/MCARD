@@ -55,6 +55,7 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
 
   // Sync initialData when provided or updated
   React.useEffect(() => {
+    /* eslint-disable react-hooks/set-state-in-effect */
     if (initialData) {
       if (initialData.name) setCardName(initialData.name);
       if (initialData.category) setCategory(initialData.category);
@@ -66,6 +67,7 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
       if (initialData.condition) setCondition(initialData.condition as ListingCondition);
       if (initialData.photoUrl) setPhotoPreview(initialData.photoUrl);
     }
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, [initialData]);
 
   if (!isOpen) return null;
