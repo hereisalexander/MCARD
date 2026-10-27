@@ -142,14 +142,14 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({
           </p>
         </div>
 
-        {/* Action Button: Refined Monochrome / High Contrast */}
+        {/* Action Button: Refined Ferrari Red */}
         <button
           onClick={onOpenCreateListing}
           aria-label={t('marketplace_list_card_btn')}
           tabIndex={0}
-          className="px-4.5 py-2.5 rounded-xl bg-foreground hover:opacity-90 active:scale-95 text-background font-bold text-xs sm:text-sm tracking-wide transition-all cursor-pointer shadow-xs flex items-center justify-center gap-2 shrink-0 self-start sm:self-center"
+          className="px-4.5 py-2.5 rounded-xl bg-ferrari-red hover:bg-ferrari-red-hover active:bg-ferrari-red-active active:scale-95 text-white font-bold text-xs sm:text-sm tracking-wide transition-all cursor-pointer shadow-xs flex items-center justify-center gap-2 shrink-0 self-start sm:self-center"
         >
-          <TagIcon className="w-4 h-4 text-background" />
+          <TagIcon className="w-4 h-4 text-white" />
           <span>{t('marketplace_list_card_btn')}</span>
         </button>
       </div>
@@ -281,7 +281,7 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({
           <div className="flex flex-col justify-center items-start sm:items-end p-3 rounded-xl bg-surface-hover/50 border border-hairline/60">
             <button
               onClick={onOpenCreateListing}
-              className="px-4 py-2 bg-foreground text-background hover:opacity-90 font-bold text-xs rounded-xl transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs"
+              className="px-4 py-2 bg-ferrari-red hover:bg-ferrari-red-hover active:bg-ferrari-red-active text-white font-bold text-xs rounded-xl transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs"
             >
               <span>{t('marketplace_list_card_btn')}</span>
             </button>
