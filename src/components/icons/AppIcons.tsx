@@ -182,4 +182,13 @@ export const BasketIcon: React.FC<IconProps> = ({ className = 'w-3.5 h-3.5' }) =
   </svg>
 );
 
+// 24. Briefcase / Portfolio Case Icon (公文包 / 資產包)
+export const BriefcaseIcon: React.FC<IconProps> = ({ className = 'w-6 h-6' }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <rect x="2" y="7" width="20" height="14" rx="2.5" strokeWidth="2" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7V4.5a2 2 0 00-2-2h-4a2 2 0 00-2 2V7" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2 13h7v1.5a1 1 0 001 1h4a1 1 0 001-1V13h7" />
+  </svg>
+);
+
 
