@@ -173,14 +173,12 @@ export const StarIcon: React.FC<IconProps & { filled?: boolean }> = ({ className
   </svg>
 );
 
-// 23. Shopping Basket / Market Basket Icon (Grid Wireframe Style)
+// 23. Shopping Tote / Market Bag Icon (Tote Bag Style with Rivets)
 export const BasketIcon: React.FC<IconProps> = ({ className = 'w-3.5 h-3.5' }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 9V6.5A2.5 2.5 0 018.5 4h7A2.5 2.5 0 0118 6.5V9" />
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.5 9h19" />
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3.5 9l1.6 9.5a2 2 0 002 1.5h9.8a2 2 0 002-1.5L20.5 9" />
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" d="M4.5 15h15" />
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" d="M8.5 9l.4 11M12 9v11M15.5 9l-.4 11" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 11V6a3 3 0 016 0v5" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 11.5h2m4 0h2" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 8.5h16l-1.4 11a2 2 0 01-2 1.5H7.4a2 2 0 01-2-1.5L4 8.5z" />
   </svg>
 );
 
