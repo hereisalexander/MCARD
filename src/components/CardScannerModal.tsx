@@ -112,7 +112,7 @@ export const CardScannerModal: React.FC<CardScannerModalProps> = ({
 
     if (!sourceWidth || !sourceHeight) return '';
 
-    const maxDimension = 1200;
+    const maxDimension = 1000;
     let targetWidth = sourceWidth;
     let targetHeight = sourceHeight;
 
@@ -132,7 +132,7 @@ export const CardScannerModal: React.FC<CardScannerModalProps> = ({
     if (!ctx) return '';
 
     ctx.drawImage(source, 0, 0, targetWidth, targetHeight);
-    return canvas.toDataURL('image/jpeg', 0.85);
+    return canvas.toDataURL('image/jpeg', 0.8);
   };
 
   // 4. 發送至後端辨識 API

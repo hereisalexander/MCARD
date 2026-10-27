@@ -37,8 +37,12 @@ export const POST = async (req: NextRequest) => {
       );
     }
 
-    // 清理 Base64 標頭前綴以供 inlineData 傳輸
-    const cleanBase64 = imageBase64.replace(/^data:image\/\w+;base64,/, '');
+    // 徹底清洗 Base64 數據：剝除 Data URL 前綴並移除所有無效空白與換行符
+    const cleanBase64 = (
+      imageBase64.includes(',')
+        ? imageBase64.slice(imageBase64.indexOf(',') + 1)
+        : imageBase64
+    ).replace(/\s+/g, '');
 
     const systemPrompt = `You are an elite, world-class trading card game (TCG) and sports card expert and appraiser.
 Your objective is to examine the provided card image, identify its detailed parameters, and estimate secondary market pricing data in USD (authoritative benchmark sources: PriceCharting, eBay Sold Listings, TCGplayer).
@@ -119,14 +123,29 @@ Analyze the image carefully:
     if (!response.ok) {
       const errText = await response.text();
       console.error(`[Gemini API Error]: HTTP ${response.status}`, errText);
+
+      let parsedErrMsg = '';
+      try {
+        const errJson = JSON.parse(errText);
+        parsedErrMsg = errJson?.error?.message || '';
+      } catch {}
+
       let clientMessage = `Gemini 視覺辨識請求失敗 (HTTP ${response.status})`;
-      if (response.status === 400 || response.status === 403) {
-        clientMessage = 'Gemini API Key 無效或未開通權限，請檢查 .env.local 配置。';
+
+      if (parsedErrMsg.includes('API key not valid') || response.status === 403) {
+        clientMessage = 'Gemini API Key 無效或未開通權限，請檢查 Cloudflare 變數配置。';
+      } else if (response.status === 400) {
+        clientMessage = parsedErrMsg
+          ? `圖片辨識參數異常: ${parsedErrMsg}`
+          : '圖片數據解析失敗，請重新拍攝或換個角度。';
       } else if (response.status === 404) {
         clientMessage = `Gemini 模型 (${TARGET_MODEL}) 不存在或已下線。`;
       } else if (response.status === 429) {
-        clientMessage = 'Gemini API 請求頻率過高或配額耗盡，請稍候幾分鐘後重試。';
+        clientMessage = 'Gemini API 請求頻率過高或配額耗盡，請稍候片刻後重試。';
+      } else if (parsedErrMsg) {
+        clientMessage = `辨識服務異常: ${parsedErrMsg}`;
       }
+
       return apiError('INTERNAL_SERVER_ERROR', clientMessage, errText, response.status);
     }
 
