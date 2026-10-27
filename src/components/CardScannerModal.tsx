@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { CardScanResult, PriceHistoryPoint } from '@/contracts/scan.schema';
-import { CameraIcon, CloseIcon, SparklesIcon, CheckCircleIcon } from '@/components/icons/AppIcons';
+import { CameraIcon, CloseIcon, CheckCircleIcon } from '@/components/icons/AppIcons';
 
 export type ScannerStep = 'viewfinder' | 'analyzing' | 'result';
 
@@ -540,10 +540,6 @@ export const CardScannerModal: React.FC<CardScannerModalProps> = ({
 
               {/* 狀態提示 */}
               <div className="flex flex-col items-center gap-2 text-center max-w-sm">
-                <div className="flex items-center gap-2 text-ferrari-red font-mono text-xs font-bold tracking-wider uppercase">
-                  <SparklesIcon className="w-4 h-4 animate-spin" />
-                  <span>Gemini Multimodal Appraiser</span>
-                </div>
                 <p className="font-sans text-sm font-semibold text-foreground animate-pulse">
                   {analysisStatusText}
                 </p>
