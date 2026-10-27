@@ -110,6 +110,9 @@ Analyze the image carefully:
           ],
         },
       ],
+      generationConfig: {
+        temperature: 0, // 鎖定隨機性，保證輸出最確定性、一致性結果
+      },
     };
 
     console.log(`[Gemini] 執行識卡辨識 | 模型: ${TARGET_MODEL} | 聯網搜價: 關閉 (純視覺模式)`);
