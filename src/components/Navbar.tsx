@@ -226,11 +226,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <button
                 type="button"
                 onClick={() => onTabChange('account')}
-                className={`relative h-9 px-3 rounded-xl border font-sans text-xs font-semibold tracking-wide transition-all duration-150 cursor-pointer flex items-center justify-center gap-2 shrink-0 w-[84px] sm:w-[96px] ${
-                  activeTab === 'account'
-                    ? 'border-ferrari-red text-foreground bg-surface-hover shadow-2xs ring-1 ring-ferrari-red/30 font-bold'
-                    : 'bg-surface-hover/70 hover:bg-surface-hover border-hairline/80 text-foreground'
-                }`}
+                className="relative h-9 px-3 rounded-xl border border-hairline/80 bg-surface-hover/70 hover:bg-surface-hover text-foreground font-sans text-xs font-semibold tracking-wide transition-all duration-150 cursor-pointer flex items-center justify-center gap-2 shrink-0 w-[84px] sm:w-[96px]"
                 aria-label="個人帳戶與資產庫"
                 title="個人帳戶與資產庫"
               >
