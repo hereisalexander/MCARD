@@ -11,8 +11,8 @@ import {
   CloseIcon,
   SearchIcon,
   CameraIcon,
+  TagIcon,
   HeartIcon,
-  ShoppingBagIcon,
 } from '@/components/icons/AppIcons';
 
 interface NavbarProps {
@@ -383,130 +383,114 @@ export const Navbar: React.FC<NavbarProps> = ({
                     )}
                   </div>
 
-                  {/* 2. AI Scanner Banner (旗艦功能置頂，視覺亮點) */}
-                  {onOpenScanner && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsDrawerOpen(false);
-                        onOpenScanner();
-                      }}
-                      className="w-full p-3 rounded-2xl bg-gradient-to-r from-foreground via-foreground to-neutral-900 text-background border border-hairline/80 hover:opacity-95 active:scale-[0.98] transition-all cursor-pointer shadow-sm flex items-center justify-between group"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-ferrari-red text-white flex items-center justify-center shadow-xs shrink-0 group-hover:scale-105 transition-transform">
-                          <CameraIcon className="w-5 h-5" />
-                        </div>
-                        <div className="flex flex-col text-left">
-                          <div className="flex items-center gap-1.5">
-                            <span className="text-xs font-bold tracking-wide text-background font-sans">
-                              {t('ai_camera_btn') || 'AI 拍照識卡'}
-                            </span>
-                            <span className="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-ferrari-red text-white uppercase">
-                              PRO
-                            </span>
-                          </div>
-                          <span className="text-[10px] text-background/60">
-                            對準卡片，秒測二級市場真實行情
-                          </span>
-                        </div>
-                      </div>
-                      <span className="text-ferrari-red font-mono font-bold text-sm pr-1 group-hover:translate-x-0.5 transition-transform">
-                        →
-                      </span>
-                    </button>
-                  )}
-
-                  {/* 3. Core Portals (方案二：3x2 控制中心大磁貼矩陣) */}
+                  {/* 2. Core Portals (六宮格快速直達，對齊平衡) */}
                   <div className="flex flex-col gap-1.5">
                     <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-text-muted">
                       {language === 'en' ? 'Core Portals' : '快速功能直達'}
                     </span>
-                    <div className="grid grid-cols-3 gap-2">
+                    <div className="grid grid-cols-2 gap-2">
                       {[
                         {
                           id: 'explore',
                           label: t('nav_explore') || '探索',
-                          icon: (props: { className?: string }) => <SearchIcon {...props} />,
+                          icon: <SearchIcon className="w-3.5 h-3.5 shrink-0" />,
                         },
                         {
-                          id: 'market',
-                          label: t('nav_market') || '市集',
-                          icon: (props: { className?: string }) => <ShoppingBagIcon {...props} />,
-                        },
-                        {
-                          id: 'stream',
-                          label: t('nav_stream') || '動態',
-                          icon: (props: { className?: string }) => (
-                            <svg className={props.className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                            </svg>
-                          ),
-                        },
-                        {
-                          id: 'sets',
-                          label: language === 'en' ? 'Card Sets' : '卡包全集',
-                          icon: (props: { className?: string }) => (
-                            <svg className={props.className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                          id: 'account',
+                          label: t('nav_account') || '個人帳戶',
+                          badge: portfolioCount > 0 ? `${portfolioCount}` : undefined,
+                          icon: (
+                            <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
                           ),
                         },
                         {
                           id: 'wishlist',
                           label: language === 'en' ? 'Wishlist' : '願望清單',
-                          icon: (props: { className?: string }) => <HeartIcon {...props} />,
                           badge: wishlistCount > 0 ? `${wishlistCount}` : undefined,
+                          icon: <HeartIcon className="w-3.5 h-3.5 shrink-0" filled={activeTab === 'wishlist'} />,
                         },
                         {
-                          id: 'account',
-                          label: t('nav_account') || '個人帳戶',
-                          icon: (props: { className?: string }) => (
-                            <svg className={props.className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                          id: 'sets',
+                          label: language === 'en' ? 'Card Sets' : '卡包全集 (160+)',
+                          icon: (
+                            <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 3h10a2 2 0 012 2v10a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 7H4a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-1" />
                             </svg>
                           ),
-                          badge: portfolioCount > 0 ? `${portfolioCount}` : undefined,
+                        },
+                        {
+                          id: 'market',
+                          label: t('nav_market') || '市場',
+                          icon: <TagIcon className="w-3.5 h-3.5 shrink-0" />,
+                        },
+                        {
+                          id: 'stream',
+                          label: t('nav_stream') || '動態',
+                          icon: (
+                            <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                            </svg>
+                          ),
                         },
                       ].map((item) => {
                         const isActive = activeTab === item.id;
-                        const Icon = item.icon;
                         return (
                           <button
                             key={item.id}
                             type="button"
                             onClick={() => handleTabClick(item.id)}
-                            className={`relative p-2.5 rounded-2xl border transition-all cursor-pointer flex flex-col items-center justify-center gap-1.5 active:scale-95 ${
+                            className={`px-3 py-2.5 rounded-xl border text-xs font-semibold tracking-wide transition-all cursor-pointer flex items-center justify-between gap-1.5 ${
                               isActive
                                 ? 'bg-ferrari-red text-white border-ferrari-red shadow-xs font-bold'
-                                : 'bg-surface-hover/60 hover:bg-surface-hover text-foreground border-hairline/60 hover:border-hairline'
+                                : 'bg-surface-hover/50 hover:bg-surface-hover text-foreground border-hairline/60'
                             }`}
                           >
+                            <div className="flex items-center gap-2 min-w-0">
+                              <span className={isActive ? 'text-white' : 'text-text-muted'}>
+                                {item.icon}
+                              </span>
+                              <span className="truncate">{item.label}</span>
+                            </div>
                             {item.badge && (
-                              <span className="absolute top-1.5 right-1.5 px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold bg-rose-500 text-white shadow-2xs">
+                              <span className="px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold bg-rose-500 text-white shrink-0 ml-1">
                                 {item.badge}
                               </span>
                             )}
-                            <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-foreground/80'}`} />
-                            <span className="text-[11px] tracking-tight truncate max-w-full">{item.label}</span>
                           </button>
                         );
                       })}
                     </div>
+
+                    {onOpenScanner && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsDrawerOpen(false);
+                          onOpenScanner();
+                        }}
+                        className="w-full mt-1.5 h-10 px-3.5 rounded-xl bg-ferrari-red/10 border border-ferrari-red/30 hover:bg-ferrari-red/15 text-ferrari-red flex items-center justify-center gap-2 text-xs font-bold cursor-pointer transition-colors shadow-2xs"
+                      >
+                        <CameraIcon className="w-4 h-4" />
+                        <span>{t('ai_camera_btn') || 'AI 拍照識卡'}</span>
+                      </button>
+                    )}
                   </div>
 
-                  {/* 4. Card Category Pills (橫向滑動輕量膠囊，高空間利用率) */}
+                  {/* 3. Card Category Pills (輕量小膠囊) */}
                   <div className="flex flex-col gap-1.5">
                     <div className="flex items-center justify-between">
                       <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-text-muted">
                         {language === 'en' ? 'Categories' : '卡牌品類過濾'}
                       </span>
-                      <span className="text-[10px] text-ferrari-red font-mono font-semibold">
+                      <span className="text-[10px] text-text-muted font-mono font-semibold">
                         {selectedCategory.toUpperCase()}
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 -mx-1 px-1">
+                    <div className="flex flex-wrap gap-1.5">
                       {([
                         { id: 'all', labelKey: 'cat_all' },
                         { id: 'pokemon', labelKey: 'cat_pokemon' },
@@ -522,7 +506,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                             key={cat.id}
                             type="button"
                             onClick={() => handleCategorySelect(cat.id)}
-                            className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer border whitespace-nowrap shrink-0 ${
+                            className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer border ${
                               isCatSelected
                                 ? 'bg-surface-hover border-ferrari-red text-ferrari-red font-bold shadow-2xs'
                                 : 'bg-surface text-text-muted hover:text-foreground border-hairline/60'
