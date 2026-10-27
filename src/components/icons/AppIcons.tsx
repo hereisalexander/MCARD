@@ -173,4 +173,11 @@ export const StarIcon: React.FC<IconProps & { filled?: boolean }> = ({ className
   </svg>
 );
 
+// 23. Shopping Basket / Market Basket Icon
+export const BasketIcon: React.FC<IconProps> = ({ className = 'w-3.5 h-3.5' }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M4.5 10l1.4 8.8a2 2 0 002 1.6h8.2a2 2 0 002-1.6L19.5 10M8 10L12 4l4 6" />
+  </svg>
+);
+
 

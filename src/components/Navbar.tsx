@@ -11,7 +11,7 @@ import {
   CloseIcon,
   SearchIcon,
   CameraIcon,
-  TagIcon,
+  BasketIcon,
   HeartIcon,
 } from '@/components/icons/AppIcons';
 
@@ -424,7 +424,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                         {
                           id: 'market',
                           label: t('nav_market') || '市場',
-                          icon: <TagIcon className="w-3.5 h-3.5 shrink-0" />,
+                          icon: <BasketIcon className="w-3.5 h-3.5 shrink-0" />,
                         },
                         {
                           id: 'stream',
