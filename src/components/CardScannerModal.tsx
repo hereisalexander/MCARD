@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { CardScanResult, PriceHistoryPoint } from '@/contracts/scan.schema';
 import { CameraIcon, CloseIcon, SparklesIcon, CheckCircleIcon } from '@/components/icons/AppIcons';
 
@@ -137,7 +137,6 @@ export const CardScannerModal: React.FC<CardScannerModalProps> = ({
 
   // 4. 發送至後端辨識 API
   const analyzeImagePayload = async (base64Data: string) => {
-    setIsSubmitting(true);
     setStep('analyzing');
     setAnalysisStatusText('正在進行多模態卡牌特徵辨識...');
 
@@ -176,8 +175,6 @@ export const CardScannerModal: React.FC<CardScannerModalProps> = ({
       alert(`辨識失敗: ${msg}`);
       setStep('viewfinder');
       startCamera();
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
