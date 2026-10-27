@@ -111,8 +111,8 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeWidth={isActive ? '2.5' : '1.8'}
-            d="M3 10h18M4.5 10l1.4 8.8a2 2 0 002 1.6h8.2a2 2 0 002-1.6L19.5 10M8 10L12 4l4 6"
+            strokeWidth={isActive ? '2.4' : '1.8'}
+            d="M9 8V6a3 3 0 016 0v2M3 9h18M4.5 9l1.4 9a2 2 0 002 1.8h8.2a2 2 0 002-1.8L19.5 9M6.8 13h10.4M7.8 16.5h8.4"
           />
         </svg>
       ),
