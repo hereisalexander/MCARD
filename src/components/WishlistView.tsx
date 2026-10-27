@@ -75,28 +75,25 @@ export const WishlistView: React.FC<WishlistViewProps> = ({
 
   return (
     <div className="w-full flex flex-col gap-6 py-2 sm:py-6 animate-fade-in">
-      {/* Top Banner */}
-      <div className="relative w-full rounded-2xl p-5 sm:p-7 bg-gradient-to-r from-rose-500/10 via-surface to-surface border border-hairline/80 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
-            <span className="text-xs font-mono font-bold uppercase tracking-wider text-rose-500">
-              Collector Wishlist & Price Drops
-            </span>
-          </div>
+      {/* Top Banner: Pure Minimalist (Consistent with Marketplace) */}
+      <div className="w-full rounded-2xl p-5 sm:p-6 bg-surface border border-hairline/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex flex-col gap-1.5">
           <h1 className="font-sans font-black text-xl sm:text-2xl text-foreground tracking-tight">
             願望清單與降價預警中心
           </h1>
-          <p className="text-xs text-text-muted max-w-xl leading-relaxed">
-            追蹤心儀神卡、設定心理目標買入價。當市場或市集有賣家以符合條件刊登時，系統即時自動通知！
+          <p className="text-xs text-text-muted leading-relaxed max-w-xl">
+            追蹤心儀神卡、設定心理目標買入價。當市場或市集有賣家以符合條件刊登時，系統即時自動通知。
           </p>
         </div>
 
+        {/* Action Button: Refined Monochrome / High Contrast */}
         <button
           onClick={onNavigateToExplore}
-          className="px-5 py-2.5 rounded-xl bg-surface hover:bg-surface-hover border border-hairline text-foreground font-bold text-xs sm:text-sm tracking-wide transition-all cursor-pointer shadow-2xs flex items-center gap-2 shrink-0 active:scale-95"
+          aria-label="探索圖鑑挑選卡牌"
+          tabIndex={0}
+          className="px-4.5 py-2.5 rounded-xl bg-foreground hover:opacity-90 active:scale-95 text-background font-bold text-xs sm:text-sm tracking-wide transition-all cursor-pointer shadow-xs flex items-center justify-center gap-2 shrink-0 self-start sm:self-center"
         >
-          <SearchIcon className="w-4 h-4 text-text-muted" />
+          <SearchIcon className="w-4 h-4 text-background" />
           <span>探索圖鑑挑選卡牌</span>
         </button>
       </div>
@@ -116,7 +113,7 @@ export const WishlistView: React.FC<WishlistViewProps> = ({
           <span className="text-[11px] font-mono text-text-muted">已達目標價 / 降價中</span>
           <div className="flex items-baseline gap-2 mt-1">
             <span className="font-mono text-xl font-black text-rose-500">{targetMetCount}</span>
-            <span className="text-xs text-rose-500 font-bold">張可入手！</span>
+            <span className="text-xs text-rose-500 font-bold">張可入手</span>
           </div>
           <span className="text-[10px] text-text-muted mt-0.5">市集存在符合期望之刊登</span>
         </div>

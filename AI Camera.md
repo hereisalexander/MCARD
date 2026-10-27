@@ -1,43 +1,54 @@
 # 📸 MCARD AI 智能拍照識卡與自動入庫規格規劃 (AI Camera Specification)
 
-> **版本**：v1.0.0  
-> **狀態**：規劃中 (Drafted / Ready for Implementation)  
-> **目標**：為 MCARD 多領域卡牌資產管理平台引入革命性的「相機拍照 / 圖片上傳即時 AI 辨識、評級盒提取與自動入庫」功能。
+> **版本**：v2.0.0 (全自給自足架構，零外部 API 依賴)  
+> **狀態**：規劃就緒 (Ready for Implementation)  
+> **核心驅動**：**Google Gemini Multimodal Vision API + Google Search Grounding (實時聯網搜價)**  
+> **目標**：為 MCARD 跨領域卡牌資產管理平台引入革命性的「拍照即辨識、即時聯網搜行情、歷史走勢生成與一鍵自動入庫」功能。
 
 ---
 
-## 一、 產品定位與核心痛點
+## 一、 產品定位與架構理念
 
-實體 TCG 與球星卡藏家在管理卡牌與上架市集時，面臨的主要痛點：
-1. **輸入卡名與卡號繁瑣**：每張卡牌的系列代碼、小字卡號（如 `#199/165`、`OP05-119`）極其微小，手動輸入極易出錯。
-2. **鑑定評級盒（Graded Slab）認證號過長**：PSA、BGS、CGC 鑑定盒的認證編號（Cert #）長達 8 至 10 位數字，手打效率低下。
-3. **多領域跨界難以歸類**：跨足寶可夢、遊戲王、航海王、七龍珠與體育卡時，分類與系列名稱查詢門檻高。
+在傳統卡牌資產系統中，拍照辨識往往需要依賴龐大且難以維護的外部資料庫或付費卡牌 API（如已解耦的 `pokemontcg.io`），這會帶來以下痛點：
+1. **API 易失效、限流與維護成本高**：第三方卡牌 API 經常變更格式、延遲或收費，維護成本極高。
+2. **跨領域支援度低**：傳統 API 通常只支援寶可夢，無法同時覆蓋**遊戲王、航海王、七龍珠、NBA、FIFA** 等跨界領域。
+3. **評級盒行情缺失**：傳統 API 僅提供裸卡價格，無法查詢 PSA 10 或 BGS 9.5 評級盒的真實落槌拍賣價。
 
-**解決方案**：
-融合 **F1 賽道遙測科技美學** 與 **Google Gemini Multimodal Vision API**，在行動端或桌面端提供「即開即掃、秒級結構化解析、自動資料庫比對、一鍵入庫/上架」的無縫體驗。
+**MCARD v2.0 解決方案**：
+採用 **Gemini 多模態視覺 + Google Search 實時聯網檢索** 的「全自給自足」模式：
+* **零外部卡庫依賴**：不需維護龐大資料庫，直接讓 AI 聯網查詢 TCGplayer、PriceCharting、eBay 的最新成交數據。
+* **全領域全覆蓋**：任何卡種、任何語言（英文、日文、中文）甚至冷門特典卡皆能精準辨識與報價。
+* **實拍卡圖直出**：經過前端輕量壓縮與 2.5:3.5 透視比例對齊，直接採用藏家實拍的高清圖入庫或刊登市集。
 
 ---
 
 ## 二、 核心功能規格 (Core Features)
 
-### 1. 多維度結構化識別能力
+### 1. 多維度結構化視覺識別 (Multimodal Vision)
 * **跨領域卡種判斷**：自動辨識 Pokémon、Yu-Gi-Oh!、One Piece、Dragon Ball、NBA 球星卡或 FIFA 足球卡。
-* **卡號與系列識別**：高精準度提取邊角極小字號的官方編號（如 `199/165`、`LOB-001`）與擴充包系列名稱。
+* **卡號與系列識別**：高精準度提取邊角極小字號的官方編號（如 `199/165`、`OP05-119`）與擴充包系列名稱。
 * **評級盒 (Graded Slab) 專屬提取**：
   * 自動檢測是否具備防偽鑑定封裝外殼。
-  * 提取評級機構（PSA / BGS / CGC / Raw）。
+  * 提取評級機構（PSA / BGS / CGC / Raw 裸卡）。
   * 提取評級等級（如 `GEM MT 10`、`MINT 9`、`BGS 9.5`）。
   * 提取官方唯一認證碼（Certification Number）。
 * **卡況狀態初估**：針對裸卡（Raw）輔助標記初始建議品相（Near Mint / Lightly Played）。
 
-### 2. 極致的 F1 遙測掃描視覺體驗 (HUD UX)
-* **2.5:3.5 標準比例觀景框**：支援即時視訊串流（Webcam / 智慧型手機鏡頭）與本地圖庫圖片拖曳上傳。
-* **雷達對齊角標**：四角 HUD 邊框引導藏家對準卡牌。
-* **動態雷射掃描動效**：按下拍攝後，觸發垂直流動的紅色鐳射掃描線與遙測數據解析文字動畫。
+### 2. 即時聯網市場報價與歷史走勢提取 (Real-time Grounding)
+* **最新市場參考價 (Current Market Price)**：由 AI 透過 Google Search 檢索 TCGplayer、PriceCharting、eBay Recent Solds 最新成交均價（USD）。
+* **二級市場區間 (Price Range)**：提供近期的價格區間（`low` ~ `high`）。
+* **歷史走勢基準節點 (Historical Trend Points)**：
+  * 自動提取 `1M`、`3M`、`6M`、`1Y` 的歷史關鍵價格節點。
+  * 供前端透過平滑貝茲曲線算法（如 [`CardDetailView.tsx`](file:///d:/TCG/MCARD/src/components/CardDetailView.tsx)）即時繪製專業歷史趨勢圖。
 
-### 3. 一鍵業務閉環 (Seamless Actions)
-* **一鍵入庫 (Add to Vault)**：自動關聯最新市場行情、填入識別出的評級（如 PSA 10），直接存入 [`PortfolioDashboard`](file:///d:/TCG/MCARD/src/components/PortfolioDashboard.tsx)。
-* **一鍵市集刊登 (Create Listing)**：將拍攝的卡牌高清照片直接代入賣家相冊，自動帶入卡名、系列、評級與參考定價，直接喚起 [`CreateListingModal`](file:///d:/TCG/MCARD/src/components/CreateListingModal.tsx)。
+### 3. 簡約克制的專業取景體驗 (Clean & Focused UX)
+* **2.5:3.5 標準比例觀景框**：支援即時視訊串流（Webcam / 手機鏡頭）與本地圖庫圖片拖曳上傳。
+* **極簡卡牌對齊導引**：乾淨俐落的細線圓角導引框，視覺聚焦於卡牌主體，無多餘遮擋。
+* **平滑低調的狀態過渡**：拍照後僅以精緻細微的紅色進度條或微光呼吸提示（避免過度浮誇的花俏雷射與眼花繚亂的跑馬燈），著重在極速識別與流暢的操作手感。
+
+### 4. 一鍵業務閉環 (Seamless Actions)
+* **一鍵入庫 (Add to Vault)**：自動帶入最新市場行情、實拍照片、評級標籤（如 PSA 10），直接存入 [`PortfolioDashboard`](file:///d:/TCG/MCARD/src/components/PortfolioDashboard.tsx)。
+* **一鍵市集刊登 (Create Listing)**：拍攝照片直接作為第一張商品圖，自動填寫卡名、系列、評級與參考定價，直接喚起 [`CreateListingModal`](file:///d:/TCG/MCARD/src/components/CreateListingModal.tsx)。
 * **一鍵歷史走勢分析 (Analytics)**：跳轉獨立 [`CardDetailView`](file:///d:/TCG/MCARD/src/components/CardDetailView.tsx) 查看該卡的歷史成交走勢與各平台外鏈。
 * **一鍵加入對比 (Versus)**：直接加入 [`CardVersusModal`](file:///d:/TCG/MCARD/src/components/CardVersusModal.tsx) 進行多卡行情曲線疊加。
 
@@ -52,13 +63,13 @@
 │  - MobileBottomNav 掃描入口                             │
 │  - PortfolioDashboard / CreateListingModal 快速掃描按鈕 │
 └───────────────────────────┬────────────────────────────┘
-                            │ 觸發
+                            │ 觸發開啟
                             ▼
 ┌────────────────────────────────────────────────────────┐
 │         相機掃描模態框 (CardScannerModal.tsx)           │
 │  1. 取景框對齊 (2.5:3.5 Viewfinder)                    │
-│  2. Canvas 降噪與無感壓縮 (WebP / 800~1200px)           │
-│  3. 播放 F1 賽道遙測 HUD 解析動效                       │
+│  2. 前端 Canvas 輕量壓縮 (WebP / 800~1200px)           │
+│  3. 簡潔微光呼吸過渡 (Clean Progress Feedback)         │
 └───────────────────────────┬────────────────────────────┘
                             │ POST /api/v1/scan (Base64)
                             ▼
@@ -67,24 +78,22 @@
 │  src/app/api/v1/scan/route.ts                          │
 │                                                        │
 │  ┌──────────────────────────────────────────────────┐  │
-│  │ Google Gemini Multimodal Vision API              │  │
-│  │ 透過 Structured Outputs (JSON Schema) 強制回傳    │  │
-│  │ 包含 cardName, cardNumber, setName, grade 等     │  │
+│  │ Google Gemini Multimodal Vision                  │  │
+│  │ + Google Search Grounding (實時聯網搜價)         │  │
+│  │                                                  │  │
+│  │ 1. 視覺特徵解析 (卡名/卡號/系列/PSA 10 認證碼)   │  │
+│  │ 2. 聯網檢索 TCGplayer/PriceCharting/eBay 即時報價 │  │
+│  │ 3. 提取 1M/3M/6M/1Y 歷史價格走勢節點              │  │
+│  │ 4. 嚴格輸出符合 Zod 規格的結構化 JSON             │  │
 │  └──────────────────────────────────────────────────┘  │
 └───────────────────────────┬────────────────────────────┘
                             │ 結構化 JSON 結果
                             ▼
 ┌────────────────────────────────────────────────────────┐
-│           資料庫與行情檢索匹配引擎                      │
-│  - Pokémon: 對接 pokemonApi.ts 查詢官方資料庫          │
-│  - 其他類別: 對接 multiCardService.ts 多領域圖鑑庫     │
-└───────────────────────────┬────────────────────────────┘
-                            │
-                            ▼
-┌────────────────────────────────────────────────────────┐
 │               結果確認與微調面板 (Result View)           │
-│  - 顯示識別卡牌大圖、信心度、官方市場參考價             │
-│  - 藏家可微調數量、買入成本、品相標籤                   │
+│  - 顯示實拍卡圖、卡牌資訊、PSA/BGS 評級標籤             │
+│  - 顯示實時市場參考價格與二級市場價格區間               │
+│  - 即時呈現 1M/3M/1Y 平滑歷史走勢圖                     │
 │  - 提供「加入資產庫」、「掛單出售」、「查看圖表」三鍵閉環 │
 └────────────────────────────────────────────────────────┘
 ```
@@ -93,32 +102,55 @@
 
 ## 四、 資料結構與型別契約 (Type Contracts)
 
-### 1. 掃描結果契約 (`src/contracts/scan.schema.ts`)
+### 1. 掃描與行情契約 (`src/contracts/scan.schema.ts`)
 ```typescript
 import { z } from 'zod';
 
+// 歷史價格節點定義
+export const PriceHistoryPointSchema = z.object({
+  period: z.enum(['1M', '3M', '6M', '1Y', 'NOW']),
+  date: z.string().describe('e.g. 2026-09 or 2026-10'),
+  price: z.number().describe('Estimated historical market price in USD'),
+});
+
+// 即時行情數據
+export const CardPricingSchema = z.object({
+  currency: z.literal('USD').default('USD'),
+  currentPrice: z.number().nullable().describe('Current estimated market price in USD'),
+  priceRange: z.object({
+    low: z.number().optional(),
+    high: z.number().optional(),
+  }).optional(),
+  lastUpdated: z.string().describe('ISO timestamp or current date string'),
+  source: z.string().describe('Price source citation, e.g. PriceCharting / eBay Recent Solds'),
+  history: z.array(PriceHistoryPointSchema).default([]),
+});
+
+// 完整掃描結果契約
 export const CardScanResultSchema = z.object({
   category: z.enum(['pokemon', 'yugioh', 'onepiece', 'dragonball', 'nba', 'fifa', 'unknown']),
   cardName: z.string().describe('Official card name in English or Japanese/Chinese'),
-  cardNumber: z.string().optional().describe('Card number like 199/165 or OP05-119'),
+  cardNumber: z.string().optional().describe('Card number like 199/165, OP05-119, LOB-001'),
   setName: z.string().optional().describe('Expansion set or collection name'),
   rarity: z.string().optional().describe('e.g. SAR, UR, Secret Rare, Base'),
   isGraded: z.boolean().describe('Whether the card is enclosed in a graded slab'),
   gradingCompany: z.enum(['PSA', 'BGS', 'CGC', 'RAW']).optional(),
   gradeScore: z.string().optional().describe('e.g. 10, 9.5, 9'),
   certNumber: z.string().optional().describe('Certification number on the grading label'),
-  confidence: z.number().min(0).max(1).describe('Recognition confidence level'),
+  confidence: z.number().min(0).max(1).describe('Recognition confidence level (0.0 - 1.0)'),
   summary: z.string().optional().describe('Brief visual feature description'),
+  pricing: CardPricingSchema,
 });
 
 export type CardScanResult = z.infer<typeof CardScanResultSchema>;
+export type CardPricing = z.infer<typeof CardPricingSchema>;
 ```
 
 ---
 
 ## 五、 詳細偽代碼規劃 (Detailed Pseudocode)
 
-### 1. 後端辨識 API (`src/app/api/v1/scan/route.ts`)
+### 1. 後端辨識與聯網搜價 API (`src/app/api/v1/scan/route.ts`)
 ```typescript
 import { NextRequest } from 'next/server';
 import { jsonSuccess, jsonError } from '@/utils/apiResponse';
@@ -138,46 +170,62 @@ export const POST = async (request: NextRequest) => {
       return jsonError('Gemini API key is not configured', 500);
     }
 
-    // 1. 構建 System Prompt 規範識別邊界
-    const systemPrompt = `You are an expert TCG and sports card appraiser.
-Extract card category, official card name, set number, expansion set name, and rarity.
-If the card is inside a PSA, BGS, or CGC slab, extract the grading company, grade score, and certification number.
-Output MUST conform strictly to the JSON schema.`;
+    // 1. 提示詞：結合視覺分析與 Google Search 聯網搜價
+    const systemPrompt = `You are an elite TCG and sports card appraiser.
+Your task:
+1. Identify the card in the image: official name, card number, set name, rarity, category (pokemon, yugioh, onepiece, dragonball, nba, fifa).
+2. Check if it's a graded slab (PSA, BGS, CGC). If graded, extract the company, grade score (e.g. 10), and certification number.
+3. Use Google Search to find current market pricing in USD from authoritative secondary markets (PriceCharting, eBay Sold Listings, TCGplayer):
+   - Current fair market price (currentPrice)
+   - Estimated 24h/30d range (priceRange.low, priceRange.high)
+   - Benchmark historical prices for 1Y ago, 6M ago, 3M ago, 1M ago, and NOW.
+   - If it's a PSA 10 or graded card, search specifically for that graded card's market price!
+4. Output STRICT JSON conforming to the requested schema.`;
 
-    // 2. 調用 Gemini Vision 模型 (如 gemini-2.5-flash / gemini-1.5-flash)
-    // 傳送 base64 影像資料與 JSON Schema
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              { text: systemPrompt },
-              {
-                inlineData: {
-                  mimeType: 'image/jpeg',
-                  data: imageBase64.replace(/^data:image\/\w+;base64,/, ''),
+    // 2. 調用支援 Search Grounding 的 Gemini 模型
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                { text: systemPrompt },
+                {
+                  inlineData: {
+                    mimeType: 'image/jpeg',
+                    data: imageBase64.replace(/^data:image\/\w+;base64,/, ''),
+                  },
                 },
-              },
-            ],
+              ],
+            },
+          ],
+          tools: [
+            {
+              googleSearch: {}, // 開啟 Google Search Grounding 聯網能力
+            },
+          ],
+          generationConfig: {
+            responseMimeType: 'application/json',
           },
-        ],
-        generationConfig: {
-          responseMimeType: 'application/json',
-          responseSchema: CardScanResultSchema,
-        },
-      }),
-    });
+        }),
+      }
+    );
 
     const aiData = await response.json();
-    const parsedText = aiData?.candidates?.[0]?.content?.parts?.[0]?.text;
-    const validatedResult = CardScanResultSchema.parse(JSON.parse(parsedText));
+    const candidate = aiData?.candidates?.[0];
+    const rawText = candidate?.content?.parts?.[0]?.text;
+    
+    // 3. 驗證契約並確保容錯性
+    const parsedJson = JSON.parse(rawText);
+    const validatedResult = CardScanResultSchema.parse(parsedJson);
 
     return jsonSuccess(validatedResult);
   } catch (error) {
-    console.error('[AI Camera Scan API Error]:', error);
-    return jsonError('Failed to process card recognition', 500);
+    console.error('[AI Camera Scan & Grounding API Error]:', error);
+    return jsonError('Failed to identify card or fetch market pricing', 500);
   }
 };
 ```
@@ -187,55 +235,78 @@ Output MUST conform strictly to the JSON schema.`;
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { HoloCard } from '@/components/HoloCard';
-import { UniversalCard } from '@/services/multiCardService';
 import { CardScanResult } from '@/contracts/scan.schema';
+import { UniversalCard } from '@/services/multiCardService';
 
 type ScannerStep = 'viewfinder' | 'analyzing' | 'result';
 
 export const CardScannerModal: React.FC<{
   isOpen: boolean;
   onClose: () => void;
-  onAddToVault: (card: UniversalCard, condition: string, buyPrice: number) => void;
-  onCreateListing: (card: UniversalCard, photoUrl: string, condition: string) => void;
+  onAddToVault: (cardData: {
+    name: string;
+    category: string;
+    price: number | null;
+    buyPrice: number;
+    condition: string;
+    imageUrl: string;
+  }) => void;
+  onCreateListing: (cardData: {
+    name: string;
+    category: string;
+    askingPrice: number;
+    condition: string;
+    photoUrl: string;
+  }) => void;
 }> = ({ isOpen, onClose, onAddToVault, onCreateListing }) => {
   const [step, setStep] = useState<ScannerStep>('viewfinder');
   const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
   const [scanResult, setScanResult] = useState<CardScanResult | null>(null);
-  const [matchedCard, setMatchedCard] = useState<UniversalCard | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // 1. 初始化相機權限與視訊串流
+  // 1. 初始化鏡頭
   useEffect(() => {
     if (!isOpen) return;
     navigator.mediaDevices?.getUserMedia({ video: { facingMode: 'environment' } })
       .then((stream) => { if (videoRef.current) videoRef.current.srcObject = stream; })
-      .catch((err) => console.warn('Camera access denied or unavailable:', err));
+      .catch((err) => console.warn('Camera stream error:', err));
   }, [isOpen]);
 
-  // 2. 擷取影格並壓縮
+  // 2. 拍攝並壓縮影格 (WebP, 最大寬度 1200px)
   const handleCapture = async () => {
     const canvas = document.createElement('canvas');
-    // 壓縮至長邊 1200px 內，輸出優質 WebP 格式
     const base64 = compressVideoFrame(videoRef.current, canvas);
     setCapturedPhoto(base64);
-    setStep('analyzing');
+    setStep('analyzing'); // 進入平滑微光進度過渡狀態
 
-    // 3. 呼叫後端 API
+    // 3. 呼叫後端 API (一次完成識圖 + 聯網搜價)
     const res = await fetch('/api/v1/scan', {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ imageBase64: base64 }),
     });
-    const result = await res.json();
-    setScanResult(result.data);
-
-    // 4. 比對本地或官方資料庫取得最佳候選卡牌
-    const card = await matchCardWithDatabase(result.data);
-    setMatchedCard(card);
-    setStep('result');
+    const { data } = await res.json();
+    setScanResult(data);
+    setStep('result'); // 進入結果面板
   };
 
-  // 5. 渲染視圖：取景框 -> 賽道掃描動效 -> 確認結果面板
+  // 4. 結果面板一鍵入庫
+  const handleConfirmVault = (buyPrice: number) => {
+    if (!scanResult) return;
+    onAddToVault({
+      name: scanResult.cardName,
+      category: scanResult.category,
+      price: scanResult.pricing.currentPrice,
+      buyPrice: buyPrice,
+      condition: scanResult.isGraded
+        ? `${scanResult.gradingCompany} ${scanResult.gradeScore}`
+        : 'Ungraded',
+      imageUrl: capturedPhoto || '',
+    });
+    onClose();
+  };
+
+  // 5. 渲染視圖：簡約取景框 (2.5:3.5) -> 微光解析過渡 -> 結果面板與歷史趨勢圖
   // ...
 };
 ```
@@ -246,32 +317,33 @@ export const CardScannerModal: React.FC<{
 
 | 入口位置 | 觸發元素 | 操作反饋 |
 | :--- | :--- | :--- |
-| **頂部導航列 ([Navbar.tsx](file:///d:/TCG/MCARD/src/components/Navbar.tsx))** | 搜尋列右側新增「相機掃描按鈕」 | 點擊開啟全螢幕/彈窗掃描視窗，支援拍照或拖曳圖片辨識 |
-| **行動端懸浮底欄 ([MobileBottomNav.tsx](file:///d:/TCG/MCARD/src/components/MobileBottomNav.tsx))** | 5 鍵導航中或懸浮中央 FAB 操作按鈕 | 行動端藏家單手拇指直接輕觸啟動手機鏡頭拍照 |
-| **資產管理頁 ([PortfolioDashboard.tsx](file:///d:/TCG/MCARD/src/components/PortfolioDashboard.tsx))** | 資產管理統計卡上方「拍照快速入庫」 | 辨識完成後自動代入購入成本、評級標籤與持倉數量 |
-| **市集刊登頁 ([CreateListingModal.tsx](file:///d:/TCG/MCARD/src/components/CreateListingModal.tsx))** | 上傳商品照片旁「拍照自動填單」 | 拍攝照片直接作為第一張商品圖，並自動填寫卡名、系列、卡況與參考售價 |
+| **頂部導航列 ([Navbar.tsx](file:///d:/TCG/MCARD/src/components/Navbar.tsx))** | 搜尋列右側新增「相機掃描按鈕」 | 點擊開啟簡約掃描彈窗，支援相機拍照或圖片檔案拖曳上傳 |
+| **行動端懸浮底欄 ([MobileBottomNav.tsx](file:///d:/TCG/MCARD/src/components/MobileBottomNav.tsx))** | 5 鍵導航中或懸浮中央 FAB 操作按鈕 | 行動端藏家單手拇指直接輕觸啟動後置鏡頭拍照 |
+| **資產管理頁 ([PortfolioDashboard.tsx](file:///d:/TCG/MCARD/src/components/PortfolioDashboard.tsx))** | 資產管理統計卡上方「拍照快速入庫」 | 辨識與聯網搜價完成後，自動代入實拍照片、實時行情與評級等級直接入庫 |
+| **市集刊登頁 ([CreateListingModal.tsx](file:///d:/TCG/MCARD/src/components/CreateListingModal.tsx))** | 上傳商品照片旁「拍照自動填單」 | 實拍照片直接作為第一張商品圖，並自動填寫卡名、系列、卡況與參考售價 |
 
 ---
 
 ## 七、 實作路線階段檢核表 (Implementation Checklist)
 
-- [ ] **Phase A: 基礎設施與契約建立**
-  - [ ] 於 `.env.example` 與 `.env.local` 宣告 `GEMINI_API_KEY`
-  - [ ] 建立 `src/contracts/scan.schema.ts`（包含 Zod 驗證契約）
-  - [ ] 建立 `src/app/api/v1/scan/route.ts` API 路由端點
-- [ ] **Phase B: 前端相機與取景器模態框**
-  - [ ] 建立 `src/components/CardScannerModal.tsx`
-  - [ ] 實作 MediaDevices 相機存取與手機端後置鏡頭（`facingMode: 'environment'`）優選
-  - [ ] 支援本地圖片拖曳上傳與檔案選擇器（Fallback 機制）
-  - [ ] 前端 Canvas 畫布尺寸自動縮放與 WebP 輕量壓縮模組
-- [ ] **Phase C: 賽道科技美學與掃描動效**
-  - [ ] 實作 2.5:3.5 卡牌對齊標線與雷達定位角標
-  - [ ] 實作紅色雷射掃描動效與 HUD 遙測數據解算狀態
-- [ ] **Phase D: 資料庫比對與業務連動**
-  - [ ] 比對搜尋算法：依據 `cardNumber` + `cardName` 搜尋 [pokemonApi.ts](file:///d:/TCG/MCARD/src/services/pokemonApi.ts) 與 [multiCardService.ts](file:///d:/TCG/MCARD/src/services/multiCardService.ts)
-  - [ ] 連動一鍵入庫至 [PortfolioDashboard.tsx](file:///d:/TCG/MCARD/src/components/PortfolioDashboard.tsx)
-  - [ ] 連動一鍵刊登至 [CreateListingModal.tsx](file:///d:/TCG/MCARD/src/components/CreateListingModal.tsx)
-  - [ ] 在 [Navbar.tsx](file:///d:/TCG/MCARD/src/components/Navbar.tsx) 與 [MobileBottomNav.tsx](file:///d:/TCG/MCARD/src/components/MobileBottomNav.tsx) 部署相機圖標入口
-- [ ] **Phase E: 國際化與例外邊界處理**
-  - [ ] 在 `src/locales/translations.ts` 補齊繁中、簡中、英文翻譯字串
-  - [ ] 處理相機未授權、模糊失焦、無法識別時的重拍與手動搜尋 Fallback 機制
+- [x] **Phase A: 基礎設施與契約建立**
+  - [x] 於 `.env.example` 與 `.env.local` 宣告 `GEMINI_API_KEY`
+  - [x] 建立 `src/contracts/scan.schema.ts`（包含 Zod 驗證契約與 `pricing` 歷史走勢節點）
+  - [x] 建立 `src/app/api/v1/scan/route.ts` API 路由端點（開啟 Google Search Grounding）
+- [x] **Phase B: 前端相機與取景器模態框**
+  - [x] 建立 `src/components/CardScannerModal.tsx`
+  - [x] 實作 MediaDevices 相機存取與手機端後置鏡頭（`facingMode: 'environment'`）優選
+  - [x] 支援本地圖片拖曳上傳與檔案選擇器（Fallback 機制）
+  - [x] 前端 Canvas 畫布尺寸自動縮放與輕量壓縮模組（控制在 150KB 內）
+- [x] **Phase C: 簡約高級取景視覺與平滑狀態過渡**
+  - [x] 實作 2.5:3.5 標準卡牌簡約對齊導引框（乾淨俐落的細線與柔和圓角，無多餘遮擋）
+  - [x] 實作克制平滑的掃描狀態反饋（細緻進度條 / 柔和呼吸提示，保持乾淨簡約與極致響應）
+- [x] **Phase D: 實拍直出、即時走勢圖繪製與業務閉環**
+  - [x] 實作結果確認面板：實拍照片預覽 + 自動填寫屬性 + 實時市場行情展示
+  - [x] 使用 `pricing.history` 節點即時繪製貝茲平滑歷史價格曲線
+  - [x] 連動一鍵入庫至 [PortfolioDashboard.tsx](file:///d:/TCG/MCARD/src/components/PortfolioDashboard.tsx)
+  - [x] 連動一鍵刊登至 [CreateListingModal.tsx](file:///d:/TCG/MCARD/src/components/CreateListingModal.tsx)
+  - [x] 在 [Navbar.tsx](file:///d:/TCG/MCARD/src/components/Navbar.tsx) 與 [MobileBottomNav.tsx](file:///d:/TCG/MCARD/src/components/MobileBottomNav.tsx) 部署相機圖標入口
+- [x] **Phase E: 國際化與例外邊界處理**
+  - [x] 在 `src/locales/translations.ts` 補齊繁中、簡中、英文翻譯字串
+  - [x] 處理相機未授權、模糊失焦、無法識別時的重拍與手動填寫 Fallback 機制

@@ -3,3 +3,4 @@ export * from './common.schema';
 export * from './portfolio.schema';
 export * from './marketplace.schema';
 export * from './community.schema';
+export * from './scan.schema';

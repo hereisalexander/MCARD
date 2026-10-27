@@ -131,29 +131,25 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({
 
   return (
     <div className="w-full flex flex-col gap-5 py-2 sm:py-6 animate-fade-in">
-      {/* Top Banner: Marketplace Introduction */}
-      <div className="relative w-full rounded-2xl p-5 sm:p-7 bg-gradient-to-r from-ferrari-red/10 via-surface to-surface border border-hairline/80 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-ferrari-red animate-pulse" />
-            <span className="text-xs font-mono font-bold uppercase tracking-wider text-ferrari-red">
-              {t('marketplace_p2p_badge')}
-            </span>
-          </div>
+      {/* Top Banner: Pure Minimalist */}
+      <div className="w-full rounded-2xl p-5 sm:p-6 bg-surface border border-hairline/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex flex-col gap-1.5">
           <h1 className="font-sans font-black text-xl sm:text-2xl text-foreground tracking-tight">
             {t('marketplace_title')}
           </h1>
-          <p className="text-xs text-text-muted max-w-xl leading-relaxed">
+          <p className="text-xs text-text-muted leading-relaxed max-w-xl">
             {t('marketplace_subtitle')}
           </p>
         </div>
 
-        {/* Action Button: List Card */}
+        {/* Action Button: Refined Monochrome / High Contrast */}
         <button
           onClick={onOpenCreateListing}
-          className="px-5 py-2.5 rounded-xl bg-ferrari-red hover:bg-ferrari-red-hover active:bg-ferrari-red-active text-white font-bold text-xs sm:text-sm tracking-wide transition-all cursor-pointer shadow-sm flex items-center gap-2 shrink-0 active:scale-95"
+          aria-label={t('marketplace_list_card_btn')}
+          tabIndex={0}
+          className="px-4.5 py-2.5 rounded-xl bg-foreground hover:opacity-90 active:scale-95 text-background font-bold text-xs sm:text-sm tracking-wide transition-all cursor-pointer shadow-xs flex items-center justify-center gap-2 shrink-0 self-start sm:self-center"
         >
-          <TagIcon className="w-4 h-4 text-white" />
+          <TagIcon className="w-4 h-4 text-background" />
           <span>{t('marketplace_list_card_btn')}</span>
         </button>
       </div>

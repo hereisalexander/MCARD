@@ -15,6 +15,7 @@ import { CardListing, isDemoListing, ListingStatus } from '@/types/marketplace';
 import { MarketplaceView } from '@/components/MarketplaceView';
 import { CreateListingModal } from '@/components/CreateListingModal';
 import { ListingDetailModal } from '@/components/ListingDetailModal';
+import { CardScannerModal } from '@/components/CardScannerModal';
 import { WishlistItem, INITIAL_WISHLIST_ITEMS } from '@/types/wishlist';
 import { WishlistView } from '@/components/WishlistView';
 import { AddToWishlistModal } from '@/components/AddToWishlistModal';
@@ -53,6 +54,25 @@ export default function Home() {
   // Versus / Comparison State & Modal
   const [comparedCards, setComparedCards] = useState<UniversalCard[]>([]);
   const [isVersusModalOpen, setIsVersusModalOpen] = useState<boolean>(false);
+
+  // AI Camera Scanner State
+  const [isScannerOpen, setIsScannerOpen] = useState<boolean>(false);
+  const [scannerResetKey, setScannerResetKey] = useState<number>(0);
+
+  const handleOpenScanner = () => {
+    setIsScannerOpen(true);
+    setScannerResetKey((prev) => prev + 1);
+  };
+
+  const [scannerListingPrefill, setScannerListingPrefill] = useState<{
+    name?: string;
+    category?: CardCategory;
+    askingPrice?: number;
+    condition?: string;
+    photoUrl?: string;
+    cardNumber?: string;
+    setName?: string;
+  } | null>(null);
 
   // Load portfolio, marketplace & wishlist from repositories & localStorage on mount
   useEffect(() => {
@@ -394,6 +414,52 @@ export default function Home() {
     });
   };
 
+  // AI Camera Handlers
+  const handleScannerAddToVault = (cardData: {
+    name: string;
+    category: string;
+    price: number | null;
+    buyPrice: number;
+    condition: string;
+    imageUrl: string;
+    cardNumber?: string;
+    setName?: string;
+  }) => {
+    handleAddCard(
+      cardData.name,
+      cardData.price || 0,
+      cardData.imageUrl,
+      (cardData.condition as CardCondition) || 'Ungraded',
+      (cardData.category as CardCategory) || 'pokemon',
+      cardData.buyPrice
+    );
+    setToast({
+      show: true,
+      message: `📸 AI 識卡成功！已將「${cardData.name}」存入資產庫`,
+    });
+  };
+
+  const handleScannerCreateListing = (cardData: {
+    name: string;
+    category: string;
+    askingPrice: number;
+    condition: string;
+    photoUrl: string;
+    cardNumber?: string;
+    setName?: string;
+  }) => {
+    setScannerListingPrefill({
+      name: cardData.name,
+      category: (cardData.category as CardCategory) || 'pokemon',
+      askingPrice: cardData.askingPrice,
+      condition: cardData.condition,
+      photoUrl: cardData.photoUrl,
+      cardNumber: cardData.cardNumber,
+      setName: cardData.setName,
+    });
+    setIsCreateListingOpen(true);
+  };
+
   const handleRemoveCard = (id: string) => {
     const updated = portfolio.filter((item) => item.id !== id);
     savePortfolio(updated);
@@ -488,6 +554,7 @@ export default function Home() {
         selectedCategory={selectedCategory}
         onCategoryChange={handleSelectCategory}
         wishlistCount={wishlist.length}
+        onOpenScanner={handleOpenScanner}
         onSelectSet={(setName) => {
           setSelectedCategory('pokemon');
           handleSelectSetFromSets(setName);
@@ -585,6 +652,7 @@ export default function Home() {
                 mode="portfolio"
                 listings={listings}
                 onNavigateToMarket={() => setActiveTab('market')}
+                onOpenScanner={handleOpenScanner}
               />
             )}
 
@@ -653,9 +721,23 @@ export default function Home() {
       {/* Marketplace Create Listing Modal */}
       <CreateListingModal
         isOpen={isCreateListingOpen}
-        onClose={() => setIsCreateListingOpen(false)}
+        onClose={() => {
+          setIsCreateListingOpen(false);
+          setScannerListingPrefill(null);
+        }}
         portfolio={portfolio}
         onSubmitListing={handleCreateListing}
+        onOpenScanner={handleOpenScanner}
+        initialData={scannerListingPrefill}
+      />
+
+      {/* AI Camera Scanner Modal */}
+      <CardScannerModal
+        isOpen={isScannerOpen}
+        resetKey={scannerResetKey}
+        onClose={() => setIsScannerOpen(false)}
+        onAddToVault={handleScannerAddToVault}
+        onCreateListing={handleScannerCreateListing}
       />
 
       {/* Marketplace Listing Detail & Contact Modal */}
@@ -704,6 +786,7 @@ export default function Home() {
           }
         }}
         portfolioCount={portfolioItemCount}
+        onOpenScanner={handleOpenScanner}
       />
     </div>
   );

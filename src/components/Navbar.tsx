@@ -10,6 +10,7 @@ import {
   MenuIcon,
   CloseIcon,
   SearchIcon,
+  CameraIcon,
 } from '@/components/icons/AppIcons';
 
 interface NavbarProps {
@@ -21,6 +22,7 @@ interface NavbarProps {
   onCategoryChange: (category: CardCategory) => void;
   onSelectSet?: (setName: string) => void;
   wishlistCount?: number;
+  onOpenScanner?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -32,6 +34,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onCategoryChange,
   onSelectSet,
   wishlistCount = 0,
+  onOpenScanner,
 }) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -192,6 +195,18 @@ export const Navbar: React.FC<NavbarProps> = ({
                   className="w-full h-full bg-transparent text-xs font-medium text-foreground placeholder:text-text-muted/60 focus:outline-none"
                   aria-label="Global Card Search"
                 />
+                {onOpenScanner && (
+                  <button
+                    type="button"
+                    onClick={onOpenScanner}
+                    tabIndex={0}
+                    aria-label={t('ai_camera_btn') || 'AI 拍照識卡'}
+                    title={t('ai_camera_desc') || '拍照辨識與聯網搜價'}
+                    className="h-full px-2.5 text-text-muted hover:text-ferrari-red flex items-center justify-center transition-colors cursor-pointer shrink-0 border-l border-hairline/80 hover:bg-surface-hover/80"
+                  >
+                    <CameraIcon className="w-4 h-4" />
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={handleSearchSubmit}
@@ -402,6 +417,20 @@ export const Navbar: React.FC<NavbarProps> = ({
                         );
                       })}
                     </div>
+
+                    {onOpenScanner && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsDrawerOpen(false);
+                          onOpenScanner();
+                        }}
+                        className="w-full mt-1.5 h-10 px-3.5 rounded-xl bg-ferrari-red/10 border border-ferrari-red/30 hover:bg-ferrari-red/15 text-ferrari-red flex items-center justify-center gap-2 text-xs font-bold cursor-pointer transition-colors shadow-2xs"
+                      >
+                        <CameraIcon className="w-4 h-4" />
+                        <span>{t('ai_camera_btn') || 'AI 拍照識卡'}</span>
+                      </button>
+                    )}
                   </div>
 
                   {/* 3. Card Category Pills (輕量小膠囊) */}

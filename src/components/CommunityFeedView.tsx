@@ -19,7 +19,7 @@ export interface CommunityFeedViewProps {
   onNavigateToExplore?: () => void;
 }
 
-const STORAGE_KEY = 'mcard_community_posts_v3';
+const STORAGE_KEY = 'mcard_community_posts_v6';
 
 export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
   portfolio,
@@ -34,17 +34,40 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
   const [visibleCount, setVisibleCount] = useState<number>(12);
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
 
-  // Load posts via communityRepository on mount
+  // Load posts via communityRepository on mount & purge obsolete pure-card caches
   useEffect(() => {
+    // 1. Purge obsolete local storage caches from earlier versions
+    if (typeof window !== 'undefined') {
+      ['mcard_community_posts_v1', 'mcard_community_posts_v2', 'mcard_community_posts_v3', 'mcard_community_posts_v4', 'mcard_community_posts_v5'].forEach(
+        (key) => {
+          try {
+            localStorage.removeItem(key);
+          } catch (e) {}
+        }
+      );
+    }
+
     communityRepository
       .getFeed()
       .then((loadedPosts) => {
-        if (loadedPosts && loadedPosts.length > 0) {
-          setPosts(loadedPosts as unknown as CommunityPost[]);
+        // 2. Filter out any obsolete pure digital card images (pokemontcg.io)
+        const cleanUserPosts = (loadedPosts as unknown as CommunityPost[]).filter(
+          (p) =>
+            !p.imageUrl.includes('images.pokemontcg.io') &&
+            !INITIAL_COMMUNITY_POSTS.some((init) => init.id === p.id)
+        );
+
+        const merged = [...cleanUserPosts, ...INITIAL_COMMUNITY_POSTS];
+        setPosts(merged);
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+        } catch (e) {
+          console.error('Failed to update community cache', e);
         }
       })
       .catch((err) => {
         console.error('Failed to load community feed via repository:', err);
+        setPosts(INITIAL_COMMUNITY_POSTS);
       });
   }, []);
 
@@ -98,6 +121,34 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
   const displayedPosts = useMemo(() => {
     return filteredPosts.slice(0, visibleCount);
   }, [filteredPosts, visibleCount]);
+
+  // Xiaohongshu-style Adaptive Multi-Column Masonry (Mobile: 2 cols, Tablet: 3 cols, Desktop: 4 cols)
+  const [columnCount, setColumnCount] = useState<number>(2);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width >= 1280) {
+        setColumnCount(4);
+      } else if (width >= 768) {
+        setColumnCount(3);
+      } else {
+        setColumnCount(2);
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const masonryColumns = useMemo(() => {
+    const cols: CommunityPost[][] = Array.from({ length: columnCount }, () => []);
+    displayedPosts.forEach((post, index) => {
+      cols[index % columnCount].push(post);
+    });
+    return cols;
+  }, [displayedPosts, columnCount]);
 
   const handleToggleLike = async (postId: string) => {
     const postToToggle = posts.find((p) => p.id === postId);
@@ -229,7 +280,19 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
     }, 300);
   };
 
-  const renderPostCard = (post: CommunityPost) => {
+  const renderPostCard = (post: CommunityPost, colIdx = 0, postIdx = 0) => {
+    // Staggered Height Algorithm: Left column starts compact, right column starts tall.
+    // Creates an authentic Xiaohongshu 90px~110px dynamic vertical offset!
+    const getCoverHeightClass = () => {
+      if (post.aspectRatio === 'tall') return 'h-[255px] sm:h-[295px]';
+      if (post.aspectRatio === 'square') return 'h-[165px] sm:h-[190px]';
+      if (post.aspectRatio === 'wide') return 'h-[145px] sm:h-[170px]';
+
+      // Checkerboard stagger: (colIdx + postIdx) % 2 determines tall vs compact
+      const isTall = (colIdx + postIdx) % 2 === 1;
+      return isTall ? 'h-[255px] sm:h-[295px]' : 'h-[165px] sm:h-[190px]';
+    };
+
     return (
       <article
         key={post.id}
@@ -245,32 +308,28 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
         }}
         className="group bg-surface rounded-2xl overflow-hidden border border-hairline/60 hover:border-hairline shadow-2xs hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col focus:outline-hidden focus:ring-2 focus:ring-ferrari-red/40"
       >
-        {/* Card Visual Container: collector slab frame with contained aspect */}
-        <div className="relative w-full aspect-[4/5] max-h-[300px] sm:max-h-[340px] bg-gradient-to-b from-hairline/20 to-hairline/50 dark:from-neutral-900/60 dark:to-neutral-950/80 p-3 flex items-center justify-center overflow-hidden">
+        {/* Card Visual Container: Enhanced Staggered Height (Xiaohongshu Flow) */}
+        <div
+          className={`relative w-full ${getCoverHeightClass()} bg-gradient-to-b from-hairline/20 to-hairline/50 dark:from-neutral-900/60 dark:to-neutral-950/80 overflow-hidden transition-all duration-300 ${
+            post.imageUrl.includes('unsplash') || post.imageUrl.startsWith('blob:')
+              ? ''
+              : 'p-2.5 sm:p-3 flex items-center justify-center'
+          }`}
+        >
           <img
             src={post.imageUrl}
             alt={post.title}
             loading="lazy"
-            className="max-h-full max-w-full w-auto h-auto object-contain rounded-md drop-shadow-md group-hover:scale-104 transition-transform duration-300"
+            className={
+              post.imageUrl.includes('unsplash') || post.imageUrl.startsWith('blob:')
+                ? 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-500'
+                : 'max-h-full max-w-full w-auto h-auto object-contain rounded-md drop-shadow-md group-hover:scale-104 transition-transform duration-300'
+            }
             onError={(e) => {
               (e.currentTarget as HTMLImageElement).src =
-                'https://images.pokemontcg.io/sv3pt5/199_hires.png';
+                'https://images.unsplash.com/photo-1613771404784-3a5686aa2be3?w=800&auto=format&fit=crop&q=80';
             }}
           />
-
-          {/* Condition / Type Tag top left */}
-          {post.cardInfo?.condition && (
-            <div className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-full bg-surface/90 backdrop-blur-md text-foreground border border-hairline text-[10px] font-semibold tracking-wide shadow-xs">
-              {post.cardInfo.condition}
-            </div>
-          )}
-
-          {/* Floating Price Pill top right */}
-          {post.cardInfo?.price ? (
-            <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full bg-black/75 backdrop-blur-md text-accent-yellow border border-accent-yellow/30 text-[10px] font-mono font-bold shadow-xs">
-              ${post.cardInfo.price} USD
-            </div>
-          ) : null}
 
           {/* Video indicator badge */}
           {post.isVideo && (
@@ -283,8 +342,8 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
           )}
         </div>
 
-        {/* Text Details Area */}
-        <div className="p-3 flex flex-col justify-between flex-1 gap-2">
+        {/* Text Details Area: Unconstrained tight fit */}
+        <div className="p-3 flex flex-col gap-2">
           <div>
             {/* Title with clean clamp */}
             <h3 className="text-xs sm:text-[13px] font-semibold text-foreground line-clamp-2 leading-snug tracking-tight mb-1 group-hover:text-ferrari-red transition-colors">
@@ -412,9 +471,18 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
         </div>
       ) : (
         <div>
-          {/* Responsive 4-Column on Desktop, 3 on Tablet, 2 on Mobile */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4.5 items-start">
-            {displayedPosts.map(renderPostCard)}
+          {/* Xiaohongshu Staggered Multi-Column Masonry Flow */}
+          <div
+            className="grid gap-3 sm:gap-4.5 items-start"
+            style={{
+              gridTemplateColumns: `repeat(${columnCount}, minmax(0, 1fr))`,
+            }}
+          >
+            {masonryColumns.map((colPosts, colIdx) => (
+              <div key={colIdx} className="flex flex-col gap-3 sm:gap-4.5">
+                {colPosts.map((post, postIdx) => renderPostCard(post, colIdx, postIdx))}
+              </div>
+            ))}
           </div>
 
           {/* Infinite Scroll / Load More Sentinel */}

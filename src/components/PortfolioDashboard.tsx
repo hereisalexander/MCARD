@@ -4,7 +4,7 @@ import React, { useState, useRef, useMemo } from 'react';
 import { HoloCard } from '@/components/HoloCard';
 import { useLanguage } from '@/context/LanguageContext';
 import { CardCategory } from '@/services/multiCardService';
-import { TagIcon } from '@/components/icons/AppIcons';
+import { TagIcon, CameraIcon } from '@/components/icons/AppIcons';
 
 export type CardCondition = 'Ungraded' | 'PSA 10' | 'PSA 9' | 'BGS 10' | 'BGS Black Label';
 
@@ -30,6 +30,7 @@ interface PortfolioDashboardProps {
   mode: 'portfolio' | 'showcase';
   listings?: import('@/types/marketplace').CardListing[];
   onNavigateToMarket?: () => void;
+  onOpenScanner?: () => void;
 }
 
 const CATEGORY_COLORS: Record<CardCategory, { label: string; barColor: string; textColor: string }> = {
@@ -51,6 +52,7 @@ export const PortfolioDashboard: React.FC<PortfolioDashboardProps> = ({
   mode,
   listings = [],
   onNavigateToMarket,
+  onOpenScanner,
 }) => {
   const { t } = useLanguage();
   const [editingBuyPriceId, setEditingBuyPriceId] = useState<string | null>(null);
@@ -325,6 +327,16 @@ export const PortfolioDashboard: React.FC<PortfolioDashboardProps> = ({
           >
             {t('import_json')}
           </button>
+          {onOpenScanner && (
+            <button
+              type="button"
+              onClick={onOpenScanner}
+              className="h-9 px-4 rounded-lg bg-surface-hover hover:bg-surface border border-hairline/80 font-sans text-xs font-semibold tracking-wide text-foreground hover:border-ferrari-red transition-all cursor-pointer shadow-sm flex items-center gap-1.5"
+            >
+              <CameraIcon className="w-3.5 h-3.5 text-ferrari-red" />
+              <span>{t('ai_camera_vault_quick')}</span>
+            </button>
+          )}
           <button
             onClick={() => setIsModalOpen(true)}
             className="h-9 px-5 rounded-lg bg-ferrari-red hover:bg-ferrari-red-hover active:bg-ferrari-red-active text-white font-sans text-xs font-semibold tracking-wide transition-colors cursor-pointer shadow-sm"

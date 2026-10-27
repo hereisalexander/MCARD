@@ -4,7 +4,7 @@ import React, { useState, useRef } from 'react';
 import { CardListing, ListingCondition, ContactPlatform } from '@/types/marketplace';
 import { UserPortfolioItem } from '@/components/PortfolioDashboard';
 import { CardCategory } from '@/services/multiCardService';
-import { TrendingDownIcon, TagIcon, CloseIcon, CameraIcon } from '@/components/icons/AppIcons';
+import { TrendingDownIcon, TagIcon, CloseIcon, CameraIcon, SparklesIcon } from '@/components/icons/AppIcons';
 import { useLanguage } from '@/context/LanguageContext';
 
 export interface CreateListingModalProps {
@@ -12,6 +12,16 @@ export interface CreateListingModalProps {
   onClose: () => void;
   portfolio: UserPortfolioItem[];
   onSubmitListing: (listing: CardListing) => void;
+  onOpenScanner?: () => void;
+  initialData?: {
+    name?: string;
+    category?: CardCategory;
+    askingPrice?: number;
+    condition?: string;
+    photoUrl?: string;
+    cardNumber?: string;
+    setName?: string;
+  } | null;
 }
 
 export const CreateListingModal: React.FC<CreateListingModalProps> = ({
@@ -19,23 +29,44 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
   onClose,
   portfolio,
   onSubmitListing,
+  onOpenScanner,
+  initialData,
 }) => {
   const { t } = useLanguage();
   const [selectedPortfolioId, setSelectedPortfolioId] = useState<string>('');
-  const [cardName, setCardName] = useState<string>('');
-  const [category, setCategory] = useState<CardCategory>('pokemon');
-  const [setName, setSetName] = useState<string>('');
-  const [officialPrice, setOfficialPrice] = useState<number>(100);
-  const [askingPrice, setAskingPrice] = useState<string>('90');
-  const [condition, setCondition] = useState<ListingCondition>('Ungraded Near Mint');
+  const [cardName, setCardName] = useState<string>(initialData?.name || '');
+  const [category, setCategory] = useState<CardCategory>(initialData?.category || 'pokemon');
+  const [setName, setSetName] = useState<string>(initialData?.setName || '');
+  const [officialPrice, setOfficialPrice] = useState<number>(initialData?.askingPrice || 100);
+  const [askingPrice, setAskingPrice] = useState<string>(
+    initialData?.askingPrice ? initialData.askingPrice.toString() : '90'
+  );
+  const [condition, setCondition] = useState<ListingCondition>(
+    (initialData?.condition as ListingCondition) || 'Ungraded Near Mint'
+  );
   const [contactPlatform, setContactPlatform] = useState<ContactPlatform>('line');
   const [contactValue, setContactValue] = useState<string>('');
   const [location, setLocation] = useState<string>('');
   const [notes, setNotes] = useState<string>('');
-  const [photoPreview, setPhotoPreview] = useState<string>('');
+  const [photoPreview, setPhotoPreview] = useState<string>(initialData?.photoUrl || '');
   const [errorMsg, setErrorMsg] = useState<string>('');
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Sync initialData when provided or updated
+  React.useEffect(() => {
+    if (initialData) {
+      if (initialData.name) setCardName(initialData.name);
+      if (initialData.category) setCategory(initialData.category);
+      if (initialData.setName) setSetName(initialData.setName);
+      if (initialData.askingPrice) {
+        setOfficialPrice(initialData.askingPrice);
+        setAskingPrice(initialData.askingPrice.toString());
+      }
+      if (initialData.condition) setCondition(initialData.condition as ListingCondition);
+      if (initialData.photoUrl) setPhotoPreview(initialData.photoUrl);
+    }
+  }, [initialData]);
 
   if (!isOpen) return null;
 
@@ -322,6 +353,20 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
                 <CameraIcon className="w-4 h-4 text-ferrari-red" />
                 <span>{photoPreview ? t('create_modal_photo_change') : t('create_modal_photo_upload')}</span>
               </button>
+
+              {onOpenScanner && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    onOpenScanner();
+                  }}
+                  className="h-10 px-3.5 rounded-xl bg-surface-hover hover:bg-surface border border-hairline hover:border-ferrari-red text-foreground font-semibold flex items-center gap-1.5 cursor-pointer transition-colors"
+                >
+                  <SparklesIcon className="w-3.5 h-3.5 text-ferrari-red" />
+                  <span>{t('ai_camera_listing_quick')}</span>
+                </button>
+              )}
               <input
                 ref={fileInputRef}
                 type="file"

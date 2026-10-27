@@ -9,7 +9,7 @@ import {
 import { ICommunityRepository } from './repository.types';
 import { INITIAL_COMMUNITY_POSTS } from '@/types/community';
 
-const STORAGE_KEY = 'mcard_community_posts_v1';
+const STORAGE_KEY = 'mcard_community_posts_v6';
 
 export class LocalCommunityRepository implements ICommunityRepository {
   private getStorageData(): CommunityPost[] {

@@ -4,11 +4,13 @@ import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
 import { TranslationKey } from '@/locales/translations';
+import { CameraIcon } from '@/components/icons/AppIcons';
 
 export interface MobileBottomNavProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
   portfolioCount: number;
+  onOpenScanner?: () => void;
 }
 
 interface NavItem {
@@ -25,6 +27,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
   activeTab,
   onTabChange,
   portfolioCount,
+  onOpenScanner,
 }) => {
   const { t } = useLanguage();
   const { user, isLoggedIn } = useAuth();
@@ -77,6 +80,22 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
         </svg>
       ),
     },
+    ...(onOpenScanner
+      ? [
+          {
+            id: 'camera',
+            labelKey: 'ai_camera_btn' as const,
+            fallbackLabel: '識卡',
+            isAction: true,
+            onClick: onOpenScanner,
+            icon: () => (
+              <div className="w-10 h-10 -mt-2.5 rounded-full bg-ferrari-red text-white flex items-center justify-center shadow-[0_4px_16px_rgba(230,0,0,0.4)] active:scale-95 transition-transform border-2 border-surface">
+                <CameraIcon className="w-5 h-5 text-white" />
+              </div>
+            ),
+          },
+        ]
+      : []),
     {
       id: 'market',
       labelKey: 'nav_market',
@@ -163,6 +182,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
               key={item.id}
               role={item.isAction ? 'button' : 'tab'}
               aria-selected={!item.isAction ? isActive : undefined}
+              aria-label={label}
               tabIndex={0}
               onClick={handleClick}
               onKeyDown={handleKeyDown}
@@ -188,10 +208,12 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
                 )}
               </div>
 
-              {/* Label */}
-              <span className="text-[10px] md:text-[11px] tracking-wide mt-1 leading-none">
-                {label}
-              </span>
+              {/* Label (動作按鈕如相機識卡隱藏文字，維持純粹極簡圓形圖標) */}
+              {!item.isAction && (
+                <span className="text-[10px] md:text-[11px] tracking-wide mt-1 leading-none">
+                  {label}
+                </span>
+              )}
             </button>
           );
         })}

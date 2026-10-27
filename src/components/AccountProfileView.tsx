@@ -66,16 +66,16 @@ export const AccountProfileView: React.FC<AccountProfileViewProps> = ({
       )}
 
       {/* 1. Main Profile Card Header - 方案 1: 現代金融/極致簡潔風格 (Fintech Clean Style) */}
-      <div className="w-full rounded-2xl bg-surface border border-hairline/80 p-5 sm:p-6 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
-        <div className="flex items-center gap-4.5 min-w-0">
+      <div className="w-full rounded-2xl bg-surface border border-hairline/80 p-5 sm:p-6 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-5 overflow-hidden">
+        <div className="flex items-start sm:items-center gap-3.5 sm:gap-4.5 min-w-0 flex-1 w-full">
           {/* Avatar with Status Pip - 最簡約經典人像 */}
-          <div className="relative w-16 h-16 sm:w-18 sm:h-18 rounded-2xl overflow-hidden bg-surface-hover/80 border border-hairline/90 shadow-2xs shrink-0 flex items-center justify-center text-text-muted">
+          <div className="relative w-14 h-14 sm:w-18 sm:h-18 rounded-2xl overflow-hidden bg-surface-hover/80 border border-hairline/90 shadow-2xs shrink-0 flex items-center justify-center text-text-muted">
             {isLoggedIn && user?.avatarUrl && !user.avatarUrl.includes('dicebear') ? (
               /* eslint-disable-next-line @next/next/no-img-element */
               <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
             ) : (
               <div className="w-full h-full bg-surface-hover/70 flex items-center justify-center text-text-muted/80">
-                <svg className="w-8 h-8 sm:w-9 sm:h-9" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-7 h-7 sm:w-9 sm:h-9" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.6" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
               </div>
@@ -86,9 +86,9 @@ export const AccountProfileView: React.FC<AccountProfileViewProps> = ({
           </div>
 
           {/* Name & Credentials */}
-          <div className="flex flex-col justify-center min-w-0">
-            <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-lg sm:text-xl font-bold tracking-tight text-foreground truncate">
+          <div className="flex flex-col justify-center min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+              <h1 className="text-base sm:text-xl font-bold tracking-tight text-foreground truncate">
                 {isLoggedIn && user ? user.name : t('auth_guest')}
               </h1>
               <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider font-mono border ${
@@ -105,7 +105,7 @@ export const AccountProfileView: React.FC<AccountProfileViewProps> = ({
               </span>
             </div>
 
-            <p className="text-xs text-text-muted mt-1 truncate">
+            <p className="text-xs text-text-muted mt-1 leading-relaxed break-words">
               {isLoggedIn && user ? user.email : '登入後可啟用跨裝置雲端同步、市集交易與數據恢復'}
             </p>
             <p className="text-[11px] text-text-muted/70 mt-0.5 font-mono">
@@ -185,20 +185,20 @@ export const AccountProfileView: React.FC<AccountProfileViewProps> = ({
         tabIndex={0}
         onClick={() => onNavigateToTab('portfolio')}
         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onNavigateToTab('portfolio'); }}
-        className="w-full rounded-2xl bg-surface border border-hairline/80 hover:border-ferrari-red/50 p-5 sm:p-6 shadow-2xs hover:shadow-md transition-all cursor-pointer group flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+        className="w-full rounded-2xl bg-surface border border-hairline/80 hover:border-foreground/30 p-5 sm:p-6 shadow-2xs hover:shadow-md transition-all cursor-pointer group flex flex-col sm:flex-row sm:items-center justify-between gap-4"
       >
         <div className="flex items-center gap-3.5 min-w-0">
-          <div className="w-12 h-12 rounded-xl bg-ferrari-red/10 text-ferrari-red flex items-center justify-center shrink-0 border border-ferrari-red/20 group-hover:scale-105 transition-transform">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-12 h-12 rounded-xl bg-surface-hover text-foreground flex items-center justify-center shrink-0 border border-hairline/90 group-hover:scale-105 transition-transform shadow-2xs">
+            <svg className="w-6 h-6 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
           </div>
           <div className="flex flex-col min-w-0">
             <div className="flex items-center gap-2">
-              <h2 className="text-sm sm:text-base font-bold text-foreground group-hover:text-ferrari-red transition-colors truncate">
+              <h2 className="text-sm sm:text-base font-bold text-foreground group-hover:text-foreground transition-colors truncate">
                 我的個人卡牌資產庫 (Portfolio Vault)
               </h2>
-              <span className="px-2 py-0.5 rounded-full bg-ferrari-red text-white text-[10px] font-mono font-bold shrink-0">
+              <span className="px-2 py-0.5 rounded-full bg-surface-hover border border-hairline text-foreground text-[10px] font-mono font-bold shrink-0">
                 {portfolioCount} 張持倉
               </span>
             </div>
@@ -217,7 +217,7 @@ export const AccountProfileView: React.FC<AccountProfileViewProps> = ({
           </div>
           <button
             type="button"
-            className="px-4 py-2 rounded-xl bg-ferrari-red hover:bg-ferrari-red-hover text-white text-xs font-bold transition-all shadow-2xs group-hover:shadow-sm flex items-center gap-1.5 shrink-0 pointer-events-none"
+            className="px-4 py-2 rounded-xl bg-foreground text-surface hover:opacity-90 text-xs font-bold transition-all shadow-2xs group-hover:shadow-sm flex items-center gap-1.5 shrink-0 pointer-events-none"
           >
             <span>進入資產庫</span>
             <span>→</span>
@@ -233,20 +233,20 @@ export const AccountProfileView: React.FC<AccountProfileViewProps> = ({
           tabIndex={0}
           onClick={() => onNavigateToTab('wishlist')}
           onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onNavigateToTab('wishlist'); }}
-          className="p-4 sm:p-5 rounded-2xl bg-surface border border-hairline/80 hover:border-rose-500/50 transition-all duration-150 cursor-pointer shadow-2xs hover:shadow-md group flex items-center justify-between gap-3"
+          className="p-4 sm:p-5 rounded-2xl bg-surface border border-hairline/80 hover:border-foreground/30 transition-all duration-150 cursor-pointer shadow-2xs hover:shadow-md group flex items-center justify-between gap-3"
         >
           <div className="flex items-center gap-3.5 min-w-0">
-            <div className="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center shrink-0 border border-rose-500/20 group-hover:scale-105 transition-transform">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <div className="w-10 h-10 rounded-xl bg-surface-hover text-foreground flex items-center justify-center shrink-0 border border-hairline/90 group-hover:scale-105 transition-transform shadow-2xs">
+              <svg className="w-5 h-5 text-foreground" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
               </svg>
             </div>
             <div className="flex flex-col min-w-0">
               <div className="flex items-center gap-2">
-                <span className="text-sm font-bold text-foreground group-hover:text-rose-500 transition-colors truncate">
+                <span className="text-sm font-bold text-foreground transition-colors truncate">
                   我的心願單 (Wishlist)
                 </span>
-                <span className="px-2 py-0.2 rounded-full bg-rose-500 text-white text-[10px] font-mono font-bold shrink-0">
+                <span className="px-2 py-0.2 rounded-full bg-surface-hover border border-hairline text-foreground text-[10px] font-mono font-bold shrink-0">
                   {wishlistCount} 張
                 </span>
               </div>
@@ -255,7 +255,7 @@ export const AccountProfileView: React.FC<AccountProfileViewProps> = ({
               </span>
             </div>
           </div>
-          <span className="text-xs text-text-muted group-hover:text-rose-500 transition-colors font-semibold shrink-0">
+          <span className="text-xs text-text-muted group-hover:text-foreground transition-colors font-semibold shrink-0">
             檢視清單 →
           </span>
         </div>
@@ -266,20 +266,20 @@ export const AccountProfileView: React.FC<AccountProfileViewProps> = ({
           tabIndex={0}
           onClick={() => onNavigateToTab('market')}
           onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onNavigateToTab('market'); }}
-          className="p-4 sm:p-5 rounded-2xl bg-surface border border-hairline/80 hover:border-amber-500/50 transition-all duration-150 cursor-pointer shadow-2xs hover:shadow-md group flex items-center justify-between gap-3"
+          className="p-4 sm:p-5 rounded-2xl bg-surface border border-hairline/80 hover:border-foreground/30 transition-all duration-150 cursor-pointer shadow-2xs hover:shadow-md group flex items-center justify-between gap-3"
         >
           <div className="flex items-center gap-3.5 min-w-0">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0 border border-amber-500/20 group-hover:scale-105 transition-transform">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-10 h-10 rounded-xl bg-surface-hover text-foreground flex items-center justify-center shrink-0 border border-hairline/90 group-hover:scale-105 transition-transform shadow-2xs">
+              <svg className="w-5 h-5 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
               </svg>
             </div>
             <div className="flex flex-col min-w-0">
               <div className="flex items-center gap-2">
-                <span className="text-sm font-bold text-foreground group-hover:text-amber-500 transition-colors truncate">
+                <span className="text-sm font-bold text-foreground transition-colors truncate">
                   市集上架商品
                 </span>
-                <span className="px-2 py-0.2 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 text-[10px] font-mono font-bold shrink-0">
+                <span className="px-2 py-0.2 rounded-full bg-surface-hover border border-hairline text-foreground text-[10px] font-mono font-bold shrink-0">
                   {listingsCount} 件
                 </span>
               </div>
@@ -288,7 +288,7 @@ export const AccountProfileView: React.FC<AccountProfileViewProps> = ({
               </span>
             </div>
           </div>
-          <span className="text-xs text-text-muted group-hover:text-amber-500 transition-colors font-semibold shrink-0">
+          <span className="text-xs text-text-muted group-hover:text-foreground transition-colors font-semibold shrink-0">
             前往市集 →
           </span>
         </div>
@@ -337,17 +337,6 @@ export const AccountProfileView: React.FC<AccountProfileViewProps> = ({
               </button>
             ))}
           </div>
-        </div>
-
-        {/* Cloud Sync Status */}
-        <div className="flex items-center justify-between py-2">
-          <div>
-            <span className="text-xs font-semibold text-foreground">雲端自動同步</span>
-            <p className="text-[11px] text-text-muted mt-0.5">本地收藏與市集數據已與當前身分保持同步</p>
-          </div>
-          <span className="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 text-[10px] font-mono font-bold border border-emerald-500/20">
-            ✓ SYNCED ACTIVE
-          </span>
         </div>
       </div>
 

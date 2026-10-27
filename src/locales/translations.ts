@@ -125,6 +125,12 @@ export type TranslationKey =
   | 'marketplace_subtitle'
   | 'marketplace_p2p_badge'
   | 'marketplace_list_card_btn'
+  | 'marketplace_stat_fee_title'
+  | 'marketplace_stat_fee_desc'
+  | 'marketplace_stat_p2p_title'
+  | 'marketplace_stat_p2p_desc'
+  | 'marketplace_stat_live_title'
+  | 'marketplace_stat_live_desc'
   | 'marketplace_tab_all'
   | 'marketplace_tab_my'
   | 'marketplace_tab_sold'
@@ -206,7 +212,13 @@ export type TranslationKey =
   | 'create_modal_cond_bgs95'
   | 'create_modal_cond_cgc10'
   | 'create_modal_cond_raw_nm'
-  | 'create_modal_cond_played';
+  | 'create_modal_cond_played'
+
+  // AI Camera 2.0
+  | 'ai_camera_btn'
+  | 'ai_camera_desc'
+  | 'ai_camera_vault_quick'
+  | 'ai_camera_listing_quick';
 
 export const translations: Record<Language, Record<TranslationKey, string>> = {
   en: {
@@ -330,9 +342,15 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
 
     // Marketplace & P2P Trading
     marketplace_title: 'P2P Physical Card Marketplace',
-    marketplace_subtitle: '0% Commission, Direct P2P Trading! Buy or sell authentic cards directly with verified collectors with live price benchmarks.',
+    marketplace_subtitle: 'Direct P2P Trading! Buy or sell authentic cards directly with verified collectors with live price benchmarks.',
     marketplace_p2p_badge: 'P2P Verified Collector Market',
     marketplace_list_card_btn: '+ List My Card',
+    marketplace_stat_fee_title: 'Zero Commission',
+    marketplace_stat_fee_desc: 'No transaction fees or seller cuts. 100% profit to collectors.',
+    marketplace_stat_p2p_title: 'Direct P2P Trading',
+    marketplace_stat_p2p_desc: 'Direct 1-on-1 collector trades without middleman markups.',
+    marketplace_stat_live_title: 'Live Price Benchmarks',
+    marketplace_stat_live_desc: 'Real-time comparisons against official market indexes.',
     marketplace_tab_all: 'All Market',
     marketplace_tab_my: 'My Listings',
     marketplace_tab_sold: 'Sold Archive',
@@ -417,6 +435,12 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     create_modal_cond_cgc10: 'CGC 10 (Pristine)',
     create_modal_cond_raw_nm: 'Ungraded Near Mint',
     create_modal_cond_played: 'Played / Moderately Played',
+
+    // AI Camera 2.0
+    ai_camera_btn: 'AI Camera',
+    ai_camera_desc: 'Scan & Price Cards with AI',
+    ai_camera_vault_quick: '📸 Scan to Vault',
+    ai_camera_listing_quick: '📸 Scan & Autofill',
   },
   'zh-TW': {
     // Navigation & Header
@@ -539,9 +563,15 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
 
     // Marketplace & P2P Trading
     marketplace_title: '實體卡自由交易市場',
-    marketplace_subtitle: '免抽成、零手續費！直接向真實卡友購買或出售正版實體卡，即時比對官方行情，透明安心。',
+    marketplace_subtitle: '直接向真實卡友購買或出售正版實體卡，即時比對官方行情，透明安心。',
     marketplace_p2p_badge: 'P2P 玩家認證市場',
     marketplace_list_card_btn: '+ 上架我的實體卡',
+    marketplace_stat_fee_title: '平台零抽成',
+    marketplace_stat_fee_desc: '買賣免抽成、零手續費，利潤全歸藏家',
+    marketplace_stat_p2p_title: '玩家直接對接',
+    marketplace_stat_p2p_desc: '買賣雙方一對一溝通直交，省去中介差價',
+    marketplace_stat_live_title: '官方行情比對',
+    marketplace_stat_live_desc: '即時比對大盤數據，破盤或溢價一目了然',
     marketplace_tab_all: '全部市場',
     marketplace_tab_my: '我的刊登管理',
     marketplace_tab_sold: '歷史成交紀錄',
@@ -626,6 +656,12 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     create_modal_cond_cgc10: 'CGC 10 (Pristine)',
     create_modal_cond_raw_nm: '未評級 NM (無傷裸卡)',
     create_modal_cond_played: '微瑕 / 下場卡 (Played)',
+
+    // AI Camera 2.0
+    ai_camera_btn: 'AI 拍照識卡',
+    ai_camera_desc: '拍照辨識與聯網搜價',
+    ai_camera_vault_quick: '📸 拍照快速入庫',
+    ai_camera_listing_quick: '📸 拍照自動填單',
   },
   'zh-CN': {
     // Navigation & Header
@@ -748,9 +784,15 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
 
     // Marketplace & P2P Trading
     marketplace_title: '实体卡自由交易市场',
-    marketplace_subtitle: '免抽成、零手续费！直接向真实卡友购买或出售正版实体卡，实时比对官方行情，透明安心。',
+    marketplace_subtitle: '直接向真实卡友购买或出售正版实体卡，实时比对官方行情，透明安心。',
     marketplace_p2p_badge: 'P2P 玩家认证市场',
     marketplace_list_card_btn: '+ 上架我的实体卡',
+    marketplace_stat_fee_title: '平台零抽成',
+    marketplace_stat_fee_desc: '买卖免抽成、零手续费，利润全归藏家',
+    marketplace_stat_p2p_title: '玩家直接对接',
+    marketplace_stat_p2p_desc: '买卖双方一对一沟通直交，省去中介差价',
+    marketplace_stat_live_title: '官方行情比对',
+    marketplace_stat_live_desc: '实时比对大盘数据，破盘或溢价一目了然',
     marketplace_tab_all: '全部市场',
     marketplace_tab_my: '我的刊登管理',
     marketplace_tab_sold: '历史成交记录',
@@ -837,5 +879,11 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     create_modal_cond_cgc10: 'CGC 10 (Pristine)',
     create_modal_cond_raw_nm: '未评级 NM (无伤裸卡)',
     create_modal_cond_played: '微瑕 / 实战下场卡 (Played)',
+
+    // AI Camera 2.0
+    ai_camera_btn: 'AI 拍照识卡',
+    ai_camera_desc: '拍照辨识与联网搜价',
+    ai_camera_vault_quick: '📸 拍照快速入库',
+    ai_camera_listing_quick: '📸 拍照自动填单',
   },
 };
