@@ -527,6 +527,7 @@ export const CardScannerModal: React.FC<CardScannerModalProps> = ({
               {/* 實拍卡圖凍結預覽 + 微光掃描線 */}
               <div className="relative w-full max-w-[260px] aspect-[2.5/3.5] rounded-2xl overflow-hidden border border-ferrari-red/50 shadow-2xl bg-black">
                 {capturedPhoto && (
+                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={capturedPhoto}
                     alt="實拍預覽"
@@ -557,6 +558,7 @@ export const CardScannerModal: React.FC<CardScannerModalProps> = ({
                 {/* 左側：實拍照片縮圖 */}
                 <div className="relative w-full sm:w-[190px] aspect-[2.5/3.5] rounded-xl overflow-hidden border border-hairline/80 shadow-md bg-surface shrink-0 mx-auto sm:mx-0">
                   {capturedPhoto ? (
+                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={capturedPhoto}
                       alt={scanResult.cardName}

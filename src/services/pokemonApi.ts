@@ -110,6 +110,7 @@ export const mapRawCardToApiPokemonCard = (card: RawTcgCard): ApiPokemonCard => 
 
 // 移除 pokemontcg.io 外部請求，作為解耦的統一介面入口
 export const fetchPokemonCardsFromApi = async (
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _params: FetchCardsParams = {}
 ): Promise<FetchCardsResult> => {
   // 徹底移除 api.pokemontcg.io 請求，預留給即將接入的新價格 API

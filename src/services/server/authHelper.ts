@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers';
 import { NextRequest } from 'next/server';
-import { eq, gt } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { getDb } from '@/db';
 import { users, sessions, UserRow, SessionRow } from '@/db/schema';
 import { generateSessionToken, hashSessionToken } from '@/utils/crypto';

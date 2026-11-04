@@ -70,6 +70,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.removeItem(OLD_AUTH_STORAGE_KEY);
     } catch {}
 
+    // refreshUser 是 async，呼叫後不阻塞 effect，不會造成同步 setState 問題
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     refreshUser();
   }, [refreshUser]);
 
@@ -83,8 +85,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setAuthPromptMessage(null);
   }, []);
 
-  // 1-Click Google OAuth 轉向
+  // 1-Click Google OAuth 轉向（需要整頁跳轉啟動 OAuth flow，不使用 router.push）
   const loginWithGoogle = useCallback(() => {
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination
     window.location.href = '/api/v1/auth/google';
   }, []);
 

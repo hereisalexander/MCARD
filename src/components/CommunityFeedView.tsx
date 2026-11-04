@@ -329,6 +329,7 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
               : 'p-2.5 sm:p-3 flex items-center justify-center'
           }`}
         >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={post.imageUrl}
             alt={post.title}
@@ -389,6 +390,7 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
           <div className="flex items-center justify-between pt-2 border-t border-hairline/40">
             {/* Left: Author Avatar + Name + Date */}
             <div className="flex items-center gap-1.5 min-w-0 pr-1">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={post.author.avatar}
                 alt={post.author.name}

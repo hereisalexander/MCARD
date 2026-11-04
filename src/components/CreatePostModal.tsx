@@ -515,6 +515,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
                   <div className="p-3 bg-background border border-hairline rounded-2xl flex items-center justify-between gap-4">
                     <div className="flex items-center gap-3 min-w-0">
                       <div className="relative w-14 h-20 shrink-0 rounded-lg overflow-hidden bg-black/10 border border-hairline/80 shadow-2xs">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={imageUrl}
                           alt="實物卡牌照片預覽"
@@ -567,6 +568,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
                 {imageUrl && (
                   <div className="flex items-center justify-between p-2.5 bg-background border border-hairline rounded-xl">
                     <div className="flex items-center gap-3">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={imageUrl}
                         alt="預覽圖片"

@@ -137,6 +137,7 @@ export const CommunityPostDetailModal: React.FC<CommunityPostDetailModalProps> =
           {/* Header with author info */}
           <div className="flex items-center justify-between p-4 sm:p-5 border-b border-hairline/60">
             <div className="flex items-center gap-3">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={post.author.avatar}
                 alt={post.author.name}
@@ -246,6 +247,7 @@ export const CommunityPostDetailModal: React.FC<CommunityPostDetailModalProps> =
                 ) : (
                   post.comments.map((comment) => (
                     <div key={comment.id} className="flex gap-2.5 text-xs">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={comment.authorAvatar}
                         alt={comment.authorName}

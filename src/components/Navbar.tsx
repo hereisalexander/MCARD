@@ -30,6 +30,7 @@ interface NavbarProps {
   onSearchChange?: (query: string) => void;
 }
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 export const Navbar: React.FC<NavbarProps> = ({
   activeTab,
   onTabChange,
@@ -37,12 +38,13 @@ export const Navbar: React.FC<NavbarProps> = ({
   portfolioValue: _portfolioValue,
   selectedCategory,
   onCategoryChange,
-  onSelectSet,
+  onSelectSet: _onSelectSet,
   wishlistCount = 0,
   onOpenScanner,
   searchQuery: externalSearchQuery,
   onSearchChange,
 }) => {
+/* eslint-enable @typescript-eslint/no-unused-vars */
   const [internalSearchQuery, setInternalSearchQuery] = useState<string>('');
   const currentSearchQuery = externalSearchQuery !== undefined ? externalSearchQuery : internalSearchQuery;
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -131,16 +133,6 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const handleCategorySelect = (category: CardCategory) => {
     onCategoryChange(category);
-  };
-
-  const _handleSetSelect = (setName: string) => {
-    onCategoryChange('pokemon');
-    if (onSelectSet) {
-      onSelectSet(setName);
-    } else {
-      onTabChange('explore');
-    }
-    setIsDrawerOpen(false);
   };
 
   return (
