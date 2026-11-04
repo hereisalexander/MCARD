@@ -24,11 +24,25 @@ export const AccountProfileView: React.FC<AccountProfileViewProps> = ({
 }) => {
   const { user, isLoggedIn, logout, updateProfile, openAuthModal } = useAuth();
   const { language, setLanguage, t } = useLanguage();
-  const { theme, toggleTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [editName, setEditName] = useState<string>(user?.name || '');
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
+
+  const formatMemberDate = (dateString?: string): string => {
+    if (!dateString) return new Date().toLocaleDateString('zh-TW');
+    try {
+      const d = new Date(dateString);
+      if (isNaN(d.getTime())) return dateString;
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}/${month}/${day}`;
+    } catch {
+      return dateString;
+    }
+  };
 
   const showStatus = (msg: string) => {
     setStatusMessage(msg);
@@ -110,7 +124,9 @@ export const AccountProfileView: React.FC<AccountProfileViewProps> = ({
               {isLoggedIn && user ? user.email : '登入後可啟用跨裝置雲端同步、市集交易與數據恢復'}
             </p>
             <p className="text-[11px] text-text-muted/70 mt-0.5 font-mono">
-              {isLoggedIn && user ? `會員建立日期：${user.joinedAt || '2026/01/01'}` : '尚未登入正式帳號'}
+              {isLoggedIn && user
+                ? `會員建立日期：${formatMemberDate(user.createdAt || user.joinedAt)}`
+                : '尚未登入正式帳號'}
             </p>
           </div>
         </div>
@@ -131,7 +147,7 @@ export const AccountProfileView: React.FC<AccountProfileViewProps> = ({
           ) : (
             <button
               type="button"
-              onClick={openAuthModal}
+              onClick={() => openAuthModal()}
               className="h-9.5 px-5 rounded-xl bg-ferrari-red text-white hover:bg-ferrari-red-hover active:bg-ferrari-red-active font-sans text-xs font-bold tracking-wide transition-all duration-150 cursor-pointer shadow-2xs flex items-center gap-2"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -308,13 +324,30 @@ export const AccountProfileView: React.FC<AccountProfileViewProps> = ({
             <span className="text-xs font-semibold text-foreground">介面主題外觀</span>
             <p className="text-[11px] text-text-muted mt-0.5">自訂介面視覺主題</p>
           </div>
-          <button
-            type="button"
-            onClick={toggleTheme}
-            className="h-8 px-3.5 rounded-lg border border-hairline/80 bg-surface-hover font-sans text-xs font-semibold text-foreground hover:border-text-muted transition-colors cursor-pointer flex items-center justify-center"
-          >
-            {theme === 'dark' ? '深色' : '淺色'}
-          </button>
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={() => setTheme('light')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                theme === 'light'
+                  ? 'bg-ferrari-red text-white shadow-2xs font-bold'
+                  : 'bg-surface-hover text-text-muted hover:text-foreground border border-hairline/60'
+              }`}
+            >
+              淺色
+            </button>
+            <button
+              type="button"
+              onClick={() => setTheme('dark')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                theme === 'dark'
+                  ? 'bg-ferrari-red text-white shadow-2xs font-bold'
+                  : 'bg-surface-hover text-text-muted hover:text-foreground border border-hairline/60'
+              }`}
+            >
+              深色
+            </button>
+          </div>
         </div>
 
         {/* Language Setting */}
@@ -364,7 +397,7 @@ export const AccountProfileView: React.FC<AccountProfileViewProps> = ({
           <span>目前為訪客體驗模式，隨時點擊右上角或上方按鈕即可進行帳戶登入。</span>
           <button
             type="button"
-            onClick={openAuthModal}
+            onClick={() => openAuthModal()}
             className="text-ferrari-red font-bold hover:underline cursor-pointer"
           >
             立即登入 →

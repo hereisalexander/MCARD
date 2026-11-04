@@ -106,3 +106,43 @@ export const wishlistItems = sqliteTable('wishlist_items', {
 
 export type WishlistItemRow = typeof wishlistItems.$inferSelect;
 export type InsertWishlistItemRow = typeof wishlistItems.$inferInsert;
+
+// 6. 使用者帳戶表 (Users)
+export const users = sqliteTable('users', {
+  id: text('id').primaryKey(),
+  email: text('email').notNull().unique(),
+  name: text('name').notNull(),
+  avatarUrl: text('avatar_url').notNull(),
+  passwordHash: text('password_hash'),
+  role: text('role').notNull().default('user'),
+  createdAt: text('created_at').notNull(),
+  updatedAt: text('updated_at').notNull(),
+});
+
+export type UserRow = typeof users.$inferSelect;
+export type InsertUserRow = typeof users.$inferInsert;
+
+// 7. 會話 Session 表 (Sessions)
+export const sessions = sqliteTable('sessions', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  tokenHash: text('token_hash').notNull().unique(),
+  expiresAt: integer('expires_at').notNull(),
+  createdAt: text('created_at').notNull(),
+});
+
+export type SessionRow = typeof sessions.$inferSelect;
+export type InsertSessionRow = typeof sessions.$inferInsert;
+
+// 8. 第三方 OAuth 關聯表 (Accounts)
+export const accounts = sqliteTable('accounts', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  provider: text('provider').notNull(),
+  providerAccountId: text('provider_account_id').notNull(),
+  createdAt: text('created_at').notNull(),
+});
+
+export type AccountRow = typeof accounts.$inferSelect;
+export type InsertAccountRow = typeof accounts.$inferInsert;
+

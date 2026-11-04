@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
 import { D1CommunityRepository } from '@/services/server/d1CommunityRepository';
+import { requireAuth } from '@/services/server/authHelper';
 import { apiSuccess, handleApiError } from '@/utils/apiResponse';
 
 export const dynamic = 'force-dynamic';
@@ -9,12 +10,13 @@ export const POST = async (
   context: { params: Promise<{ id: string }> }
 ) => {
   try {
+    const user = await requireAuth(req);
     const { id } = await context.params;
     const body = await req.json();
 
-    const author = body.author || {
-      name: '藏家玩家',
-      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde',
+    const author = {
+      name: user.name,
+      avatar: user.avatarUrl,
     };
 
     const repo = new D1CommunityRepository();

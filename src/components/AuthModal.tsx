@@ -5,25 +5,53 @@ import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 
 export const AuthModal: React.FC = () => {
-  const { isAuthModalOpen, closeAuthModal, loginWithGoogle, loginWithEmail } = useAuth();
+  const {
+    isAuthModalOpen,
+    closeAuthModal,
+    loginWithGoogle,
+    loginWithEmail,
+    registerWithEmail,
+    authPromptMessage,
+  } = useAuth();
   const { t } = useLanguage();
 
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [name, setName] = useState<string>('');
   const [isSignUp, setIsSignUp] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   if (!isAuthModalOpen) return null;
 
-  const handleEmailSubmit = (e: React.FormEvent) => {
+  const handleToggleMode = () => {
+    setIsSignUp((prev) => !prev);
+    setErrorMessage(null);
+  };
+
+  const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) return;
-    loginWithEmail(email, name);
+
+    setIsSubmitting(true);
+    setErrorMessage(null);
+
+    try {
+      if (isSignUp) {
+        await registerWithEmail(email, password, name);
+      } else {
+        await loginWithEmail(email, password);
+      }
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : '驗證失敗，請再試一次');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
-      <div className="bg-surface border border-hairline/80 rounded-2xl p-6 md:p-8 max-w-md w-full shadow-2xl relative flex flex-col gap-6">
+      <div className="bg-surface border border-hairline/80 rounded-2xl p-6 md:p-8 max-w-md w-full shadow-2xl relative flex flex-col gap-5">
         
         {/* Modal Close Button */}
         <button
@@ -40,26 +68,45 @@ export const AuthModal: React.FC = () => {
             Scuderia Access
           </span>
           <h3 className="font-sans font-medium text-2xl tracking-tight text-foreground leading-tight">
-            {t('auth_modal_title')}
+            {isSignUp ? '建立全新帳號' : t('auth_modal_title')}
           </h3>
           <p className="font-sans text-xs text-text-muted mt-1 leading-relaxed">
-            {t('auth_modal_subtitle')}
+            {isSignUp ? '註冊即可即時保存專屬卡牌資產與二手交易資訊' : t('auth_modal_subtitle')}
           </p>
         </div>
 
-        {/* Cloud Sync Notification Banner */}
-        <div className="p-3.5 bg-surface-hover rounded-xl border border-hairline/60 flex items-start gap-2.5">
-          <span className="w-2 h-2 rounded-full bg-ferrari-red mt-1.5 shrink-0" />
-          <span className="font-sans text-xs text-text-muted leading-relaxed">
-            {t('auth_cloud_sync_desc')}
-          </span>
-        </div>
+        {/* 操作攔截提示或雲端提示 */}
+        {authPromptMessage ? (
+          <div className="p-3.5 bg-ferrari-red/10 border border-ferrari-red/30 rounded-xl flex items-start gap-2.5">
+            <span className="w-2 h-2 rounded-full bg-ferrari-red mt-1.5 shrink-0" />
+            <span className="font-sans text-xs font-medium text-ferrari-red leading-relaxed">
+              {authPromptMessage}
+            </span>
+          </div>
+        ) : (
+          <div className="p-3.5 bg-surface-hover rounded-xl border border-hairline/60 flex items-start gap-2.5">
+            <span className="w-2 h-2 rounded-full bg-ferrari-red mt-1.5 shrink-0" />
+            <span className="font-sans text-xs text-text-muted leading-relaxed">
+              {t('auth_cloud_sync_desc')}
+            </span>
+          </div>
+        )}
+
+        {/* 錯誤提示 */}
+        {errorMessage && (
+          <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-2 text-xs text-red-500 font-medium">
+            <span>⚠️</span>
+            <span>{errorMessage}</span>
+          </div>
+        )}
 
         {/* Fast Auth Providers */}
         <div className="flex flex-col gap-3">
           <button
+            type="button"
             onClick={loginWithGoogle}
-            className="w-full h-11 rounded-xl bg-surface-hover border border-hairline font-sans text-xs font-semibold tracking-wide text-foreground hover:border-text-muted transition-all duration-150 flex items-center justify-center gap-3 cursor-pointer shadow-sm"
+            disabled={isSubmitting}
+            className="w-full h-11 rounded-xl bg-surface-hover border border-hairline font-sans text-xs font-semibold tracking-wide text-foreground hover:border-text-muted transition-all duration-150 flex items-center justify-center gap-3 cursor-pointer shadow-sm disabled:opacity-50"
           >
             {/* Google Icon SVG */}
             <svg className="w-4 h-4" viewBox="0 0 24 24">
@@ -102,6 +149,7 @@ export const AuthModal: React.FC = () => {
               </label>
               <input
                 type="text"
+                required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Alex / TCG 藏家"
@@ -140,19 +188,27 @@ export const AuthModal: React.FC = () => {
 
           <button
             type="submit"
-            className="w-full mt-2 h-11 rounded-xl bg-ferrari-red text-white hover:bg-ferrari-red-hover active:bg-ferrari-red-active font-sans text-xs font-semibold tracking-wide transition-colors cursor-pointer shadow-sm"
+            disabled={isSubmitting}
+            className="w-full mt-2 h-11 rounded-xl bg-ferrari-red text-white hover:bg-ferrari-red-hover active:bg-ferrari-red-active font-sans text-xs font-semibold tracking-wide transition-colors cursor-pointer shadow-sm disabled:opacity-50 flex items-center justify-center gap-2"
           >
-            {isSignUp ? t('auth_sign_up_email') : t('auth_sign_in_email')}
+            {isSubmitting ? (
+              <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            ) : isSignUp ? (
+              t('auth_sign_up_email')
+            ) : (
+              t('auth_sign_in_email')
+            )}
           </button>
         </form>
 
         {/* Toggle Sign in / Sign up */}
         <div className="text-center pt-2 border-t border-hairline/60">
           <button
-            onClick={() => setIsSignUp(!isSignUp)}
+            type="button"
+            onClick={handleToggleMode}
             className="text-[11px] text-text-muted hover:text-foreground font-semibold tracking-wide underline cursor-pointer"
           >
-            {isSignUp ? 'Already have an account? Sign In' : "Don't have an account? Create one"}
+            {isSignUp ? '已有帳號？前往登入' : "還沒有帳號？立即註冊"}
           </button>
         </div>
 

@@ -59,6 +59,10 @@ export const handleApiError = (error: unknown) => {
     );
   }
 
+  if (error instanceof Error && error.name === 'AuthRequiredError') {
+    return apiError('UNAUTHORIZED', error.message, undefined, 401);
+  }
+
   const errMessage = error instanceof Error ? error.message : '伺服器內部異常';
   console.error('[API Route Handler Error]:', error);
 

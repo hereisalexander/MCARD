@@ -1,27 +1,32 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
 export interface UserProfile {
   id: string;
   name: string;
   email: string;
   avatarUrl: string;
-  provider: 'google' | 'email';
-  joinedAt: string;
+  provider?: 'google' | 'email' | string;
+  role?: string;
+  joinedAt?: string;
+  createdAt?: string;
 }
 
 interface AuthContextType {
   user: UserProfile | null;
   isLoggedIn: boolean;
+  isLoading: boolean;
   isAuthModalOpen: boolean;
-  openAuthModal: () => void;
+  authPromptMessage: string | null;
+  openAuthModal: (promptMessage?: string) => void;
   closeAuthModal: () => void;
   loginWithGoogle: () => void;
-  loginWithEmail: (email: string, name: string) => void;
+  loginWithEmail: (email: string, password: string) => Promise<void>;
+  registerWithEmail: (email: string, password: string, name: string) => Promise<void>;
   updateProfile: (updates: Partial<UserProfile>) => void;
-  switchDemoProfile: (profile: 'ash' | 'kaiba' | 'red') => void;
-  logout: () => void;
+  logout: () => Promise<void>;
+  requireAuthAction: (action: () => void, promptMessage?: string) => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -31,126 +36,145 @@ const OLD_AUTH_STORAGE_KEY = 'pokemon_collector_user_session';
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<UserProfile | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
+  const [authPromptMessage, setAuthPromptMessage] = useState<string | null>(null);
 
-  // Load active user session on mount
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      try {
-        const savedSession = localStorage.getItem(AUTH_STORAGE_KEY) || localStorage.getItem(OLD_AUTH_STORAGE_KEY);
-        if (savedSession) {
-          const parsed = JSON.parse(savedSession);
-          // 淨化舊版殘留的 mock 測試帳號 (小智 / 海馬 / 赤紅 / palette-town)
-          const isMockUser =
-            parsed.id?.startsWith('usr_ash_') ||
-            parsed.id?.startsWith('usr_kaiba_') ||
-            parsed.id?.startsWith('usr_red_') ||
-            parsed.id === 'usr_google_151' ||
-            parsed.email?.includes('palette') ||
-            parsed.name?.includes('小智');
-
-          if (isMockUser) {
-            localStorage.removeItem(AUTH_STORAGE_KEY);
-            localStorage.removeItem(OLD_AUTH_STORAGE_KEY);
-            setUser(null);
-          } else {
-            setUser(parsed);
-          }
-        }
-      } catch (err) {
-        console.error('Failed to load user session:', err);
+  // 檢查當前 Session 登入狀態 (向後端 /api/v1/auth/me 驗證)
+  const refreshUser = useCallback(async () => {
+    try {
+      const res = await fetch('/api/v1/auth/me', { cache: 'no-store' });
+      if (!res.ok) {
+        setUser(null);
+        return;
       }
-    }, 0);
-    return () => clearTimeout(timer);
+      const json = await res.json();
+      if (json.success && json.data?.user) {
+        setUser(json.data.user);
+      } else {
+        setUser(null);
+      }
+    } catch (err) {
+      console.warn('[AuthContext] 驗證 Session 失敗，視為未登入:', err);
+      setUser(null);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
-  const openAuthModal = () => setIsAuthModalOpen(true);
-  const closeAuthModal = () => setIsAuthModalOpen(false);
+  // 元件掛載時執行 Session 驗證與清理過往 localStorage mock 資料
+  useEffect(() => {
+    // 徹底清除過往舊版 mock 殘留
+    try {
+      localStorage.removeItem(AUTH_STORAGE_KEY);
+      localStorage.removeItem(OLD_AUTH_STORAGE_KEY);
+    } catch {}
 
-  const saveSession = (userProfile: UserProfile) => {
-    setUser(userProfile);
-    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(userProfile));
-    closeAuthModal();
-  };
+    refreshUser();
+  }, [refreshUser]);
 
-  const loginWithGoogle = () => {
-    const googleUser: UserProfile = {
-      id: `usr_google_${Date.now()}`,
-      name: 'Google 藏家',
-      email: 'collector@gmail.com',
-      avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=GoogleCollector',
-      provider: 'google',
-      joinedAt: new Date().toLocaleDateString('zh-TW'),
-    };
-    saveSession(googleUser);
-  };
+  const openAuthModal = useCallback((promptMessage?: string) => {
+    setAuthPromptMessage(promptMessage || null);
+    setIsAuthModalOpen(true);
+  }, []);
 
-  const loginWithEmail = (email: string, name: string) => {
-    const emailUser: UserProfile = {
-      id: `usr_${Date.now()}`,
-      name: name || email.split('@')[0],
-      email: email,
-      avatarUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name || email)}`,
-      provider: 'email',
-      joinedAt: new Date().toLocaleDateString(),
-    };
-    saveSession(emailUser);
-  };
+  const closeAuthModal = useCallback(() => {
+    setIsAuthModalOpen(false);
+    setAuthPromptMessage(null);
+  }, []);
 
-  const updateProfile = (updates: Partial<UserProfile>) => {
-    if (!user) return;
-    const updated = { ...user, ...updates };
-    saveSession(updated);
-  };
+  // 1-Click Google OAuth 轉向
+  const loginWithGoogle = useCallback(() => {
+    window.location.href = '/api/v1/auth/google';
+  }, []);
 
-  const switchDemoProfile = (profile: 'ash' | 'kaiba' | 'red') => {
-    const presets: Record<'ash' | 'kaiba' | 'red', UserProfile> = {
-      ash: {
-        id: 'usr_ash_001',
-        name: 'Ash Ketchum (小智)',
-        email: 'ash@palette-town.kanto',
-        avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Ash',
-        provider: 'google',
-        joinedAt: '2026/01/15',
-      },
-      kaiba: {
-        id: 'usr_kaiba_002',
-        name: 'Seto Kaiba (海馬瀨人)',
-        email: 'president@kaibacorp.com',
-        avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Kaiba',
-        provider: 'google',
-        joinedAt: '2026/02/01',
-      },
-      red: {
-        id: 'usr_red_003',
-        name: 'Trainer Red (赤紅)',
-        email: 'red@mt-silver.kanto',
-        avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=RedTrainer',
-        provider: 'email',
-        joinedAt: '2026/03/10',
-      },
-    };
-    saveSession(presets[profile]);
-  };
+  // Email 密碼登入
+  const loginWithEmail = useCallback(
+    async (email: string, password: string): Promise<void> => {
+      const res = await fetch('/api/v1/auth/email/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem(AUTH_STORAGE_KEY);
-  };
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        throw new Error(json.message || '登入失敗，請檢查帳號或密碼');
+      }
+
+      setUser(json.data);
+      closeAuthModal();
+    },
+    [closeAuthModal]
+  );
+
+  // Email 註冊
+  const registerWithEmail = useCallback(
+    async (email: string, password: string, name: string): Promise<void> => {
+      const res = await fetch('/api/v1/auth/email/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, name }),
+      });
+
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        throw new Error(json.message || '註冊失敗，請檢查輸入內容');
+      }
+
+      setUser(json.data);
+      closeAuthModal();
+    },
+    [closeAuthModal]
+  );
+
+  // 更新本機用戶暫存資料
+  const updateProfile = useCallback((updates: Partial<UserProfile>) => {
+    setUser((prev) => (prev ? { ...prev, ...updates } : null));
+  }, []);
+
+  // 登出
+  const logout = useCallback(async (): Promise<void> => {
+    try {
+      await fetch('/api/v1/auth/logout', { method: 'POST' });
+    } catch (err) {
+      console.warn('[AuthContext] 登出 API 呼叫異常:', err);
+    } finally {
+      setUser(null);
+      // 重新載入或重整頁面以更新登入狀態視圖
+      window.location.reload();
+    }
+  }, []);
+
+  // 關鍵操作守衛攔截器 (Auth Guard)
+  const requireAuthAction = useCallback(
+    (action: () => void, promptMessage?: string): boolean => {
+      if (!user) {
+        openAuthModal(promptMessage || '此操作需要登入帳號，請先登入後繼續。');
+        return false;
+      }
+      action();
+      return true;
+    },
+    [user, openAuthModal]
+  );
 
   return (
     <AuthContext.Provider
       value={{
         user,
         isLoggedIn: !!user,
+        isLoading,
         isAuthModalOpen,
+        authPromptMessage,
         openAuthModal,
         closeAuthModal,
         loginWithGoogle,
         loginWithEmail,
+        registerWithEmail,
         updateProfile,
-        switchDemoProfile,
         logout,
+        requireAuthAction,
       }}
     >
       {children}

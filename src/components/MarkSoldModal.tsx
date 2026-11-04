@@ -56,7 +56,7 @@ export const MarkSoldModal: React.FC<MarkSoldModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-hairline/70">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="w-2.5 h-2.5 rounded-full bg-ferrari-red animate-pulse" />
             <h3 id="mark-sold-title" className="font-sans font-bold text-base text-foreground">
               標記卡牌已售出 (Mark as Sold)
             </h3>
@@ -109,7 +109,7 @@ export const MarkSoldModal: React.FC<MarkSoldModalProps> = ({
                 value={actualSoldPrice}
                 onChange={(e) => setActualSoldPrice(e.target.value)}
                 placeholder="例如: 280"
-                className="w-full pl-8 pr-3 py-2 bg-surface-hover/80 text-foreground border border-hairline/80 rounded-xl font-mono text-sm focus:outline-none focus:border-emerald-500 font-bold"
+                className="w-full pl-8 pr-3 py-2 bg-surface-hover/80 text-foreground border border-hairline/80 rounded-xl font-mono text-sm focus:outline-none focus:border-ferrari-red font-bold"
               />
             </div>
           </div>
@@ -140,7 +140,7 @@ export const MarkSoldModal: React.FC<MarkSoldModalProps> = ({
               type="checkbox"
               checked={syncToPortfolio}
               onChange={(e) => setSyncToPortfolio(e.target.checked)}
-              className="mt-0.5 rounded border-hairline text-emerald-500 focus:ring-0 cursor-pointer"
+              className="mt-0.5 rounded border-hairline text-ferrari-red focus:ring-0 cursor-pointer"
             />
             <span className="text-xs text-text-muted leading-relaxed">
               同時從個人資產庫（Portfolio）扣減該持倉，並在紀錄中記錄此筆真實賣出獲利。
@@ -152,15 +152,19 @@ export const MarkSoldModal: React.FC<MarkSoldModalProps> = ({
             <button
               type="button"
               onClick={onClose}
+              aria-label="取消"
+              tabIndex={0}
               className="px-4 py-2 rounded-xl text-xs font-semibold text-text-muted hover:text-foreground bg-surface-hover transition-colors cursor-pointer"
             >
               取消
             </button>
             <button
               type="submit"
-              className="px-5 py-2 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 transition-all cursor-pointer shadow-sm"
+              aria-label="標記為已售出"
+              tabIndex={0}
+              className="px-5 py-2 rounded-xl text-xs font-bold text-white bg-ferrari-red hover:bg-ferrari-red-hover active:bg-ferrari-red-active active:scale-95 transition-all cursor-pointer shadow-xs"
             >
-              確認結案 · 標記已售出
+              標記為已售出
             </button>
           </div>
         </form>

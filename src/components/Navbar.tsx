@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
+import { useTheme } from '@/context/ThemeContext';
 import { Language } from '@/locales/translations';
 import { CardCategory } from '@/services/multiCardService';
 import {
@@ -25,6 +26,8 @@ interface NavbarProps {
   onSelectSet?: (setName: string) => void;
   wishlistCount?: number;
   onOpenScanner?: () => void;
+  searchQuery?: string;
+  onSearchChange?: (query: string) => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -37,12 +40,40 @@ export const Navbar: React.FC<NavbarProps> = ({
   onSelectSet,
   wishlistCount = 0,
   onOpenScanner,
+  searchQuery: externalSearchQuery,
+  onSearchChange,
 }) => {
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [internalSearchQuery, setInternalSearchQuery] = useState<string>('');
+  const currentSearchQuery = externalSearchQuery !== undefined ? externalSearchQuery : internalSearchQuery;
   const searchInputRef = useRef<HTMLInputElement>(null);
+
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setInternalSearchQuery(val);
+    if (onSearchChange) {
+      onSearchChange(val);
+    }
+  };
+
+  const getSearchPlaceholder = () => {
+    if (activeTab === 'stream') {
+      return language === 'en'
+        ? 'Search community posts, hashtags, collectors... (Press /)'
+        : '搜尋社群動態、話題標籤、玩家貼文... (按 /)';
+    }
+    if (activeTab === 'market') {
+      return language === 'en'
+        ? 'Search marketplace listings, cards, sellers... (Press /)'
+        : '搜尋市集上架、卡牌、求購徵卡... (按 /)';
+    }
+    return language === 'en'
+      ? 'Search 16,000+ cards, sets, artists... (Press /)'
+      : '全圖鑑搜尋 16,000+ 卡牌、系列、繪師... (按 /)';
+  };
 
   const { language, setLanguage, t } = useLanguage();
   const { user, isLoggedIn, openAuthModal, logout } = useAuth();
+  const { theme, setTheme } = useTheme();
 
   // Slide-over Drawer Menu State
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
@@ -68,7 +99,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       ) {
         event.preventDefault();
         searchInputRef.current?.focus();
-        if (activeTab !== 'explore') {
+        if (activeTab !== 'stream' && activeTab !== 'market' && activeTab !== 'explore') {
           onTabChange('explore');
         }
       }
@@ -82,21 +113,24 @@ export const Navbar: React.FC<NavbarProps> = ({
     setLanguage(lang);
   };
 
+  const handleThemeChange = (newTheme: 'light' | 'dark') => {
+    setTheme(newTheme);
+  };
+
   const handleTabClick = (tabName: string) => {
     onTabChange(tabName);
     setIsDrawerOpen(false);
   };
 
   const handleSearchSubmit = () => {
+    if (activeTab === 'stream' || activeTab === 'market') {
+      return;
+    }
     onTabChange('explore');
   };
 
   const handleCategorySelect = (category: CardCategory) => {
     onCategoryChange(category);
-    onTabChange('explore');
-    if (category !== 'pokemon') {
-      setIsDrawerOpen(false);
-    }
   };
 
   const _handleSetSelect = (setName: string) => {
@@ -190,12 +224,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <input
                   ref={searchInputRef}
                   type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  value={currentSearchQuery}
+                  onChange={handleSearchInputChange}
                   onKeyDown={(e) => e.key === 'Enter' && handleSearchSubmit()}
-                  placeholder={language === 'en' ? 'Search 16,000+ cards, sets, artists... (Press /)' : '全圖鑑搜尋 16,000+ 卡牌、系列、繪師... (按 /)'}
+                  placeholder={getSearchPlaceholder()}
                   className="w-full h-full bg-transparent text-xs font-medium text-foreground placeholder:text-text-muted/60 focus:outline-none"
-                  aria-label="Global Card Search"
+                  aria-label="Global Search"
                 />
                 {onOpenScanner && (
                   <button
@@ -387,19 +421,23 @@ export const Navbar: React.FC<NavbarProps> = ({
                     <div className="grid grid-cols-2 gap-2">
                       {[
                         {
+                          id: 'stream',
+                          label: t('nav_stream') || '動態',
+                          icon: (
+                            <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                            </svg>
+                          ),
+                        },
+                        {
                           id: 'explore',
                           label: t('nav_explore') || '探索',
                           icon: <SearchIcon className="w-3.5 h-3.5 shrink-0" />,
                         },
                         {
-                          id: 'account',
-                          label: t('nav_account') || '個人帳戶',
-                          badge: portfolioCount > 0 ? `${portfolioCount}` : undefined,
-                          icon: (
-                            <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                            </svg>
-                          ),
+                          id: 'market',
+                          label: t('nav_market') || '市場',
+                          icon: <BasketIcon className="w-3.5 h-3.5 shrink-0" />,
                         },
                         {
                           id: 'wishlist',
@@ -418,16 +456,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                           ),
                         },
                         {
-                          id: 'market',
-                          label: t('nav_market') || '市場',
-                          icon: <BasketIcon className="w-3.5 h-3.5 shrink-0" />,
-                        },
-                        {
-                          id: 'stream',
-                          label: t('nav_stream') || '動態',
+                          id: 'account',
+                          label: t('nav_account') || '個人帳戶',
+                          badge: portfolioCount > 0 ? `${portfolioCount}` : undefined,
                           icon: (
                             <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
                           ),
                         },
@@ -535,6 +569,41 @@ export const Navbar: React.FC<NavbarProps> = ({
                           {lang === 'zh-TW' ? '繁中' : lang === 'en' ? 'EN' : '简中'}
                         </button>
                       ))}
+                    </div>
+                  </div>
+
+                  {/* 5. Theme Selector */}
+                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-surface-hover/40 border border-hairline/60">
+                    <span className="text-xs font-semibold text-text-muted">
+                      {language === 'en' ? 'Theme' : '介面主題'}
+                    </span>
+                    <div className="flex items-center gap-1" role="group" aria-label="Theme Selector">
+                      <button
+                        type="button"
+                        onClick={() => handleThemeChange('light')}
+                        aria-label="切換為淺色主題"
+                        aria-pressed={theme === 'light'}
+                        className={`px-2.5 py-0.5 rounded-md text-xs font-bold cursor-pointer transition-all ${
+                          theme === 'light'
+                            ? 'bg-ferrari-red text-white shadow-2xs'
+                            : 'bg-surface text-text-muted hover:text-foreground border border-hairline/60'
+                        }`}
+                      >
+                        {language === 'en' ? 'Light' : '淺色'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleThemeChange('dark')}
+                        aria-label="切換為深色主題"
+                        aria-pressed={theme === 'dark'}
+                        className={`px-2.5 py-0.5 rounded-md text-xs font-bold cursor-pointer transition-all ${
+                          theme === 'dark'
+                            ? 'bg-ferrari-red text-white shadow-2xs'
+                            : 'bg-surface text-text-muted hover:text-foreground border border-hairline/60'
+                        }`}
+                      >
+                        {language === 'en' ? 'Dark' : '深色'}
+                      </button>
                     </div>
                   </div>
 

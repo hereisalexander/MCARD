@@ -7,7 +7,7 @@ import {
 } from '@/contracts/marketplace.schema';
 import { CardCategory } from '@/contracts/common.schema';
 import { IMarketplaceRepository } from './repository.types';
-import { isDemoListing } from '@/types/marketplace';
+import { INITIAL_MARKETPLACE_LISTINGS, isDemoListing } from '@/types/marketplace';
 
 const STORAGE_KEY = 'mcard_marketplace_listings';
 
@@ -17,16 +17,27 @@ export class LocalMarketplaceRepository implements IMarketplaceRepository {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) {
+        if (INITIAL_MARKETPLACE_LISTINGS.length > 0) {
+          const seeded = INITIAL_MARKETPLACE_LISTINGS as unknown as MarketListing[];
+          this.setStorageData(seeded);
+          return seeded;
+        }
         return [];
       }
 
       const parsed = JSON.parse(raw);
-      if (!Array.isArray(parsed)) return [];
+      if (!Array.isArray(parsed) || parsed.length === 0) {
+        if (INITIAL_MARKETPLACE_LISTINGS.length > 0) {
+          const seeded = INITIAL_MARKETPLACE_LISTINGS as unknown as MarketListing[];
+          this.setStorageData(seeded);
+          return seeded;
+        }
+        return [];
+      }
 
       let hasCorrections = false;
       const validListings: MarketListing[] = [];
       for (const item of parsed) {
-        // 自動剔除歷史殘留的虛擬示範掛單
         if (isDemoListing(item)) {
           hasCorrections = true;
           continue;

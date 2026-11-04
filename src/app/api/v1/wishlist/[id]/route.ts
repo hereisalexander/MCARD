@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
 import { D1WishlistRepository } from '@/services/server/d1WishlistRepository';
+import { requireAuth } from '@/services/server/authHelper';
 import { apiSuccess, apiError, handleApiError } from '@/utils/apiResponse';
 
 export const dynamic = 'force-dynamic';
@@ -9,6 +10,7 @@ export const PATCH = async (
   context: { params: Promise<{ id: string }> }
 ) => {
   try {
+    await requireAuth(req);
     const { id } = await context.params;
     const body = await req.json();
     const repo = new D1WishlistRepository();
@@ -20,10 +22,11 @@ export const PATCH = async (
 };
 
 export const DELETE = async (
-  _req: NextRequest,
+  req: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) => {
   try {
+    await requireAuth(req);
     const { id } = await context.params;
     const repo = new D1WishlistRepository();
     const success = await repo.remove(id);

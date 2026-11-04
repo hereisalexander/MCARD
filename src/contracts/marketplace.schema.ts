@@ -39,7 +39,12 @@ export const MarketListingSchema = z.object({
   portfolioCardId: z.string().optional(),
   buyInCost: z.number().nonnegative().optional(),
   condition: ListingConditionSchema,
-  photos: z.array(z.string().url()).min(1, '至少需上傳 1 張實體卡況照').max(5, '最多上傳 5 張照片'),
+  photos: z.array(
+    z.string().refine(
+      (val) => val.startsWith('http://') || val.startsWith('https://') || val.startsWith('/') || val.startsWith('data:'),
+      { message: '圖片必須是有效的 URL、本機圖片路徑或 Data URL' }
+    )
+  ).min(1, '至少需上傳 1 張實體卡況照').max(5, '最多上傳 5 張照片'),
   notes: z.string().max(500, '卡況說明上限 500 字').default(''),
   location: z.string().min(1, '交收地點或寄送方式為必填'),
   createdAt: z.string().min(1),
@@ -56,7 +61,12 @@ export const CreateListingInputSchema = z.object({
   officialPrice: z.number().nonnegative().default(0),
   askingPrice: z.number().positive('售價金額必須大於 0'),
   condition: ListingConditionSchema,
-  photos: z.array(z.string().url()).min(1, '請至少提供 1 張實體卡片照片').max(5, '最多 5 張照片'),
+  photos: z.array(
+    z.string().refine(
+      (val) => val.startsWith('http://') || val.startsWith('https://') || val.startsWith('/') || val.startsWith('data:'),
+      { message: '請提供有效的圖片 URL、路徑或相片' }
+    )
+  ).min(1, '請至少提供 1 張實體卡片照片').max(5, '最多 5 張照片'),
   notes: z.string().max(500, '備註上限 500 字').default(''),
   location: z.string().min(1, '請填寫交易地點或寄送方式'),
   contactPlatform: ContactPlatformSchema,

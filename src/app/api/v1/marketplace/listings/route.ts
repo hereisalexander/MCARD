@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
 import { D1MarketplaceRepository } from '@/services/server/d1MarketplaceRepository';
+import { requireAuth } from '@/services/server/authHelper';
 import { apiSuccess, handleApiError } from '@/utils/apiResponse';
 import { CardCategory } from '@/contracts/common.schema';
 import { ListingStatus } from '@/contracts/marketplace.schema';
@@ -26,10 +27,13 @@ export const GET = async (req: NextRequest) => {
 
 export const POST = async (req: NextRequest) => {
   try {
+    const user = await requireAuth(req);
     const body = await req.json();
-    const seller = body.seller || {
-      name: body.sellerName || '藏家賣家',
-      avatar: body.sellerAvatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb',
+
+    const seller = {
+      id: user.id,
+      name: user.name,
+      avatar: user.avatarUrl,
     };
 
     const repo = new D1MarketplaceRepository();

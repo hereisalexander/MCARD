@@ -11,12 +11,14 @@ import { UserPortfolioItem } from '@/components/PortfolioDashboard';
 import { CreatePostModal } from '@/components/CreatePostModal';
 import { CommunityPostDetailModal } from '@/components/CommunityPostDetailModal';
 import { communityRepository } from '@/services/communityRepository';
+import { useAuth } from '@/context/AuthContext';
 
 export interface CommunityFeedViewProps {
   portfolio: UserPortfolioItem[];
   onAddCardToPortfolio: (cardName: string, price: number, imageUrl: string) => void;
   onNavigateToMarket?: () => void;
   onNavigateToExplore?: () => void;
+  searchQuery?: string;
 }
 
 const STORAGE_KEY = 'mcard_community_posts_v6';
@@ -25,10 +27,13 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
   portfolio,
   onAddCardToPortfolio,
   onNavigateToMarket,
+  searchQuery: externalSearchQuery,
 }) => {
+  const { isLoggedIn, openAuthModal } = useAuth();
   const [posts, setPosts] = useState<CommunityPost[]>(INITIAL_COMMUNITY_POSTS);
   const [subFilter, setSubFilter] = useState<string>('綜合');
-  const [searchQuery] = useState<string>('');
+  const [localSearchQuery] = useState<string>('');
+  const searchQuery = externalSearchQuery !== undefined ? externalSearchQuery : localSearchQuery;
   const [selectedPost, setSelectedPost] = useState<CommunityPost | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
   const [visibleCount, setVisibleCount] = useState<number>(12);
@@ -151,6 +156,10 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
   }, [displayedPosts, columnCount]);
 
   const handleToggleLike = async (postId: string) => {
+    if (!isLoggedIn) {
+      openAuthModal('請先登入帳號以進行點讚互動。');
+      return;
+    }
     const postToToggle = posts.find((p) => p.id === postId);
     if (!postToToggle) return;
 
@@ -219,6 +228,10 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
   };
 
   const handleAddComment = async (postId: string, commentText: string) => {
+    if (!isLoggedIn) {
+      openAuthModal('請先登入帳號以發表留言。');
+      return;
+    }
     const tempComment: CommunityComment = {
       id: `c-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
       authorName: '我 (VIP 藏家)',
@@ -448,7 +461,13 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
         {/* Right Quick Post Action Button */}
         <button
           type="button"
-          onClick={() => setIsCreateModalOpen(true)}
+          onClick={() => {
+            if (!isLoggedIn) {
+              openAuthModal('請先登入帳號以發布動態貼文。');
+              return;
+            }
+            setIsCreateModalOpen(true);
+          }}
           className="shrink-0 px-4 py-1.5 bg-ferrari-red hover:bg-ferrari-red-hover text-white rounded-full text-xs font-semibold shadow-xs transition-all transform active:scale-95 cursor-pointer"
         >
           發布動態

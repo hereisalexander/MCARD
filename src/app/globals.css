@@ -24,21 +24,21 @@ html {
 }
 
 html.dark {
-  /* Dark Mode (Tailwind v4 Red 600 Theme) */
-  --background: #181818;
-  --foreground: #ffffff;
-  --border-color: #303030;
-  --surface: #303030;
-  --surface-hover: #3a3a3a;
-  --canvas: #181818;
-  --canvas-dark: #181818;
-  --canvas-elevated: #303030;
-  --text-muted: #969696;
-  --text-body: #969696;
-  --hairline: #303030;
+  /* Obsidian & Scuderia Carbon Premium Dark Theme */
+  --background: #0a0b0e;
+  --foreground: #f4f5f8;
+  --border-color: rgba(255, 255, 255, 0.09);
+  --surface: #12141a;
+  --surface-hover: #1a1c24;
+  --canvas: #0a0b0e;
+  --canvas-dark: #07080a;
+  --canvas-elevated: #161821;
+  --text-muted: #8b8f9e;
+  --text-body: #d1d5db;
+  --hairline: rgba(255, 255, 255, 0.09);
   --primary: #e7000b;
-  --primary-hover: #c4000a;
-  --primary-active: #a00008;
+  --primary-hover: #ff1c28;
+  --primary-active: #c4000a;
   --accent-yellow: #f6e500;
 }
 
@@ -80,6 +80,18 @@ body {
   letter-spacing: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+html.dark body {
+  background-color: #0a0b0e;
+  background-image: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(231, 0, 11, 0.06), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 85% -10%, rgba(255, 255, 255, 0.015), transparent 50%);
+  background-attachment: fixed;
+}
+
+html.dark .bg-surface {
+  box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
 }
 
 /* Ferrari Design System Typography & Utilities */

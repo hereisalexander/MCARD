@@ -11,7 +11,7 @@ import { UniversalCard, CardCategory } from '@/services/multiCardService';
 import { CardGrade, CardCategory as ContractCardCategory } from '@/contracts/common.schema';
 import Link from 'next/link';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
-import { CardListing, isDemoListing, ListingStatus } from '@/types/marketplace';
+import { CardListing, isDemoListing, ListingStatus, INITIAL_MARKETPLACE_LISTINGS } from '@/types/marketplace';
 import { MarketplaceView } from '@/components/MarketplaceView';
 import { CreateListingModal } from '@/components/CreateListingModal';
 import { ListingDetailModal } from '@/components/ListingDetailModal';
@@ -23,6 +23,7 @@ import { VersusFloatBar } from '@/components/VersusFloatBar';
 import { CardVersusModal } from '@/components/CardVersusModal';
 import { AccountProfileView } from '@/components/AccountProfileView';
 import { useLanguage } from '@/context/LanguageContext';
+import { useAuth } from '@/context/AuthContext';
 import { portfolioRepository } from '@/services/portfolioRepository';
 import { marketplaceRepository } from '@/services/marketplaceRepository';
 
@@ -33,6 +34,7 @@ interface ToastState {
 
 export default function Home() {
   const { t } = useLanguage();
+  const { isLoggedIn, openAuthModal } = useAuth();
   const [activeTab, setActiveTab] = useState<string>('stream');
   const [selectedCategory, setSelectedCategory] = useState<CardCategory>('all');
   const [portfolio, setPortfolio] = useState<UserPortfolioItem[]>([]);
@@ -43,13 +45,16 @@ export default function Home() {
   const [selectedDetailCard, setSelectedDetailCard] = useState<UniversalCard | null>(null);
 
   // Marketplace State & Modal Controls
-  const [listings, setListings] = useState<CardListing[]>([]);
+  const [listings, setListings] = useState<CardListing[]>(INITIAL_MARKETPLACE_LISTINGS);
   const [isCreateListingOpen, setIsCreateListingOpen] = useState<boolean>(false);
   const [selectedListing, setSelectedListing] = useState<CardListing | null>(null);
 
   // Wishlist State & Modal
   const [wishlist, setWishlist] = useState<WishlistItem[]>(INITIAL_WISHLIST_ITEMS);
   const [wishlistModalCard, setWishlistModalCard] = useState<UniversalCard | null>(null);
+
+  // Community Stream Search State
+  const [streamSearchQuery, setStreamSearchQuery] = useState<string>('');
 
   // Versus / Comparison State & Modal
   const [comparedCards, setComparedCards] = useState<UniversalCard[]>([]);
@@ -155,6 +160,10 @@ export default function Home() {
 
   // Wishlist Handlers
   const handleToggleWishlist = (card: UniversalCard) => {
+    if (!isLoggedIn) {
+      openAuthModal('請先登入帳號以追蹤心願卡牌。');
+      return;
+    }
     const existingIndex = wishlist.findIndex(
       (w) => w.cardName.toLowerCase() === card.name.toLowerCase()
     );
@@ -169,6 +178,10 @@ export default function Home() {
   };
 
   const handleConfirmAddToWishlist = (newItem: WishlistItem) => {
+    if (!isLoggedIn) {
+      openAuthModal('請先登入帳號以加入心願追蹤清單。');
+      return;
+    }
     const updated = [newItem, ...wishlist];
     saveWishlist(updated);
     setToast({
@@ -224,6 +237,10 @@ export default function Home() {
   };
 
   const handleCreateListing = async (newListing: CardListing) => {
+    if (!isLoggedIn) {
+      openAuthModal('請先登入帳號以刊登商品至二手市集。');
+      return;
+    }
     const updated = [newListing, ...listings];
     saveListings(updated);
     setToast({
@@ -356,6 +373,10 @@ export default function Home() {
     category: CardCategory = 'pokemon',
     buyPrice?: number
   ) => {
+    if (!isLoggedIn) {
+      openAuthModal('請先登入帳號以將卡牌加入個人收藏庫。');
+      return;
+    }
     const cost = buyPrice !== undefined ? buyPrice : price;
     
     // Check if exact same card & condition already exists in portfolio
@@ -425,6 +446,10 @@ export default function Home() {
     cardNumber?: string;
     setName?: string;
   }) => {
+    if (!isLoggedIn) {
+      openAuthModal('請先登入帳號以將卡牌保存至個人收藏庫。');
+      return;
+    }
     handleAddCard(
       cardData.name,
       cardData.price || 0,
@@ -448,6 +473,10 @@ export default function Home() {
     cardNumber?: string;
     setName?: string;
   }) => {
+    if (!isLoggedIn) {
+      openAuthModal('請先登入帳號以將掃描卡牌刊登至二手市集。');
+      return;
+    }
     setScannerListingPrefill({
       name: cardData.name,
       category: (cardData.category as CardCategory) || 'pokemon',
@@ -519,8 +548,9 @@ export default function Home() {
 
   const handleSelectCategory = (cat: CardCategory) => {
     setSelectedCategory(cat);
-    setSelectedDetailCard(null);
-    setActiveTab('explore');
+    if (selectedDetailCard) {
+      setSelectedDetailCard(null);
+    }
     setSelectedSetFilter('ALL');
   };
 
@@ -555,6 +585,12 @@ export default function Home() {
         onCategoryChange={handleSelectCategory}
         wishlistCount={wishlist.length}
         onOpenScanner={handleOpenScanner}
+        searchQuery={activeTab === 'stream' ? streamSearchQuery : undefined}
+        onSearchChange={(q) => {
+          if (activeTab === 'stream') {
+            setStreamSearchQuery(q);
+          }
+        }}
         onSelectSet={(setName) => {
           setSelectedCategory('pokemon');
           handleSelectSetFromSets(setName);
@@ -579,6 +615,7 @@ export default function Home() {
             {activeTab === 'stream' && (
               <CommunityFeedView
                 portfolio={portfolio}
+                searchQuery={streamSearchQuery}
                 onAddCardToPortfolio={(name, price, img) =>
                   handleAddCard(name, price, img, 'Ungraded', 'pokemon')
                 }
@@ -633,7 +670,15 @@ export default function Home() {
             {activeTab === 'market' && (
               <MarketplaceView
                 listings={listings}
-                onOpenCreateListing={() => setIsCreateListingOpen(true)}
+                category={selectedCategory}
+                onSelectCategory={handleSelectCategory}
+                onOpenCreateListing={() => {
+                  if (!isLoggedIn) {
+                    openAuthModal('請先登入帳號以刊登商品至二手市集。');
+                    return;
+                  }
+                  setIsCreateListingOpen(true);
+                }}
                 onSelectListing={(listing) => setSelectedListing(listing)}
                 onUpdateListingStatus={handleUpdateListingStatus}
                 onUpdateListingPrice={handleUpdateListingPrice}

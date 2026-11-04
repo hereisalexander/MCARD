@@ -191,4 +191,69 @@ export const BriefcaseIcon: React.FC<IconProps> = ({ className = 'w-6 h-6' }) =>
   </svg>
 );
 
+// 25. Trophy Icon (評級開箱 / 成就)
+export const TrophyIcon: React.FC<IconProps> = ({ className = 'w-3.5 h-3.5' }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 4h14a1 1 0 011 1v2a5 5 0 01-5 5h-1a5 5 0 01-4-2.236A5 5 0 015 7V5a1 1 0 011-1z" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 12v5m-4 4h8" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6H2a1 1 0 00-1 1v1a4 4 0 004 4h1M20 6h2a1 1 0 011 1v1a4 4 0 01-4 4h-1" />
+  </svg>
+);
+
+// 26. Chat Bubble Icon (交流討論)
+export const ChatBubbleIcon: React.FC<IconProps> = ({ className = 'w-3.5 h-3.5' }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+  </svg>
+);
+
+// 27. Box / Package Icon (資產選擇)
+export const BoxIcon: React.FC<IconProps> = ({ className = 'w-3.5 h-3.5' }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+  </svg>
+);
+
+// 28. Upload Icon (上傳相片)
+export const UploadIcon: React.FC<IconProps> = ({ className = 'w-3.5 h-3.5' }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+  </svg>
+);
+
+// 29. Link Chain Icon (外部網址)
+export const LinkChainIcon: React.FC<IconProps> = ({ className = 'w-3.5 h-3.5' }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+  </svg>
+);
+
+// 30. Send Plane Icon (即刻發布)
+export const SendPlaneIcon: React.FC<IconProps> = ({ className = 'w-3.5 h-3.5' }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+  </svg>
+);
+
+// 31. Currency Dollar Icon (出售意向價)
+export const CurrencyDollarIcon: React.FC<IconProps> = ({ className = 'w-3.5 h-3.5' }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V6m0 12v-2m0 0c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+);
+
+// 32. Unbox / Package Open Icon (開箱曬卡)
+export const UnboxIcon: React.FC<IconProps> = ({ className = 'w-3.5 h-3.5' }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+  </svg>
+);
+
+// 33. Shield Check Icon (評級開箱 / 權威鑑定)
+export const ShieldCheckIcon: React.FC<IconProps> = ({ className = 'w-3.5 h-3.5' }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+  </svg>
+);
+
 

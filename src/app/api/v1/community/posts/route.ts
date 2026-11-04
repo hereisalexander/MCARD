@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
 import { D1CommunityRepository } from '@/services/server/d1CommunityRepository';
+import { requireAuth } from '@/services/server/authHelper';
 import { apiSuccess, handleApiError } from '@/utils/apiResponse';
 import { CommunityPostType } from '@/contracts/community.schema';
 
@@ -21,12 +22,14 @@ export const GET = async (req: NextRequest) => {
 
 export const POST = async (req: NextRequest) => {
   try {
+    const user = await requireAuth(req);
     const body = await req.json();
-    const author = body.author || {
-      id: 'local-user',
-      name: 'TCG 藏家',
-      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde',
-      handle: '@mcard_collector',
+
+    const author = {
+      id: user.id,
+      name: user.name,
+      avatar: user.avatarUrl,
+      handle: `@${user.email.split('@')[0]}`,
       badge: '認證藏家',
     };
 
