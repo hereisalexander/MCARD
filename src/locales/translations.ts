@@ -439,8 +439,8 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     // AI Camera 2.0
     ai_camera_btn: 'AI Camera',
     ai_camera_desc: 'Scan & Price Cards with AI',
-    ai_camera_vault_quick: '📸 Scan to Vault',
-    ai_camera_listing_quick: '📸 Scan & Autofill',
+    ai_camera_vault_quick: 'Scan to Vault',
+    ai_camera_listing_quick: 'Scan & Autofill',
   },
   'zh-TW': {
     // Navigation & Header
@@ -660,8 +660,8 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     // AI Camera 2.0
     ai_camera_btn: 'AI 拍照識卡',
     ai_camera_desc: '拍照辨識與聯網搜價',
-    ai_camera_vault_quick: '📸 拍照快速入庫',
-    ai_camera_listing_quick: '📸 拍照自動填單',
+    ai_camera_vault_quick: '拍照快速入庫',
+    ai_camera_listing_quick: '拍照自動填單',
   },
   'zh-CN': {
     // Navigation & Header
@@ -883,7 +883,7 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     // AI Camera 2.0
     ai_camera_btn: 'AI 拍照识卡',
     ai_camera_desc: '拍照辨识与联网搜价',
-    ai_camera_vault_quick: '📸 拍照快速入库',
-    ai_camera_listing_quick: '📸 拍照自动填单',
+    ai_camera_vault_quick: '拍照快速入库',
+    ai_camera_listing_quick: '拍照自动填单',
   },
 };

@@ -14,6 +14,8 @@
     "lint": "eslint",
     "db:generate": "drizzle-kit generate",
     "db:migrate:local": "wrangler d1 migrations apply mcard-db --local",
+    "db:migrate:remote": "wrangler d1 migrations apply mcard-db --remote",
+    "db:push": "wrangler d1 migrations apply mcard-db --remote",
     "db:studio": "drizzle-kit studio",
     "db": "drizzle-kit studio",
     "build:worker": "opennextjs-cloudflare build",

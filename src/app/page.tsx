@@ -27,6 +27,33 @@ import { useAuth } from '@/context/AuthContext';
 import { portfolioRepository } from '@/services/portfolioRepository';
 import { marketplaceRepository } from '@/services/marketplaceRepository';
 
+// Valid Navigation Tab IDs
+const VALID_TABS = [
+  'stream',
+  'explore',
+  'market',
+  'sets',
+  'portfolio',
+  'account',
+  'wishlist',
+  'watchlist',
+  'showcase',
+] as const;
+
+// Helper to resolve initial active tab from URL query param or localStorage
+const getInitialActiveTab = (): string => {
+  if (typeof window === 'undefined') return 'stream';
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlTab = urlParams.get('tab');
+  const savedTab = localStorage.getItem('mcard_active_tab');
+
+  const targetTab = urlTab || savedTab;
+  if (targetTab && (VALID_TABS as readonly string[]).includes(targetTab)) {
+    return targetTab === 'watchlist' ? 'wishlist' : targetTab;
+  }
+  return 'stream';
+};
+
 interface ToastState {
   show: boolean;
   message: string;
@@ -35,7 +62,54 @@ interface ToastState {
 export default function Home() {
   const { t } = useLanguage();
   const { isLoggedIn, openAuthModal } = useAuth();
-  const [activeTab, setActiveTab] = useState<string>('stream');
+  // Tab state with persistence
+  const [activeTab, setActiveTab] = useState<string>(getInitialActiveTab);
+
+  const handleTabChange = (nextTab: string) => {
+    setSelectedDetailCard(null);
+    const normalizedTab = nextTab === 'watchlist' ? 'wishlist' : nextTab;
+    setActiveTab(normalizedTab);
+    if (normalizedTab === 'explore') {
+      setSelectedSetFilter('ALL');
+    }
+  };
+
+  // 1. Listen to browser back/forward history navigation (popstate)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handlePopState = () => {
+      const currentParams = new URLSearchParams(window.location.search);
+      const tabFromUrl = currentParams.get('tab');
+      if (tabFromUrl && (VALID_TABS as readonly string[]).includes(tabFromUrl)) {
+        setActiveTab(tabFromUrl === 'watchlist' ? 'wishlist' : tabFromUrl);
+      } else {
+        setActiveTab('stream');
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  // 2. Synchronize activeTab to URL Search Params & localStorage
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const currentUrl = new URL(window.location.href);
+    const currentTabInUrl = currentUrl.searchParams.get('tab') || 'stream';
+
+    if (activeTab !== currentTabInUrl) {
+      if (activeTab === 'stream') {
+        currentUrl.searchParams.delete('tab');
+      } else {
+        currentUrl.searchParams.set('tab', activeTab);
+      }
+      window.history.replaceState(null, '', currentUrl.pathname + currentUrl.search);
+    }
+
+    localStorage.setItem('mcard_active_tab', activeTab);
+  }, [activeTab]);
   const [selectedCategory, setSelectedCategory] = useState<CardCategory>('all');
   const [portfolio, setPortfolio] = useState<UserPortfolioItem[]>([]);
   const [selectedSetFilter, setSelectedSetFilter] = useState<string>('ALL');
@@ -82,15 +156,6 @@ export default function Home() {
   // Load portfolio, marketplace & wishlist from repositories & localStorage on mount
   useEffect(() => {
     const timer = setTimeout(() => {
-      // 0. Check URL query param ?tab= (e.g., coming from /terms or /privacy navbar)
-      if (typeof window !== 'undefined') {
-        const urlParams = new URLSearchParams(window.location.search);
-        const targetTab = urlParams.get('tab');
-        if (targetTab && ['stream', 'explore', 'market', 'portfolio', 'account', 'watchlist'].includes(targetTab)) {
-          setActiveTab(targetTab);
-        }
-      }
-
       // 1. Load Portfolio via Repository (Zod validated)
       portfolioRepository.getAll().then((assets) => {
         if (assets && assets.length > 0) {
@@ -531,8 +596,7 @@ export default function Home() {
 
   const handleSelectSetFromSets = (setName: string) => {
     setSelectedSetFilter(setName);
-    setSelectedDetailCard(null);
-    setActiveTab('explore');
+    handleTabChange('explore');
   };
 
   const handleSelectCardDetail = (card: UniversalCard) => {
@@ -572,13 +636,7 @@ export default function Home() {
     <div className="flex flex-col min-h-screen min-h-dvh bg-background text-foreground transition-colors duration-200">
       <Navbar
         activeTab={selectedDetailCard ? 'explore' : activeTab}
-        onTabChange={(tab) => {
-          setSelectedDetailCard(null);
-          setActiveTab(tab);
-          if (tab === 'explore') {
-            setSelectedSetFilter('ALL');
-          }
-        }}
+        onTabChange={handleTabChange}
         portfolioCount={portfolioItemCount}
         portfolioValue={portfolioValue}
         selectedCategory={selectedCategory}
@@ -619,8 +677,8 @@ export default function Home() {
                 onAddCardToPortfolio={(name, price, img) =>
                   handleAddCard(name, price, img, 'Ungraded', 'pokemon')
                 }
-                onNavigateToMarket={() => setActiveTab('market')}
-                onNavigateToExplore={() => setActiveTab('explore')}
+                onNavigateToMarket={() => handleTabChange('market')}
+                onNavigateToExplore={() => handleTabChange('explore')}
               />
             )}
             
@@ -644,10 +702,10 @@ export default function Home() {
                 listings={listings}
                 onRemoveFromWishlist={handleRemoveFromWishlist}
                 onUpdateWishlistItem={handleUpdateWishlistItem}
-                onNavigateToExplore={() => setActiveTab('explore')}
+                onNavigateToExplore={() => handleTabChange('explore')}
                 onSelectMarketplaceListing={(listing) => {
                   setSelectedListing(listing);
-                  setActiveTab('market');
+                  handleTabChange('market');
                 }}
               />
             )}
@@ -696,17 +754,14 @@ export default function Home() {
                 portfolioValue={portfolioValue}
                 mode="portfolio"
                 listings={listings}
-                onNavigateToMarket={() => setActiveTab('market')}
+                onNavigateToMarket={() => handleTabChange('market')}
                 onOpenScanner={handleOpenScanner}
               />
             )}
 
             {activeTab === 'account' && (
               <AccountProfileView
-                onNavigateToTab={(tab) => {
-                  setSelectedDetailCard(null);
-                  setActiveTab(tab);
-                }}
+                onNavigateToTab={handleTabChange}
                 portfolioCount={portfolioItemCount}
                 portfolioValue={portfolioValue}
                 wishlistCount={wishlist.length}
@@ -823,13 +878,7 @@ export default function Home() {
       {/* Mobile Bottom Navigation Bar (Fixed bottom for mobile app experience) */}
       <MobileBottomNav
         activeTab={selectedDetailCard ? 'explore' : activeTab}
-        onTabChange={(tab) => {
-          setSelectedDetailCard(null);
-          setActiveTab(tab);
-          if (tab === 'explore') {
-            setSelectedSetFilter('ALL');
-          }
-        }}
+        onTabChange={handleTabChange}
         portfolioCount={portfolioItemCount}
         onOpenScanner={handleOpenScanner}
       />
