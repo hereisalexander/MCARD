@@ -285,7 +285,7 @@ export const CardScannerModal: React.FC<CardScannerModalProps> = ({
 
     const conditionTag = scanResult.isGraded
       ? `${scanResult.gradingCompany || 'PSA'} ${scanResult.gradeScore || '10'}`
-      : 'Near Mint';
+      : 'Ungraded Near Mint';
 
     onCreateListing({
       name: scanResult.cardName,

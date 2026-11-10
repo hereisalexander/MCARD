@@ -350,9 +350,17 @@ export const HomeClient: React.FC<HomeClientProps> = ({ initialTab }) => {
         }
       );
       if (created) {
-        setListings((prev) =>
-          prev.map((item) => (item.id === newListing.id ? (created as unknown as CardListing) : item))
-        );
+        setListings((prev) => {
+          const next = prev.map((item) =>
+            item.id === newListing.id ? (created as unknown as CardListing) : item
+          );
+          if (typeof window !== 'undefined') {
+            try {
+              localStorage.setItem('mcard_marketplace_listings', JSON.stringify(next));
+            } catch {}
+          }
+          return next;
+        });
       }
     } catch (e) {
       console.warn('同步上架商品至遠端 API 失敗，已安全儲存於本地備用:', e);

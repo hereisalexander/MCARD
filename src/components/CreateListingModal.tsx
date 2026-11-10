@@ -96,8 +96,23 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
         setOfficialPrice(initialData.askingPrice);
         setAskingPrice(initialData.askingPrice.toString());
       }
-      if (initialData.condition) setCondition(initialData.condition as ListingCondition);
-      if (initialData.photoUrl) setPhotoPreview(initialData.photoUrl);
+      if (initialData.condition) {
+        const rawCond = initialData.condition;
+        if (rawCond === 'Near Mint' || rawCond === 'Ungraded') {
+          setCondition('Ungraded Near Mint');
+        } else {
+          setCondition(rawCond as ListingCondition);
+        }
+      }
+      if (initialData.photoUrl) {
+        if (initialData.photoUrl.startsWith('data:image')) {
+          compressImage(initialData.photoUrl).then((compressed) => {
+            setPhotoPreview(compressed);
+          });
+        } else {
+          setPhotoPreview(initialData.photoUrl);
+        }
+      }
     }
     /* eslint-enable react-hooks/set-state-in-effect */
   }, [initialData]);
@@ -199,9 +214,9 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
       role="dialog"
       aria-modal="true"
       aria-labelledby="create-listing-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-sm animate-fade-in overflow-y-auto"
+      className="fixed inset-0 z-[70] flex items-center justify-center p-3 sm:p-4 pb-[max(env(safe-area-inset-bottom),16px)] pt-[max(env(safe-area-inset-top),16px)] bg-black/80 backdrop-blur-sm animate-fade-in overflow-y-auto"
     >
-      <div className="relative w-full max-w-lg bg-surface border border-hairline/80 rounded-2xl shadow-2xl p-5 sm:p-6 my-auto text-foreground max-h-[90vh] flex flex-col">
+      <div className="relative w-full max-w-lg bg-surface border border-hairline/80 rounded-2xl shadow-2xl p-4 sm:p-6 my-auto text-foreground max-h-[88vh] sm:max-h-[90vh] flex flex-col overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-hairline/60 shrink-0">
           <div className="flex items-center gap-2">
@@ -219,14 +234,16 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
           </button>
         </div>
 
-        {/* Scrollable Form Body */}
-        <form onSubmit={handleSubmit} className="overflow-y-auto pr-1 py-4 flex-1 flex flex-col gap-4 text-xs">
-          {errorMsg && (
-            <div className="p-3 rounded-xl bg-ferrari-red/10 border border-ferrari-red/30 text-ferrari-red font-semibold text-xs flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-ferrari-red" />
-              <span>{errorMsg}</span>
-            </div>
-          )}
+        {/* Form Container with Fixed Footer */}
+        <form onSubmit={handleSubmit} className="flex-1 flex flex-col min-h-0 overflow-hidden">
+          {/* Scrollable Form Body */}
+          <div className="overflow-y-auto pr-1 py-3 flex-1 flex flex-col gap-4 text-xs">
+            {errorMsg && (
+              <div className="p-3 rounded-xl bg-ferrari-red/10 border border-ferrari-red/30 text-ferrari-red font-semibold text-xs flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-ferrari-red" />
+                <span>{errorMsg}</span>
+              </div>
+            )}
 
           {/* Quick Import from Portfolio */}
           {portfolio.length > 0 && (
@@ -464,18 +481,20 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
             />
           </div>
 
-          {/* Submit Buttons */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-hairline/60 shrink-0">
+          </div>
+
+          {/* Fixed Submit Footer */}
+          <div className="flex items-center justify-end gap-2.5 pt-2.5 pb-0.5 border-t border-hairline/60 shrink-0 bg-surface">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl bg-surface-hover text-text-muted hover:text-foreground font-semibold cursor-pointer transition-colors"
+              className="h-8 px-3.5 rounded-lg bg-surface-hover hover:bg-hairline text-text-muted hover:text-foreground text-xs font-medium cursor-pointer transition-all active:scale-95 border border-hairline/60"
             >
               {t('cancel')}
             </button>
             <button
               type="submit"
-              className="px-6 py-2 rounded-xl bg-ferrari-red hover:bg-ferrari-red-hover text-white font-bold cursor-pointer transition-colors shadow-sm active:scale-95"
+              className="h-8 px-4.5 rounded-lg bg-ferrari-red hover:bg-ferrari-red-hover text-white text-xs font-semibold cursor-pointer transition-all shadow-2xs active:scale-95 flex items-center justify-center"
             >
               {t('create_modal_submit')}
             </button>

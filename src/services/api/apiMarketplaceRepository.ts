@@ -51,17 +51,21 @@ export class ApiMarketplaceRepository implements IMarketplaceRepository {
   }
 
   private async autoSyncLocalListings(cloudListings: MarketListing[]): Promise<MarketListing[]> {
-    if (this.hasSyncedLocalToD1 || typeof window === 'undefined') {
+    if (typeof window === 'undefined') {
       return cloudListings;
     }
-    this.hasSyncedLocalToD1 = true;
 
     const localData = this.getCachedData();
-    if (cloudListings.length === 0 && localData.length > 0) {
-      console.log(`[Cloudflare D1] 正在將 ${localData.length} 筆本機市集掛單同步至 D1...`);
-      const migrated: MarketListing[] = [];
-      for (const item of localData) {
-        if (isDemoListing(item)) continue;
+    const cloudIds = new Set(cloudListings.map((c) => c.id));
+    const pendingSync = localData.filter((item) => !cloudIds.has(item.id) && !isDemoListing(item));
+
+    if (pendingSync.length === 0) {
+      return cloudListings.length > 0 ? cloudListings : localData;
+    }
+
+    if (!this.hasSyncedLocalToD1) {
+      this.hasSyncedLocalToD1 = true;
+      for (const item of pendingSync) {
         try {
           const res = await fetch('/api/v1/marketplace/listings', {
             method: 'POST',
@@ -84,22 +88,32 @@ export class ApiMarketplaceRepository implements IMarketplaceRepository {
               },
             }),
           });
-          const json = await res.json();
-          if (json.success && json.data) {
-            migrated.push(json.data);
+          if (res.ok) {
+            const json = await res.json();
+            if (json.success && json.data) {
+              const parsed = MarketListingSchema.safeParse(json.data);
+              if (parsed.success) {
+                cloudListings.push(parsed.data);
+              }
+            }
           }
         } catch (migErr) {
           console.warn('[D1 Migration] 市集遷移失敗:', item.cardName, migErr);
         }
       }
+    }
 
-      if (migrated.length > 0) {
-        this.setCachedData(migrated);
-        return migrated;
+    // 合併雲端與本地尚未被雲端收錄的自建掛單，確保離線或未同步時本機卡牌永不消失
+    const mergedListings: MarketListing[] = [...cloudListings];
+    const existingIds = new Set(mergedListings.map((m) => m.id));
+    for (const item of pendingSync) {
+      if (!existingIds.has(item.id)) {
+        mergedListings.push(item);
+        existingIds.add(item.id);
       }
     }
 
-    return cloudListings;
+    return mergedListings;
   }
 
   getAll = async (filter?: { category?: CardCategory; status?: ListingStatus }): Promise<MarketListing[]> => {
@@ -124,7 +138,15 @@ export class ApiMarketplaceRepository implements IMarketplaceRepository {
           }
           const finalData = await this.autoSyncLocalListings(validListings);
           this.setCachedData(finalData);
-          return finalData;
+
+          let filtered = finalData;
+          if (filter?.category && filter.category !== 'all') {
+            filtered = filtered.filter((item) => item.category === filter.category);
+          }
+          if (filter?.status) {
+            filtered = filtered.filter((item) => item.status === filter.status);
+          }
+          return filtered;
         }
       }
     } catch (err) {

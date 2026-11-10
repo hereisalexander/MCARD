@@ -145,7 +145,7 @@ export const CardVersusModal: React.FC<CardVersusModalProps> = ({
       role="dialog"
       aria-modal="true"
       aria-labelledby="versus-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-md animate-fade-in overflow-y-auto"
+      className="fixed inset-0 z-[70] flex items-center justify-center p-3 sm:p-6 pb-[max(env(safe-area-inset-bottom),16px)] pt-[max(env(safe-area-inset-top),16px)] bg-black/85 backdrop-blur-md animate-fade-in overflow-y-auto"
     >
       <div className="relative w-full max-w-5xl bg-surface border border-hairline/80 rounded-3xl shadow-2xl p-5 sm:p-7 text-foreground max-h-[92vh] flex flex-col overflow-y-auto">
         {/* Header */}

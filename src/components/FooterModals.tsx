@@ -52,7 +52,7 @@ export const FooterModals: React.FC<FooterModalsProps> = ({ activeModal, onClose
   return (
     <div
       onClick={handleBackdropClick}
-      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 animate-fade-in"
+      className="fixed inset-0 z-[70] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 pb-[max(env(safe-area-inset-bottom),16px)] pt-[max(env(safe-area-inset-top),16px)] animate-fade-in"
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-title"

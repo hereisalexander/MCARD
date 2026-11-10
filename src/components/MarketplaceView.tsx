@@ -131,7 +131,14 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({
     // 4. Condition filter
     if (conditionFilter !== 'ALL') {
       if (conditionFilter === 'PSA 10' && item.condition !== 'PSA 10') return false;
-      if (conditionFilter === 'Ungraded' && item.condition === 'PSA 10') return false;
+      if (
+        conditionFilter === 'Ungraded' &&
+        (item.condition.startsWith('PSA') ||
+          item.condition.startsWith('BGS') ||
+          item.condition.startsWith('CGC'))
+      ) {
+        return false;
+      }
     }
 
     // 5. Discount filter

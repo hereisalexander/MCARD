@@ -274,7 +274,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
       role="dialog"
       aria-modal="true"
       aria-labelledby="create-post-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-fade-in"
+      className="fixed inset-0 z-[70] flex items-center justify-center p-3 sm:p-4 pb-[max(env(safe-area-inset-bottom),16px)] pt-[max(env(safe-area-inset-top),16px)] bg-black/75 backdrop-blur-md animate-fade-in"
     >
       <div className="bg-surface border border-hairline w-full max-w-xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}

@@ -51,7 +51,7 @@ export const ListingDetailModal: React.FC<ListingDetailModalProps> = ({
       role="dialog"
       aria-modal="true"
       aria-labelledby="listing-detail-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm animate-fade-in overflow-y-auto"
+      className="fixed inset-0 z-[70] flex items-center justify-center p-3 sm:p-4 pb-[max(env(safe-area-inset-bottom),16px)] pt-[max(env(safe-area-inset-top),16px)] bg-black/80 backdrop-blur-sm animate-fade-in overflow-y-auto"
     >
       <div className="relative w-full max-w-2xl bg-surface border border-hairline/80 rounded-2xl shadow-2xl p-5 sm:p-6 my-auto text-foreground max-h-[92vh] flex flex-col">
         {/* Header */}

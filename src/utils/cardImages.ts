@@ -4,23 +4,21 @@
  */
 export const getListingCardPhoto = (cardName?: string, photos?: string[]): string => {
   const photo = photos?.[0] || '';
-  const name = cardName || '';
+  if (!photo) return 'https://images.pokemontcg.io/sv3pt5/199_hires.png';
 
-  // 1. 青眼白龍 (Blue-Eyes White Dragon)
-  if (name.includes('青眼白龍') || name.includes('Blue-Eyes') || photo.includes('1607604276583')) {
+  // 使用者自拍實體卡照（Data URL 或 Blob）一律優先展示真實卡況照片
+  if (photo.startsWith('data:image') || photo.startsWith('blob:')) {
+    return photo;
+  }
+
+  // 修正舊版 Unsplash 示範圖為官方卡圖
+  if (photo.includes('1607604276583')) {
     return 'https://images.ygoprodeck.com/images/cards/89631139.jpg';
   }
 
-  // 2. 1986 Fleer Michael Jordan Rookie
-  if (
-    name.includes('Michael Jordan') ||
-    name.includes('Jordan') ||
-    name.includes('1986 Fleer') ||
-    photo.includes('1546519638')
-  ) {
+  if (photo.includes('1546519638')) {
     return '/images/cards/nba-jordan.jpg';
   }
 
-  // 3. Fallback to provided photo or default Pokémon card
-  return photo || 'https://images.pokemontcg.io/sv3pt5/199_hires.png';
+  return photo;
 };

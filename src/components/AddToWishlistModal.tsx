@@ -53,7 +53,7 @@ export const AddToWishlistModal: React.FC<AddToWishlistModalProps> = ({
       role="dialog"
       aria-modal="true"
       aria-labelledby="wishlist-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in"
+      className="fixed inset-0 z-[70] flex items-center justify-center p-4 pb-[max(env(safe-area-inset-bottom),16px)] pt-[max(env(safe-area-inset-top),16px)] bg-black/75 backdrop-blur-sm animate-fade-in"
     >
       <div className="relative w-full max-w-md bg-surface border border-hairline rounded-2xl shadow-2xl p-6 overflow-hidden">
         {/* Header */}

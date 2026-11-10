@@ -47,7 +47,7 @@ export const CommunityPostDetailModal: React.FC<CommunityPostDetailModalProps> =
       role="dialog"
       aria-modal="true"
       aria-labelledby="post-detail-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 bg-black/80 backdrop-blur-md animate-fade-in"
+      className="fixed inset-0 z-[70] flex items-center justify-center p-2 sm:p-4 md:p-6 pb-[max(env(safe-area-inset-bottom),16px)] pt-[max(env(safe-area-inset-top),16px)] bg-black/80 backdrop-blur-md animate-fade-in"
     >
       <div className="bg-surface border border-hairline w-full max-w-4xl h-[92vh] max-h-[850px] rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
         {/* Left Side: Large Visual Card Display */}

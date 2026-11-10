@@ -3,9 +3,16 @@ import { CardCategory } from '@/services/multiCardService';
 export type ListingCondition =
   | 'PSA 10'
   | 'PSA 9'
+  | 'PSA 8.5'
+  | 'PSA 8'
+  | 'BGS 10'
   | 'BGS 9.5'
+  | 'BGS 9'
   | 'CGC 10'
+  | 'CGC 9.5'
   | 'Ungraded Near Mint'
+  | 'Near Mint'
+  | 'Ungraded'
   | 'Played';
 
 export type ListingStatus = 'active' | 'reserved' | 'sold';

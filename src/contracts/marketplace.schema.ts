@@ -13,9 +13,16 @@ export type ContactPlatform = z.infer<typeof ContactPlatformSchema>;
 export const ListingConditionSchema = z.enum([
   'PSA 10',
   'PSA 9',
+  'PSA 8.5',
+  'PSA 8',
+  'BGS 10',
   'BGS 9.5',
+  'BGS 9',
   'CGC 10',
+  'CGC 9.5',
   'Ungraded Near Mint',
+  'Near Mint',
+  'Ungraded',
   'Played',
 ]);
 export type ListingCondition = z.infer<typeof ListingConditionSchema>;
@@ -24,7 +31,7 @@ export type ListingCondition = z.infer<typeof ListingConditionSchema>;
 export const MarketListingSchema = z.object({
   id: z.string().min(1, '掛單 ID 不得為空'),
   sellerName: z.string().min(1, '賣家暱稱不得為空'),
-  sellerAvatar: z.string().url('賣家頭像格式錯誤'),
+  sellerAvatar: z.string().min(1, '賣家頭像不得為空'),
   sellerRating: z.number().min(1).max(5).default(5.0),
   sellerSalesCount: z.number().int().nonnegative().default(0),
   contactPlatform: ContactPlatformSchema,
