@@ -377,28 +377,32 @@ export const AccountProfileView: React.FC<AccountProfileViewProps> = ({
 
       {/* 5. Logout & Account Exit (Only shown when logged in) */}
       {isLoggedIn ? (
-        <div className="w-full flex items-center justify-between pt-2">
-          <span className="text-xs text-text-muted">
+        <div className="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
+          <span className="text-xs text-text-muted leading-relaxed">
             切換為訪客模式後，您隨時可再次登入恢復資產同步。
           </span>
           <button
             type="button"
             onClick={handleLogout}
-            className="h-10 px-5 rounded-xl border border-rose-500/30 text-rose-500 hover:bg-rose-500 hover:text-white text-xs font-bold tracking-wide transition-all cursor-pointer shadow-2xs flex items-center gap-2"
+            aria-label={t('auth_logout')}
+            tabIndex={0}
+            className="h-9.5 px-4 rounded-xl border border-rose-500/30 text-rose-500 hover:bg-rose-500 hover:text-white text-xs font-bold tracking-wide transition-all cursor-pointer shadow-2xs flex items-center justify-center gap-2 shrink-0 whitespace-nowrap self-end sm:self-auto"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
-            <span>{t('auth_logout')}</span>
+            <span className="whitespace-nowrap">{t('auth_logout')}</span>
           </button>
         </div>
       ) : (
-        <div className="w-full flex items-center justify-between pt-2 text-xs text-text-muted">
-          <span>目前為訪客體驗模式，隨時點擊右上角或上方按鈕即可進行帳戶登入。</span>
+        <div className="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 text-xs text-text-muted">
+          <span className="leading-relaxed">目前為訪客體驗模式，隨時點擊右上角或上方按鈕即可進行帳戶登入。</span>
           <button
             type="button"
             onClick={() => openAuthModal()}
-            className="text-ferrari-red font-bold hover:underline cursor-pointer"
+            aria-label="立即登入"
+            tabIndex={0}
+            className="text-ferrari-red font-bold hover:underline cursor-pointer shrink-0 whitespace-nowrap self-end sm:self-auto"
           >
             立即登入 →
           </button>

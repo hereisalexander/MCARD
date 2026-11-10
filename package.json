@@ -2,6 +2,7 @@
   "name": "mcard",
   "version": "0.1.0",
   "private": true,
+  "author": "明月千問科技有限公司 (Luna Qianwen Technology Co., Ltd.)",
   "license": "AGPL-3.0-or-later",
   "engines": {
     "node": ">=20.0.0"

@@ -35,7 +35,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
   const [imageUrl, setImageUrl] = useState<string>('');
-  const [location, setLocation] = useState<string>('台灣 (Taiwan)');
+  const [location, setLocation] = useState<string>('中國 (China)');
   const [selectedPortfolioId, setSelectedPortfolioId] = useState<string>('');
 
   // Optional card trade details for marketplace
@@ -392,7 +392,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="例如：剛開箱 151 特典包單抽出神賞！手都在發抖..."
+              placeholder="分享近期入手的寶可夢卡牌收藏"
               className="w-full bg-background border border-hairline rounded-xl px-3.5 py-2.5 text-sm text-foreground placeholder:text-secondary/50 focus:outline-none focus:border-ferrari-red transition-all"
             />
           </div>
@@ -426,37 +426,41 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
 
           {/* Real Card Photo Upload / Image Selection */}
           <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <label className="block text-xs font-semibold text-secondary uppercase tracking-wider">
-                卡牌實物相片 / 圖片展示
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <label className="block text-xs font-semibold text-secondary uppercase tracking-wider shrink-0 whitespace-nowrap">
+                卡牌實物照片
               </label>
               {/* Mode Switcher */}
-              <div className="flex items-center gap-1 bg-background border border-hairline p-0.5 rounded-lg text-[11px]" role="group" aria-label="圖片上傳方式切換">
+              <div className="flex items-center gap-1 bg-background border border-hairline p-0.5 rounded-lg text-[11px] shrink-0 self-start sm:self-auto" role="group" aria-label="圖片上傳方式切換">
                 <button
                   type="button"
                   onClick={() => setUploadMode('upload')}
                   aria-pressed={uploadMode === 'upload'}
-                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md font-medium transition-all cursor-pointer ${
+                  aria-label="上傳實物照片"
+                  tabIndex={0}
+                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md font-medium transition-all cursor-pointer shrink-0 whitespace-nowrap ${
                     uploadMode === 'upload'
                       ? 'bg-ferrari-red text-white font-bold shadow-2xs'
                       : 'text-secondary hover:text-foreground'
                   }`}
                 >
                   <UploadIcon className="w-3 h-3 shrink-0" />
-                  <span>上傳實物照片</span>
+                  <span className="whitespace-nowrap">上傳照片</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setUploadMode('url')}
                   aria-pressed={uploadMode === 'url'}
-                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md font-medium transition-all cursor-pointer ${
+                  aria-label="外部圖片連結"
+                  tabIndex={0}
+                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md font-medium transition-all cursor-pointer shrink-0 whitespace-nowrap ${
                     uploadMode === 'url'
                       ? 'bg-ferrari-red text-white font-bold shadow-2xs'
                       : 'text-secondary hover:text-foreground'
                   }`}
                 >
                   <LinkChainIcon className="w-3 h-3 shrink-0" />
-                  <span>外部圖片連結</span>
+                  <span className="whitespace-nowrap">圖片網址</span>
                 </button>
               </div>
             </div>
@@ -628,9 +632,10 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
                 className="w-full bg-background border border-hairline rounded-xl px-3.5 py-2.5 text-xs text-foreground focus:outline-none focus:border-ferrari-red transition-all cursor-pointer appearance-none pr-8"
               >
                 <optgroup label="亞太主要市場">
-                  <option value="台灣 (Taiwan)">台灣 (Taiwan)</option>
-                  <option value="香港 (Hong Kong)">香港 (Hong Kong)</option>
+                  <option value="中國 (China)">中國 (China)</option>
                   <option value="澳門 (Macau)">澳門 (Macau)</option>
+                  <option value="香港 (Hong Kong)">香港 (Hong Kong)</option>
+                  <option value="台灣 (Taiwan)">台灣 (Taiwan)</option>
                   <option value="日本 (Japan)">日本 (Japan)</option>
                   <option value="新加坡 (Singapore)">新加坡 (Singapore)</option>
                   <option value="馬來西亞 (Malaysia)">馬來西亞 (Malaysia)</option>

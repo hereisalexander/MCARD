@@ -159,6 +159,7 @@ npm run build
 
 ### 原始碼授權 (Source Code License)
 本專案的程式原始碼採用 **[GNU Affero General Public License v3.0 (AGPL-3.0)](./LICENSE)** 授權開源。
+- **版權所有**：© 2026 明月千問科技有限公司 (Luna Qianwen Technology Co., Ltd.)。保留所有權利。
 - 任何人均可自由 Clone、Fork、研究或基於本專案進行衍生修改。
 - **限制條件**：任何修改後在伺服器或網路上提供服務的衍生版本，**必須同樣以 AGPL v3 條款公開完整原始碼**，不得包裝為私有閉源產品。
 
