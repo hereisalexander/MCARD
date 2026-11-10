@@ -6,6 +6,7 @@ import { CardCategory } from '@/services/multiCardService';
 import { MarkSoldModal } from '@/components/MarkSoldModal';
 import { UserPortfolioItem } from '@/components/PortfolioDashboard';
 import { useLanguage } from '@/context/LanguageContext';
+import { useAuth } from '@/context/AuthContext';
 import {
   TagIcon,
   EditIcon,
@@ -86,8 +87,18 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({
   const [editingPriceListingId, setEditingPriceListingId] = useState<string | null>(null);
   const [editingPriceValue, setEditingPriceValue] = useState<string>('');
 
+  const { user } = useAuth();
+
+  // Helper 判定該掛單是否歸屬目前使用者（雙重保險支援登入身分與本機掛單）
+  const isMyListing = (item: CardListing): boolean => {
+    if (item.isOwner) return true;
+    if (user && item.sellerName && item.sellerName === user.name) return true;
+    if (item.sellerName === '我 (My Vault)' || item.sellerName === '我 (本地藏家)') return true;
+    return false;
+  };
+
   // Seller Dashboard Metrics
-  const myListings = listings.filter((l) => l.isOwner);
+  const myListings = listings.filter((l) => isMyListing(l));
   const myActiveListings = myListings.filter((l) => l.status === 'active');
   const mySoldListings = myListings.filter((l) => l.status === 'sold');
   const myActiveTotalValue = myActiveListings.reduce((sum, item) => sum + item.askingPrice, 0);
@@ -98,7 +109,7 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({
     if (activeTab === 'all') {
       if (item.status === 'sold') return false; // In general market, only show active
     } else if (activeTab === 'my-listings') {
-      if (!item.isOwner) return false;
+      if (!isMyListing(item)) return false;
     } else if (activeTab === 'sold-archive') {
       if (item.status !== 'sold') return false;
     }
@@ -419,7 +430,7 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({
                     />
 
                     {/* Owner Micro Badge Top Right (Clean & non-intrusive) */}
-                    {item.isOwner && (
+                    {isMyListing(item) && (
                       <div className="absolute top-1.5 right-1.5 pointer-events-none">
                         <span className="px-1.5 py-0.5 rounded text-[8.5px] font-mono font-bold bg-blue-600/90 backdrop-blur-md text-white border border-blue-400/30 shadow-xs">
                           {t('marketplace_my_listing_tag')}
@@ -546,7 +557,7 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({
                   </div>
 
                   {/* Seller Quick Action Toolbar (For user's owned listings) */}
-                  {item.isOwner && !isSold && (
+                  {isMyListing(item) && !isSold && (
                     <div
                       onClick={(e) => e.stopPropagation()}
                       className="mt-2 pt-2 border-t border-hairline/70 flex items-center gap-1.5"

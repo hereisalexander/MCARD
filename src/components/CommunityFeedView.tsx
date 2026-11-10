@@ -3,8 +3,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import {
   CommunityPost,
-  INITIAL_COMMUNITY_POSTS,
   CommunityComment,
+  isDemoPost,
 } from '@/types/community';
 import { CardTagInfo } from '@/contracts/community.schema';
 import { UserPortfolioItem } from '@/components/PortfolioDashboard';
@@ -30,7 +30,7 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
   searchQuery: externalSearchQuery,
 }) => {
   const { isLoggedIn, openAuthModal } = useAuth();
-  const [posts, setPosts] = useState<CommunityPost[]>(INITIAL_COMMUNITY_POSTS);
+  const [posts, setPosts] = useState<CommunityPost[]>([]);
   const [subFilter, setSubFilter] = useState<string>('綜合');
   const [localSearchQuery] = useState<string>('');
   const searchQuery = externalSearchQuery !== undefined ? externalSearchQuery : localSearchQuery;
@@ -55,24 +55,23 @@ export const CommunityFeedView: React.FC<CommunityFeedViewProps> = ({
     communityRepository
       .getFeed()
       .then((loadedPosts) => {
-        // 2. Filter out any obsolete pure digital card images (pokemontcg.io)
+        // 2. Filter out any obsolete pure digital card images (pokemontcg.io) and demo posts
         const cleanUserPosts = (loadedPosts as unknown as CommunityPost[]).filter(
           (p) =>
             !p.imageUrl.includes('images.pokemontcg.io') &&
-            !INITIAL_COMMUNITY_POSTS.some((init) => init.id === p.id)
+            !isDemoPost(p)
         );
 
-        const merged = [...cleanUserPosts, ...INITIAL_COMMUNITY_POSTS];
-        setPosts(merged);
+        setPosts(cleanUserPosts);
         try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(cleanUserPosts));
         } catch (e) {
           console.error('Failed to update community cache', e);
         }
       })
       .catch((err) => {
         console.error('Failed to load community feed via repository:', err);
-        setPosts(INITIAL_COMMUNITY_POSTS);
+        setPosts([]);
       });
   }, []);
 

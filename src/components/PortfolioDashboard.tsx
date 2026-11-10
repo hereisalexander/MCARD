@@ -227,30 +227,18 @@ export const PortfolioDashboard: React.FC<PortfolioDashboardProps> = ({
     return portfolio.filter((item) => (item.category || 'pokemon') === selectedCategoryFilter);
   }, [portfolio, selectedCategoryFilter]);
 
-  // Showcase Demo Cards
-  const showcaseCards = [
-    {
-      id: 'a1',
-      name: 'Charizard Base Set 1st Edition Shadowless',
-      rarity: 'BGS 10 PRISTINE',
-      value: 420000,
-      imageUrl: 'https://images.pokemontcg.io/base1/4_hires.png',
-    },
-    {
-      id: 'a2',
-      name: 'Michael Jordan 1986 Fleer RC #57',
-      rarity: 'PSA 10 GEM MINT',
-      value: 350000,
-      imageUrl: '/images/cards/nba-jordan.jpg',
-    },
-    {
-      id: 'a3',
-      name: 'Monkey.D.Luffy Gear 5 Manga SEC',
-      rarity: 'BGS Black Label 10',
-      value: 12500,
-      imageUrl: 'https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/one-piece/OP05/OP05-119_p1_EN.webp',
-    },
-  ];
+  // Dynamic 3D Vault Showcase from user's actual portfolio (No hardcoded demo items)
+  const showcaseCards = useMemo(() => {
+    return [...portfolio]
+      .sort((a, b) => b.price - a.price)
+      .map((item) => ({
+        id: item.id,
+        name: item.name,
+        rarity: item.condition || 'Ungraded',
+        value: item.price,
+        imageUrl: item.imageUrl,
+      }));
+  }, [portfolio]);
 
   if (mode === 'showcase') {
     return (
@@ -266,28 +254,48 @@ export const PortfolioDashboard: React.FC<PortfolioDashboardProps> = ({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {showcaseCards.map((card) => (
-            <div
-              key={card.id}
-              className="bg-surface rounded-2xl p-6 border border-hairline/70 flex flex-col items-center gap-5 hover:border-hairline transition-all duration-200 shadow-sm"
-            >
-              <div className="w-full max-w-[280px]">
-                <HoloCard src={card.imageUrl} alt={card.name} rarity={card.rarity} />
-              </div>
+        {showcaseCards.length === 0 ? (
+          <div className="py-20 text-center bg-surface rounded-2xl border border-hairline/60 flex flex-col items-center justify-center p-6">
+            <span className="text-4xl mb-3">✨</span>
+            <h3 className="text-base font-bold text-foreground">3D 保險庫尚無卡牌</h3>
+            <p className="text-xs text-text-muted mt-1 max-w-sm">
+              在資產管理中新增卡牌或使用 AI 相機拍照自動辨識，即可在此享受 3D 光影全像展示效果！
+            </p>
+            {onOpenScanner && (
+              <button
+                type="button"
+                onClick={onOpenScanner}
+                className="mt-5 px-5 py-2.5 bg-ferrari-red hover:bg-ferrari-red-hover text-white rounded-full text-xs font-semibold shadow-xs transition-all transform active:scale-95 flex items-center gap-2 cursor-pointer"
+              >
+                <CameraIcon className="w-3.5 h-3.5 text-white" />
+                <span>立即拍照辨識卡牌</span>
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {showcaseCards.map((card) => (
+              <div
+                key={card.id}
+                className="bg-surface rounded-2xl p-6 border border-hairline/70 flex flex-col items-center gap-5 hover:border-hairline transition-all duration-200 shadow-sm"
+              >
+                <div className="w-full max-w-[280px]">
+                  <HoloCard src={card.imageUrl} alt={card.name} rarity={card.rarity} />
+                </div>
 
-              <div className="flex flex-col items-center text-center gap-1.5 w-full">
-                <span className="rounded-full px-3 py-1 font-mono text-[10px] font-bold tracking-wider bg-ferrari-red/10 text-ferrari-red border border-ferrari-red/30">
-                  {card.rarity}
-                </span>
-                <h3 className="font-sans font-medium text-lg text-foreground line-clamp-1">{card.name}</h3>
-                <span className="font-mono text-xl font-bold text-foreground mt-1">
-                  ${card.value.toLocaleString('en-US')}
-                </span>
+                <div className="flex flex-col items-center text-center gap-1.5 w-full">
+                  <span className="rounded-full px-3 py-1 font-mono text-[10px] font-bold tracking-wider bg-ferrari-red/10 text-ferrari-red border border-ferrari-red/30">
+                    {card.rarity}
+                  </span>
+                  <h3 className="font-sans font-medium text-lg text-foreground line-clamp-1">{card.name}</h3>
+                  <span className="font-mono text-xl font-bold text-foreground mt-1">
+                    ${card.value.toLocaleString('en-US')}
+                  </span>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     );
   }

@@ -7,7 +7,7 @@ import {
   CommunityPostType,
 } from '@/contracts/community.schema';
 import { ICommunityRepository } from './repository.types';
-import { INITIAL_COMMUNITY_POSTS } from '@/types/community';
+import { INITIAL_COMMUNITY_POSTS, isDemoPost } from '@/types/community';
 
 const STORAGE_KEY = 'mcard_community_posts_v6';
 
@@ -17,14 +17,32 @@ export class LocalCommunityRepository implements ICommunityRepository {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) {
-        this.setStorageData(INITIAL_COMMUNITY_POSTS as unknown as CommunityPost[]);
-        return INITIAL_COMMUNITY_POSTS as unknown as CommunityPost[];
+        if (INITIAL_COMMUNITY_POSTS.length > 0) {
+          const seeded = INITIAL_COMMUNITY_POSTS as unknown as CommunityPost[];
+          this.setStorageData(seeded);
+          return seeded;
+        }
+        return [];
       }
 
       const parsed = JSON.parse(raw);
       if (!Array.isArray(parsed)) return [];
 
-      return parsed as CommunityPost[];
+      let hasCorrections = false;
+      const validPosts: CommunityPost[] = [];
+      for (const item of parsed) {
+        if (isDemoPost(item)) {
+          hasCorrections = true;
+          continue;
+        }
+        validPosts.push(item as CommunityPost);
+      }
+
+      if (hasCorrections) {
+        this.setStorageData(validPosts);
+      }
+
+      return validPosts;
     } catch (err) {
       console.error('[CommunityRepository] 讀取社群資料失敗:', err);
       return [];

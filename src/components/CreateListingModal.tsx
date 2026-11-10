@@ -6,6 +6,37 @@ import { UserPortfolioItem } from '@/components/PortfolioDashboard';
 import { CardCategory } from '@/services/multiCardService';
 import { TrendingDownIcon, TagIcon, CloseIcon, CameraIcon, SparklesIcon } from '@/components/icons/AppIcons';
 import { useLanguage } from '@/context/LanguageContext';
+import { useAuth } from '@/context/AuthContext';
+
+// Client-side lightweight image compression to prevent QuotaExceededError in localStorage
+const compressImage = (dataUrl: string, maxWidth = 800, quality = 0.8): Promise<string> => {
+  return new Promise((resolve) => {
+    if (!dataUrl.startsWith('data:image')) {
+      resolve(dataUrl);
+      return;
+    }
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      let { width, height } = img;
+      if (width > maxWidth) {
+        height = Math.round((height * maxWidth) / width);
+        width = maxWidth;
+      }
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      } else {
+        resolve(dataUrl);
+      }
+    };
+    img.onerror = () => resolve(dataUrl);
+    img.src = dataUrl;
+  });
+};
 
 export interface CreateListingModalProps {
   isOpen: boolean;
@@ -33,6 +64,7 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
   initialData,
 }) => {
   const { t } = useLanguage();
+  const { user } = useAuth();
   const [selectedPortfolioId, setSelectedPortfolioId] = useState<string>('');
   const [cardName, setCardName] = useState<string>(initialData?.name || '');
   const [category, setCategory] = useState<CardCategory>(initialData?.category || 'pokemon');
@@ -95,15 +127,16 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
     else setCondition('Ungraded Near Mint');
   };
 
-  // Handle local camera or photo upload
+  // Handle local camera or photo upload with automatic compression
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = (event) => {
+    reader.onload = async (event) => {
       if (typeof event.target?.result === 'string') {
-        setPhotoPreview(event.target.result);
+        const compressed = await compressImage(event.target.result);
+        setPhotoPreview(compressed);
       }
     };
     reader.readAsDataURL(file);
@@ -133,8 +166,10 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
 
     const newListing: CardListing = {
       id: `user-listing-${Date.now()}`,
-      sellerName: '我 (My Vault)',
-      sellerAvatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80',
+      sellerName: user?.name || '我 (My Vault)',
+      sellerAvatar:
+        user?.avatarUrl ||
+        'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80',
       sellerRating: 5.0,
       sellerSalesCount: 1,
       contactPlatform,
@@ -150,7 +185,7 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
       ],
       notes: notes.trim() || t('create_modal_default_notes'),
       location: location.trim() || t('create_modal_default_location'),
-      createdAt: 'Just now',
+      createdAt: '剛剛',
       status: 'active',
       isOwner: true,
     };
