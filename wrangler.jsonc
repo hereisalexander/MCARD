@@ -22,10 +22,10 @@
       "id": "e00fdc66534442069f9452e728ea8bbf"
     }
   ],
-  "r2_buckets": [
-    {
-      "binding": "BUCKET",
-      "bucket_name": "mcard-images"
-    }
-  ]
+  // "r2_buckets": [
+  //   {
+  //     "binding": "BUCKET",
+  //     "bucket_name": "mcard-images"
+  //   }
+  // ]
 }
