@@ -1,9 +1,7 @@
 /**
- * Pokémon TCG API 整合服務
- * 具備邊緣快取保護 (Cloudflare KV + SWR)、單飛去重 (Single-Flight) 與 API 故障平滑降級機制。
+ * Pokémon TCG API 整合服務 (純本地解耦模式)
+ * 已徹底移除 api.pokemontcg.io 外部網路請求，預留給未來接入之自建/新價格 API。
  */
-
-import { withStaleWhileRevalidate } from '../utils/cache';
 
 export interface ApiPokemonCard {
   id: string;
@@ -57,14 +55,6 @@ export interface RawTcgCard {
   };
 }
 
-interface TcgCardsApiResponse {
-  data: RawTcgCard[];
-  page: number;
-  pageSize: number;
-  count: number;
-  totalCount: number;
-}
-
 export interface FetchCardsParams {
   page?: number;
   pageSize?: number;
@@ -93,59 +83,6 @@ export interface ApiPokemonSet {
     logo: string;
   };
 }
-
-interface TcgSetsApiResponse {
-  data: ApiPokemonSet[];
-}
-
-interface SingleCardApiResponse {
-  data: RawTcgCard;
-}
-
-// 快取生命週期設定（秒）
-export const SETS_CACHE_TTL_SECONDS = 24 * 60 * 60; // Sets 快取 24 小時
-export const SETS_CACHE_SWR_SECONDS = 48 * 60 * 60; // Sets SWR 寬限期 48 小時
-export const CARDS_CACHE_TTL_SECONDS = 2 * 60 * 60; // 卡牌資訊快取 2 小時
-export const CARDS_CACHE_SWR_SECONDS = 12 * 60 * 60; // 卡牌 SWR 寬限期 12 小時
-
-const POKEMON_TCG_API_BASE = 'https://api.pokemontcg.io/v2';
-const API_TIMEOUT_MS = 8000;
-
-/**
- * 建立標準 Pokémon TCG API 請求 Headers
- */
-const buildApiHeaders = (): HeadersInit => {
-  const headers: Record<string, string> = {
-    Accept: 'application/json',
-  };
-
-  const apiKey = process.env.POKEMON_TCG_API_KEY;
-  if (apiKey) {
-    headers['X-Api-Key'] = apiKey;
-  }
-
-  return headers;
-};
-
-/**
- * 具有超時控制的 Fetch 包裝器
- */
-const fetchWithTimeout = async (url: string): Promise<Response> => {
-  const controller = new AbortController();
-  const timeoutTimer = setTimeout(() => {
-    controller.abort();
-  }, API_TIMEOUT_MS);
-
-  try {
-    const response = await fetch(url, {
-      headers: buildApiHeaders(),
-      signal: controller.signal,
-    });
-    return response;
-  } finally {
-    clearTimeout(timeoutTimer);
-  }
-};
 
 /**
  * 自卡牌原始 API 響應解析市場即時公允價格
@@ -198,6 +135,9 @@ export const mapRawCardToApiPokemonCard = (card: RawTcgCard): ApiPokemonCard => 
   };
 };
 
+/**
+ * 本地精選擴充包系列字典
+ */
 export const FALLBACK_POKEMON_SETS: ApiPokemonSet[] = [
   {
     id: 'sv3pt5',
@@ -319,186 +259,40 @@ export const FALLBACK_POKEMON_SETS: ApiPokemonSet[] = [
 ];
 
 /**
- * 獲取 Pokémon 系列擴充包列表
- * 快取策略：Sets 快取 24hr，API 故障時平滑降級至 FALLBACK_POKEMON_SETS
+ * 獲取 Pokémon 系列擴充包列表 (純本地，零外部請求)
  */
-export const fetchPokemonSets = async (forceFresh = false): Promise<ApiPokemonSet[]> => {
-  const cacheKey = 'tcg:pokemon:sets:all';
-
-  return withStaleWhileRevalidate(
-    cacheKey,
-    async () => {
-      const url = `${POKEMON_TCG_API_BASE}/sets?orderBy=-releaseDate&pageSize=50`;
-      const response = await fetchWithTimeout(url);
-
-      if (!response.ok) {
-        throw new Error(`[Pokemon TCG API] Sets 請求失敗，狀態碼: ${response.status}`);
-      }
-
-      const json: TcgSetsApiResponse = await response.json();
-      if (!json || !Array.isArray(json.data) || json.data.length === 0) {
-        throw new Error('[Pokemon TCG API] Sets 響應格式無效或為空');
-      }
-
-      return json.data;
-    },
-    {
-      ttlSeconds: SETS_CACHE_TTL_SECONDS, // 24 小時
-      swrSeconds: SETS_CACHE_SWR_SECONDS, // 48 小時
-      fallback: FALLBACK_POKEMON_SETS, // 平滑降級至精選系列
-      forceFresh,
-    }
-  );
+export const fetchPokemonSets = async (): Promise<ApiPokemonSet[]> => {
+  return FALLBACK_POKEMON_SETS;
 };
 
 /**
- * 建構卡牌查詢字串
- */
-const buildCardQueryString = (params: FetchCardsParams): string => {
-  const { searchQuery = '', setName = '', cardType = '' } = params;
-  const queryParts: string[] = [];
-
-  if (searchQuery.trim()) {
-    const sanitized = searchQuery.trim().replace(/["']/g, '');
-    queryParts.push(`name:"*${sanitized}*"`);
-  }
-
-  if (setName && setName !== 'ALL') {
-    const sanitizedSet = setName.trim().replace(/["']/g, '');
-    queryParts.push(`set.name:"${sanitizedSet}"`);
-  }
-
-  if (cardType && cardType !== 'ALL') {
-    const sanitizedType = cardType.trim().replace(/["']/g, '');
-    queryParts.push(`types:"${sanitizedType}"`);
-  }
-
-  return queryParts.join(' ');
-};
-
-/**
- * 獲取 Pokémon 卡牌搜尋結果（支援搜尋、分頁、屬性與系列過濾）
- * 快取策略：卡牌搜尋結果快取 2hr，若遭遇 429 或網路故障平滑降級至歷史快取或安全空狀態
+ * 獲取 Pokémon 卡牌搜尋結果 (純本地解耦介面，零外部請求)
  */
 export const fetchPokemonCardsFromApi = async (
-  params: FetchCardsParams = {},
-  forceFresh = false
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _params: FetchCardsParams = {}
 ): Promise<FetchCardsResult> => {
-  const { page = 1, pageSize = 24 } = params;
-
-  const queryString = buildCardQueryString(params);
-  const cacheKey = `tcg:pokemon:cards:p${page}:ps${pageSize}:q[${queryString || 'empty'}]`;
-
-  const safeEmptyResult: FetchCardsResult = {
+  // 徹底移除 api.pokemontcg.io 外部請求，預留給未來接入之自建/新價格 API
+  return {
     cards: [],
     totalCount: 0,
     hasMore: false,
   };
-
-  return withStaleWhileRevalidate(
-    cacheKey,
-    async () => {
-      const qParam = queryString ? `&q=${encodeURIComponent(queryString)}` : '';
-      const url = `${POKEMON_TCG_API_BASE}/cards?page=${page}&pageSize=${pageSize}${qParam}&orderBy=-set.releaseDate`;
-
-      const response = await fetchWithTimeout(url);
-
-      if (response.status === 429) {
-        throw new Error('[Pokemon TCG API] 遭遇 429 速率限制 (Rate Limited)');
-      }
-
-      if (!response.ok) {
-        throw new Error(`[Pokemon TCG API] Cards 請求失敗，狀態碼: ${response.status}`);
-      }
-
-      const json: TcgCardsApiResponse = await response.json();
-      if (!json || !Array.isArray(json.data)) {
-        throw new Error('[Pokemon TCG API] Cards 響應數據格式無效');
-      }
-
-      const cards = json.data.map(mapRawCardToApiPokemonCard);
-      const totalCount = json.totalCount ?? cards.length;
-      const hasMore = page * pageSize < totalCount;
-
-      return {
-        cards,
-        totalCount,
-        hasMore,
-      };
-    },
-    {
-      ttlSeconds: CARDS_CACHE_TTL_SECONDS, // 2 小時
-      swrSeconds: CARDS_CACHE_SWR_SECONDS, // 12 小時
-      fallback: safeEmptyResult, // 平滑降級兜底
-      forceFresh,
-    }
-  );
 };
 
 /**
- * 依據卡牌 ID 獲取單張卡牌資訊
- * 快取策略：單卡資訊快取 2hr，API 故障時平滑降級為快取舊資料或 null
+ * 依據卡牌 ID 獲取單張卡牌資訊 (純本地解耦介面，零外部請求)
  */
 export const fetchPokemonCardById = async (
-  cardId: string,
-  forceFresh = false
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _cardId: string
 ): Promise<ApiPokemonCard | null> => {
-  if (!cardId || !cardId.trim()) {
-    return null;
-  }
-
-  const cleanId = cardId.trim();
-  const cacheKey = `tcg:pokemon:card:${cleanId}`;
-
-  return withStaleWhileRevalidate(
-    cacheKey,
-    async () => {
-      const url = `${POKEMON_TCG_API_BASE}/cards/${encodeURIComponent(cleanId)}`;
-      const response = await fetchWithTimeout(url);
-
-      if (response.status === 404) {
-        return null;
-      }
-
-      if (response.status === 429) {
-        throw new Error(`[Pokemon TCG API] 單卡查詢遭遇 429 速率限制: ${cleanId}`);
-      }
-
-      if (!response.ok) {
-        throw new Error(`[Pokemon TCG API] 單卡查詢失敗，狀態碼: ${response.status}`);
-      }
-
-      const json: SingleCardApiResponse = await response.json();
-      if (!json || !json.data) {
-        return null;
-      }
-
-      return mapRawCardToApiPokemonCard(json.data);
-    },
-    {
-      ttlSeconds: CARDS_CACHE_TTL_SECONDS, // 2 小時
-      swrSeconds: CARDS_CACHE_SWR_SECONDS, // 12 小時
-      fallback: null,
-      forceFresh,
-    }
-  );
+  return null;
 };
 
 /**
- * 獲取首頁/探索頁熱門卡牌 (Featured Cards)
- * 預設快取熱門指標卡（例如 151 系列熱門卡牌）2 小時
+ * 獲取首頁熱門卡牌 (純本地解耦介面，零外部請求)
  */
-export const fetchFeaturedPokemonCards = async (
-  forceFresh = false
-): Promise<ApiPokemonCard[]> => {
-  const result = await fetchPokemonCardsFromApi(
-    {
-      page: 1,
-      pageSize: 12,
-      searchQuery: 'Charizard',
-    },
-    forceFresh
-  );
-
-  return result.cards;
+export const fetchFeaturedPokemonCards = async (): Promise<ApiPokemonCard[]> => {
+  return [];
 };

@@ -1,5 +1,4 @@
 import { UniversalCard } from './multiCardService';
-import { RawTcgCard, mapRawCardToApiPokemonCard } from './pokemonApi';
 
 // 熱門知名卡牌快取字典，保障在無網路或外部 API 頻率限制時依然能極速渲染 SSR 與 SEO
 export const FEATURED_CARDS_CATALOG: Record<string, UniversalCard> = {
@@ -139,7 +138,7 @@ const deriveFallbackCard = (cardId: string): UniversalCard => {
 };
 
 /**
- * 伺服器端統一卡牌獲取服務 (支援 pokemontcg.io API + 智慧備用字典 + 動態降級)
+ * 伺服器端統一卡牌獲取服務 (純本地解耦模式：由精選字典與本地衍生推導，零外部依賴)
  */
 export const fetchCardByIdForSSR = async (id: string): Promise<UniversalCard> => {
   if (!id || typeof id !== 'string') {
@@ -148,53 +147,12 @@ export const fetchCardByIdForSSR = async (id: string): Promise<UniversalCard> =>
 
   const normalizedId = id.trim();
 
-  // 若在已知精選熱門卡牌目錄中，先記錄以備 fallback
+  // 優先匹配已知精選熱門卡牌目錄
   const cachedMatch = FEATURED_CARDS_CATALOG[normalizedId];
-
-  try {
-    const directApiUrl = `https://api.pokemontcg.io/v2/cards/${encodeURIComponent(normalizedId)}`;
-    const headers: Record<string, string> = {
-      Accept: 'application/json',
-    };
-
-    if (process.env.POKEMON_TCG_API_KEY) {
-      headers['X-Api-Key'] = process.env.POKEMON_TCG_API_KEY;
-    }
-
-    const response = await fetch(directApiUrl, {
-      headers,
-      next: { revalidate: 3600 }, // Next.js 快取 1 小時
-    });
-
-    if (response.ok) {
-      const json = await response.json();
-      if (json && json.data) {
-        const rawCard = json.data as RawTcgCard;
-        const apiCard = mapRawCardToApiPokemonCard(rawCard);
-        return {
-          id: apiCard.id,
-          name: apiCard.name,
-          category: 'pokemon',
-          number: apiCard.number,
-          set: apiCard.set,
-          rarity: apiCard.rarity,
-          type: apiCard.type,
-          price: apiCard.price,
-          imageUrl: apiCard.imageUrl || (cachedMatch?.imageUrl ?? ''),
-          artistOrPlayer: apiCard.artist || 'Official Card Illustrator',
-          tcgplayerUrl: apiCard.tcgplayerUrl,
-          description: cachedMatch?.description || `${apiCard.name} (${apiCard.set} #${apiCard.number}) 即時市場行情與走勢。`,
-        };
-      }
-    }
-  } catch (error) {
-    console.warn(`[SSR Card Fetcher] Failed to fetch card ${normalizedId} from upstream:`, error);
-  }
-
-  // 外部 API 失敗或無回傳時，使用精選字典或動態合成防護
   if (cachedMatch) {
     return cachedMatch;
   }
 
+  // 本地結構化安全推導
   return deriveFallbackCard(normalizedId);
 };
