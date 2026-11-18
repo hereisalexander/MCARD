@@ -41,7 +41,7 @@ const securityHeaders = [
       style-src 'self' 'unsafe-inline';
       img-src 'self' data: blob: https://images.pokemontcg.io https://images.unsplash.com https://images.ygoprodeck.com https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com https://api.dicebear.com https://*.trycloudflare.com https://*.ngrok-free.dev https://*.ngrok-free.app;
       font-src 'self' data:;
-      connect-src 'self' https://api.pokemontcg.io https://generativelanguage.googleapis.com https://oauth2.googleapis.com https://www.googleapis.com https://accounts.google.com https://*.trycloudflare.com https://*.ngrok-free.dev https://*.ngrok-free.app wss: ws:;
+      connect-src 'self' https://generativelanguage.googleapis.com https://oauth2.googleapis.com https://www.googleapis.com https://accounts.google.com https://*.trycloudflare.com https://*.ngrok-free.dev https://*.ngrok-free.app wss: ws:;
       media-src 'self' blob: data:;
       object-src 'none';
       base-uri 'self';
