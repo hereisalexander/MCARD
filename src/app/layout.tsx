@@ -4,6 +4,7 @@ import { LanguageProvider } from "@/context/LanguageContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { AuthModal } from "@/components/AuthModal";
+import { PwaRegister } from "@/components/PwaRegister";
 import "./globals.css";
 
 const interFont = Inter({
@@ -22,6 +23,20 @@ const monoFont = Space_Mono({
 export const metadata: Metadata = {
   title: "MCARD | Pokémon TCG Market Telemetry & Vault",
   description: "Real-time market telemetry, luxury card archive, and high-performance portfolio tracking for Pokémon TCG cards.",
+  applicationName: "MCARD",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "MCARD",
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/icons/apple-touch-icon.png",
+  },
 };
 
 export const viewport: Viewport = {
@@ -51,6 +66,7 @@ export default function RootLayout({
             <AuthProvider>
               {children}
               <AuthModal />
+              <PwaRegister />
             </AuthProvider>
           </LanguageProvider>
         </ThemeProvider>
