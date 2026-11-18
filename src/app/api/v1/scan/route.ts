@@ -1,6 +1,7 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { apiSuccess, apiError, handleApiError } from '@/utils/apiResponse';
 import { ScanRequestSchema, CardScanResultSchema, CardScanResult } from '@/contracts/scan.schema';
+import { checkRateLimit } from '@/services/server/rateLimiter';
 
 export const dynamic = 'force-dynamic';
 
@@ -24,6 +25,33 @@ const TARGET_MODEL = 'gemini-3.5-flash-lite';
 
 export const POST = async (req: NextRequest) => {
   try {
+    // 呼叫頻率限制保護 (Rate Limiting)，每分鐘上限 10 次
+    const rateLimitResult = await checkRateLimit(req, {
+      limit: 10,
+      windowSeconds: 60,
+      prefix: 'ai-scan',
+    });
+
+    if (!rateLimitResult.success) {
+      return new NextResponse(
+        JSON.stringify({
+          code: 'RATE_LIMIT_EXCEEDED',
+          message: `AI 識卡辨識請求頻率過高，為保護系統資源，請於 ${rateLimitResult.retryAfterSeconds} 秒後重試。`,
+          data: null,
+        }),
+        {
+          status: 429,
+          headers: {
+            'Content-Type': 'application/json',
+            'Retry-After': rateLimitResult.retryAfterSeconds.toString(),
+            'X-RateLimit-Limit': rateLimitResult.limit.toString(),
+            'X-RateLimit-Remaining': '0',
+            'X-RateLimit-Reset': rateLimitResult.reset.toString(),
+          },
+        }
+      );
+    }
+
     const rawBody = await req.json();
     const { imageBase64 } = ScanRequestSchema.parse(rawBody);
 
@@ -166,10 +194,15 @@ Analyze the image carefully:
     const validatedResult: CardScanResult = CardScanResultSchema.parse(parsedData);
 
     console.log(`[Gemini] ✅ 辨識成功！模型: ${TARGET_MODEL}`);
-    return apiSuccess(validatedResult);
+    return apiSuccess(validatedResult, undefined, {
+      headers: {
+        'X-RateLimit-Limit': rateLimitResult.limit.toString(),
+        'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+        'X-RateLimit-Reset': rateLimitResult.reset.toString(),
+      },
+    });
   } catch (error) {
     console.error('[AI Camera Scan API Route Error]:', error);
     return handleApiError(error);
   }
 };
-
