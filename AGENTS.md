@@ -12,9 +12,9 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ## Phase 1 核心完善方向 (已全數完成)：
 
-1. **對接真實 Pokémon TCG API**：
-   - 介接 `https://api.pokemontcg.io/v2/cards` 獲取真實卡牌資料庫與價格。
-   - 支援無限滾動（Infinite Scroll）與全圖鑑搜尋。
+1. **Pokémon TCG 服務層解耦 (Decoupled API Architecture)**：
+   - 徹底移除不穩定之 `pokemontcg.io` 外部網路依賴，杜絕外部 500 報錯。
+   - 採用純本地解耦介面與精選卡庫，預留未來標準化價格 API 接入管道。
 
 2. **投資組合 (Portfolio) 高級資產管理**：
    - 支援購入成本 (Buy-in Cost) 與 損益率 (P&L / ROI %) 追蹤。
