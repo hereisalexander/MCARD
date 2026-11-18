@@ -2,20 +2,16 @@ import { describe, it, expect } from 'vitest';
 import {
   ScanRequestSchema,
   PriceHistoryPointSchema,
-  CardPricingSchema,
   CardScanResultSchema,
 } from '@/contracts/scan.schema';
 import {
-  CardAssetSchema,
   CreateCardAssetInputSchema,
-  UpdateCardAssetInputSchema,
   PortfolioSummarySchema,
 } from '@/contracts/portfolio.schema';
 import {
   MarketListingSchema,
   CreateListingInputSchema,
   UpdateListingStatusInputSchema,
-  ListingConditionSchema,
 } from '@/contracts/marketplace.schema';
 
 describe('Zod 契約邊界值測試 (Contracts Boundary Testing)', () => {
@@ -150,7 +146,8 @@ describe('Zod 契約邊界值測試 (Contracts Boundary Testing)', () => {
       });
 
       it('品相 condition 預設值為 Ungraded', () => {
-        const { condition, ...withoutCondition } = validAssetInput;
+        const withoutCondition = { ...validAssetInput };
+        delete (withoutCondition as { condition?: string }).condition;
         const parsed = CreateCardAssetInputSchema.parse(withoutCondition);
         expect(parsed.condition).toBe('Ungraded');
       });

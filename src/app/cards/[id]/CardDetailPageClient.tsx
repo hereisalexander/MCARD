@@ -34,7 +34,10 @@ export const CardDetailPageClient: React.FC<CardDetailPageClientProps> = ({ card
         const found = parsed.some(
           (item) => item.cardName.toLowerCase() === card.name.toLowerCase()
         );
-        setIsInWishlist(found);
+        // 延遲至 Microtask 更新狀態，避免 React 19 級聯渲染警報
+        queueMicrotask(() => {
+          setIsInWishlist(found);
+        });
       }
     } catch (err) {
       console.warn('[CardDetailPage] Failed to check wishlist status:', err);
